@@ -1,0 +1,58 @@
+---
+title: Verification
+---
+
+Verification is the process of checking that the simulation model correctly implements the intended conceptual model. It involves checking that the model's logic, structure and parameters are implemented as planned and free from coding errors.
+
+## Desk checking
+
+* [ ] Systematically check code.
+* [ ] Keep documentation complete and up-to-date.
+* [ ] Maintain an environment with all required packages.
+* [ ] Lint code.
+* [ ] Get code review.
+
+Will do all these. Code review **requires some thought**. Who can / should / best to do it?
+
+## Debugging
+
+* [ ] Write tests - they'll help for spotting bugs.
+* [ ] During model development, monitor the model using logs - they'll help with spotting bugs.
+* [ ] Use GitHub issues to record bugs as they arise, so they aren't forgotten and are recorded for future reference.
+
+Will do all these.
+
+## Assertion checking
+
+* [ ] Add checks in the model which cause errors if something doesn't look right.
+* [ ] Write tests which check that assertions hold true.
+
+Will do all these.
+
+## Special input testing
+
+* [ ] If there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.
+* [ ] Write stress tests which simulate worst-case load and ensure model is robust under heavy demand.
+* [ ] Write tests with little or no activity/waits/service.
+
+Will do all these.
+
+## Bottom-up testing
+
+* [ ] Write unit tests for each individual component of the model.
+* [ ] Once individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.
+
+Will do all these.
+
+## Regression testing
+
+* [ ] Write tests early.
+* [ ] Run tests regularly (locally or automatically via. GitHub actions).
+
+Will do all these.
+
+## Mathematical proof of correctness
+
+* [ ] For parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.
+
+This **requires some thought** - compare to m/m/s queue possible for most basic model - could also compare to regression but is that validation rather than mathematical?

@@ -31,7 +31,7 @@ Use **ruff** for linting
 
 Use **type hints**
 
-Write tests with **pytest** and CI/CD to run them.
+Write tests with **pytest** and CI/CD to run them. Arrange tests by theme, then use pytest markers for test type. Use language from our training to describe them. Have smoke test as a gate.
 
 Have a **logging** system in place which can enable/disable. Shouldn't slow it down too much! Be wary of that
 
@@ -41,3 +41,13 @@ Have a **logging** system in place which can enable/disable. Shouldn't slow it d
 * **Speed** - anything we could do?
 
 Ensure address things raised in NHS model reuse interviews e.g. broad logging messages as run
+
+Use **vidigi** for animation
+
+Use **sim-tools** for distributions
+
+Use **lintquarto** for the quarto book and the image alt-text linter
+
+Once sim times get longer, use parallel processing.
+
+**mechanism** for running all in one go from single command.

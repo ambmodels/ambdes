@@ -17,5 +17,6 @@ website:
       - conceptual.qmd
       - literature.qmd
       - code.qmd
-      - vv.qmd
+      - verification.qmd
+      - validation.qmd
       - qa.qmd

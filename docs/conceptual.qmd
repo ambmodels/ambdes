@@ -30,6 +30,12 @@ Progressing through the stages, we can evaluate whether the added detail improve
 | Queue | First come first serve or prioritisation rules with potential reneging/balking | Priority rules could likely be informed by call guidelines |
 | Service time | Single time (disatpch to resource available) | Mean time, by call category |
 
+For initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.
+
+For uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.
+
+For distributions used, will do input modelling.
+
 **Outputs:**
 
 * **Primary:** Category 2 mean response time
@@ -159,5 +165,5 @@ To reflect on and document. Things like:
 
 * Multiple vehicles attending the same incident - not modelling that (should you?)
 * Including/excluding see-and-treat and hear-and-treat
-* Out of SWASFT patch
+* Out of ambulance service patch
 * Not modelling hospital capacity (AmbModelOpen did that)

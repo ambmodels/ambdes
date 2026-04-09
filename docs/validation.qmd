@@ -1,0 +1,79 @@
+---
+title: Validation
+---
+
+Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model's inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.
+
+**To discuss:** what will / can do
+
+## Conceptual model validation
+
+* [ ] Document and justify all modeling assumptions.
+* [ ] Review the conceptual model with people familiar with the real system to assess completeness and accuracy.
+
+Will do all these (review conceptual model is with ambulance team involved)
+
+## Input data validation
+
+* [ ] Check the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.
+* [ ] Ensure you have performed appropriate input modelling steps when choosing your distributions.
+
+Will do input modelling. **First point requires discussion with ambulance team**.
+
+## Graphical comparison
+
+* [ ] Create time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.
+
+**requires some thought** as to what we will plot and compare
+
+## Statistical comparison
+
+* [ ] Collect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.
+
+**requires some thought** as to what we compare
+
+## Turing test
+
+* [ ] Collect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.
+
+**Requires discussion** as to whether we do this and how and who (ambulance team? or to oinvolved?)
+
+## Predictive validation
+
+* [ ] Use historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation's predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.
+* [ ] Consider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.
+* [ ] Use graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.
+
+**requires some thought** as to what we do here
+
+## Animation visualisation
+
+* [ ] Create an animation to help with validation (as well as communication and reuse).
+
+will do this
+
+## Comparison testing
+
+* [ ] If you have multiple models of the same system, compare them!
+
+can compare basic model to regression model. **requires some thought** re: any other possible comparisons. we know of existing models and code and/or existing data.
+
+## Face validation
+
+* [ ] Present key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results "look right". Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.
+
+**requires discussion** as to whether do this
+
+## Experimentation validation
+
+* [ ] Use a warm-up period.
+* [ ] Use statistical methods to determine sufficient run length and number of replications.
+* [ ] Perform sensitivity analysis to test how changes in input parameters affect outputs.
+
+Will do this - though sensitivity analysis requires **discussion and research** to identify what would be important to vary here
+
+## Cross validation
+
+* [ ] Search for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.
+
+**will need to build up research** to do this - have done a bunch, but will require more
