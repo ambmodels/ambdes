@@ -1,0 +1,135 @@
+---
+title: Conceptual modelling
+---
+
+The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:
+
+* The key question(s) being asked.
+* Model content and inputs, including optional layers of complexity.
+* Outputs.
+
+Progressing through the stages, we can evaluate whether the added detail improves the model's validity for previous questions, or whether the simpler version remains sufficient.
+
+## Stage 1: Whole-system resourcing
+
+**Key question:**
+
+> How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?
+
+**Additional possible questions** (not from ambulance service):
+
+* How do system-wide demand changes impact response times and utilisation?
+
+**Model content/inputs:**
+
+we are doing by call category, so would expect to do arrivals and service times by that, not one whole
+
+| Element | Model content | Input |
+| - | -- | -- |
+| Arrivals | Basic arrival process or NHPP based on observed patterns | Mean inter-arrival time for whole system OR mean by period of time |
+| Call category | Separate arrival times - part of arrival dist or assigned after | Arrival times above should also be by category |
+| Resource | Single pooled ambulance resource | Numebr of ambulances for whole system |
+| Queue | First come first serve or prioritisation rules with potential reneging/balking | Priority rules could likely be informed by call guidelines |
+| Service time | Single time (disatpch to resource available) | Mean time, by call category |
+
+**Outputs:**
+
+* **Primary:** Category 2 mean response time
+* **Secondary:** Resource utilisation
+
+**Notes:**
+
+This stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs.
+
+## Stage 2: Resourcing by county (without interaction)
+
+**Key question:**
+
+> If total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?
+
+**Changes:**
+
+| Element | Description |
+| - | --- |
+| Content | Same as stage 1 |
+| Inputs | County-specific parameters for demand, resources and service times |
+| Outputs | Same as stage 1 |
+
+**Notes:**
+
+This will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn't really one separate service per county, and that resources operate across counties on shift.
+
+## Stage 3: Job cycle times
+
+**Key question:**
+
+> How do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?
+
+**Changes:**
+
+| Element | Description |
+| - | --- |
+| Content | (1) Job cycle divided into individual time components (e.g., time on scene, handover time). (2) Separate cfycle times for conveyed v.s. non conveyed |
+| Inputs | Cycle times and conveyed/nonconveyed breakdown of everything |
+| Outputs | Also now report by conveyed and non conveyed |
+
+**Uncertainties:**
+
+Is conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times
+
+## Stage 4: Shifts
+
+**Key question:**
+
+> Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?
+
+Current patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:
+
+* Midday and midnight dips in resource numbers when many crews are on break at once.
+* Effects of protected periods towards the end of shifts.
+
+The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.
+
+**Changes:**
+
+| Element | Description |
+| - | --- |
+| Content | Add representation of shifts (resource availability over time), including breaks and protected periods |
+| Inputs | Current and alternative rota schedules (for the whole area, not by station, proportions on different schedules) |
+| Outputs | Add a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). |
+
+**Uncertainties:**
+
+* Does stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?
+* Learn more about break policies and stuff... is this one stage or multiple.
+* Is it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn't something they mentioned
+* Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks
+
+## Stage 5: Resourcing by county (with interaction)
+
+**Key question:**
+
+> When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?
+
+**Changes:**
+
+Introduce geographic modelling. Possible configurations:
+
+* Counties as zones with local queues and spillover rules.
+* Breaking down into smaller than county level
+
+Resources become linked to area.
+
+Brings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)
+
+## Stage 6: Station-level questions
+
+**Key question:**
+
+> What is the impact of adding/moving/removing individual station shifts?
+
+For example, identifying stations with low utilisation, as candidates.
+
+**Changes:**
+
+This requires representing individual stations explicitly. And linking resources to those.

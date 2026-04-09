@@ -1,0 +1,40 @@
+project:
+  type: website
+
+website:
+  title: "Ambulance DES"
+  favicon: images/pixelambulance.png
+
+  navbar:
+    right:
+      - icon: github
+        text: GitHub
+        href: https://github.com/ambmodels/ambdes
+
+  sidebar:
+    - contents:
+      - index.qmd
+      - conceptual.qmd
+#  navbar:
+#    left:
+#      - nongeographic/index.qmd
+#      - geographic/index.qmd
+#    right:
+#      - icon: github
+#        text: GitHub
+#        href: https://github.com/ambmodels/ambdes
+#  sidebar:
+#    - id: nongeographic
+#      contents:
+#        - nongeographic/index.qmd
+#        - nongeographic/conceptual.qmd
+#        - nongeographic/design.qmd
+#        - nongeographic/vv.qmd
+#        - nongeographic/qa.qmd
+#        - nongeographic/code.qmd
+#        - nongeographic/run.qmd
+#        - nongeographic/examples.qmd
+#        - nongeographic/animation.qmd
+#    - id: geographic
+#      contents:
+#        - geographic/index.qmd
