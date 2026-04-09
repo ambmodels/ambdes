@@ -1,0 +1,43 @@
+---
+title: Code structure / infrastructure plans
+---
+
+**Python** (as ambulance team are familiar)
+
+**SimPy** (as popular, taught on HSMA, and also should be familiar)
+
+Environment management preferred option is **uv** as manage python version and dependencies with simple file and full lock file. Need to check whether they can use this though. Other options like conda poetry etc.
+
+Public/private:
+
+* Model code structured as a **package** and **public**
+* Model documentation **public**
+* Dummy date used in public repo for exampls
+* Then will be able to import public package and run on analyses privately on own data. Public version should reproduce all key analytical steps.
+
+Documentation in **single site** inc. project spec and code documentation via **quartodoc**
+
+Code **object-oriented**. **Uncertainty:**
+
+* Further thought required on how to design modular components that can be easily swapped or extended
+* There will be inevitable duplicate - goal is to minimise that with a clear and maintainable structure.
+
+Possible **input** formats include excel workbook, csv, or json
+
+* Excel workbook proprietrary but standard
+* JSON not liked in NHS model reuse interviews
+
+Use **ruff** for linting
+
+Use **type hints**
+
+Write tests with **pytest** and CI/CD to run them.
+
+Have a **logging** system in place which can enable/disable. Shouldn't slow it down too much! Be wary of that
+
+**Uncertainty** re: improvements to core structure:
+
+* **Scenarios** - could it be improved? current way can feel a little clunky
+* **Speed** - anything we could do?
+
+Ensure address things raised in NHS model reuse interviews e.g. broad logging messages as run
