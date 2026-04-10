@@ -335,12 +335,8 @@ div.csl-indent {
 </section>
 <section id="call-categories" class="level2">
 <h2 class="anchored" data-anchor-id="call-categories">Call categories</h2>
-<p>Studies that include call categories vary in terms of what it impacts e.g.,:</p>
-<ul>
-<li>Priority of queued calls</li>
-<li>Whether conveyed</li>
-<li>Time on site, drop-off time, in-hospital time, travel time</li>
-</ul>
+<p>Some studies don’t include call categories.</p>
+<p>Studies that include call categories will sample probability of each, and this can be time-varying.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -353,17 +349,109 @@ div.csl-indent {
 </div>
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p>No call category:</p>
+<ul>
+<li><span class="citation" data-cites="berlin_mathematical_1974">Berlin and Liebman (<a href="#ref-berlin_mathematical_1974" role="doc-biblioref">1974</a>)</span> (USA)</li>
+<li><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span> (USA)</li>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span> (Brazil)</li>
+<li><span class="citation" data-cites="lee_simulation-based_2012">Lee et al. (<a href="#ref-lee_simulation-based_2012" role="doc-biblioref">2012</a>)</span> (Korea)</li>
+</ul>
+<p>Include call category:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Country</th>
+<th>Categories</th>
+<th>How assigned</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></td>
+<td>UK</td>
+<td>C1, C2, C3, C4</td>
+<td>User-supplied frequency distribution which can vary by hour of day</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span></td>
+<td>Brazil and UK</td>
+<td>All calls receive attributes concerning nature of emergency, category of call, type of ambulance required, RRV requirement, delivery requirement, and whether dispatch will be missed. Basic life support (BLS), Advanced life support (ALS), Mental care support (MCS), Rapid response vehicle (RRV)</td>
+<td>Empirical distribution</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span></td>
+<td>Taiwan</td>
+<td>Advanced life support (ALS) or basic life support (BLS) team</td>
+<td>Multinomial distribution</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>Brazil</td>
+<td>Basic support vehicle or advanced support vehicle</td>
+<td>Distribution (95% basic, 5% advanced)</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></td>
+<td>France</td>
+<td>(1) Primary or secondary (2) Severity (0, 1, 2, 3)</td>
+<td>Probabilities</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span></td>
+<td>Canada</td>
+<td>(1) Urgent or transfer (2) If urgent, transfer to hospital or not</td>
+<td>Probabilities</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span></td>
+<td>Singapore</td>
+<td>Acuity scores</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></td>
+<td>Canada</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></td>
+<td>New Zealand</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></td>
+<td>France</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="van_buuren_evaluating_2012">Buuren et al. (<a href="#ref-van_buuren_evaluating_2012" role="doc-biblioref">2012</a>)</span></td>
+<td>Netherlands</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
-<p><br></p>
-</section>
-<section id="dispatch-policy" class="level2">
-<h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
-<p>Normally nearest available vehicle</p>
-<p>Some incorporate call priority or possible reassignment to Cat1</p>
-<p>Some look for team belonging to specific area first</p>
+<p>As described in <span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span>, reasons for including include:</p>
+<ul>
+<li>Assign <strong>hierachy</strong> to queued calls.</li>
+<li>Impact <strong>travel times</strong>.</li>
+<li>Impact <strong>activity times</strong> (e.g., time on site, drop off time, in hospital time).</li>
+<li>Impact on whether <strong>activities</strong> happen (e.g., whether conveyed).</li>
+</ul>
+<p>Output metrics may be analysed by category.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -375,6 +463,37 @@ div.csl-indent {
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> - care model (hear-and-treat, see-and-treat or see-and-convey), and ED acuity level (1 highest 5 lowest).</li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - whether require ambulance, whether call is non-emergency, whether call requires conveyance to hospital, whether call will cause a missing dispatch i.e., care on scene no longer necessary and ambulance makes a missing travel.</li>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> - on-scene time, in-hospital time.</li>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - unclear.</li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - order of queued calls, whether require transport to hospital, on-site time, travel time, drop-off time.</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - -</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - on scene treatment time.</li>
+</ul>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="dispatch-policy" class="level2">
+<h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
+<p>Normally nearest available vehicle</p>
+<p>Some incorporate call priority or possible reassignment to Cat1</p>
+<p>Some look for team belonging to specific area first</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>TODO</p>
 </div>
@@ -400,33 +519,6 @@ div.csl-indent {
 <li>Any of those three, with <strong>correction factors</strong> for traffic, time of day, etc.</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>View studies
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>TODO</p>
-</div>
-</div>
-</div>
-<p><br></p>
-</section>
-<section id="processing-times" class="level2">
-<h2 class="anchored" data-anchor-id="processing-times">Processing times</h2>
-<ol type="a">
-<li>Include in <strong>travel times</strong></li>
-<li>Assume <strong>0</strong></li>
-<li><strong>Deterministic</strong> varying by location / priority / etc.</li>
-<li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
-<li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
-</ol>
-<div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -444,12 +536,14 @@ div.csl-indent {
 </div>
 <p><br></p>
 </section>
-<section id="hospital-selection" class="level2">
-<h2 class="anchored" data-anchor-id="hospital-selection">Hospital selection</h2>
+<section id="processing-times" class="level2">
+<h2 class="anchored" data-anchor-id="processing-times">Processing times</h2>
 <ol type="a">
-<li>Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)</li>
-<li>Use closest hospital</li>
-<li>Sample from distribution</li>
+<li>Include in <strong>travel times</strong></li>
+<li>Assume <strong>0</strong></li>
+<li><strong>Deterministic</strong> varying by location / priority / etc.</li>
+<li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
+<li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
@@ -462,6 +556,31 @@ div.csl-indent {
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="hospital-selection" class="level2">
+<h2 class="anchored" data-anchor-id="hospital-selection">Hospital selection</h2>
+<ol type="a">
+<li>Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)</li>
+<li>Use closest hospital</li>
+<li>Sample from distribution</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>TODO</p>
 </div>
@@ -483,7 +602,7 @@ div.csl-indent {
 </ul>
 <p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -492,7 +611,7 @@ div.csl-indent {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>TODO</p>
 </div>
@@ -530,6 +649,9 @@ Ingolfsson, A, E Erkut, and S Budge. 2003. <span>“Simulation of Single Start S
 </div>
 <div id="ref-kergosien_generic_2015" class="csl-entry" role="listitem">
 Kergosien, Y., V. Bélanger, P. Soriano, M. Gendreau, and A. Ruiz. 2015. <span>“A Generic and Flexible Simulation-Based Analysis Tool for <span>EMS</span> Management.”</span> <em>International Journal of Production Research</em> 53 (24): 7299–316. <a href="https://doi.org/10.1080/00207543.2015.1037405">https://doi.org/10.1080/00207543.2015.1037405</a>.
+</div>
+<div id="ref-lee_simulation-based_2012" class="csl-entry" role="listitem">
+Lee, Taesik, Soo-Haeng Cho, Hoon Jang, and John G. Turner. 2012. <span>“A Simulation-Based Iterative Method for a Trauma Center — <span>Air</span> Ambulance Location Problem.”</span> <em>Proceedings of the 2012 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1–12. <a href="https://doi.org/10.1109/WSC.2012.6465042">https://doi.org/10.1109/WSC.2012.6465042</a>.
 </div>
 <div id="ref-maxwell_ambulance_2009" class="csl-entry" role="listitem">
 Maxwell, Matthew S., Shane G. Henderson, and Huseyin Topaloglu. 2009. <span>“Ambulance Redeployment: <span>An</span> Approximate Dynamic Programming Approach.”</span> <em>Proceedings of the 2009 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1850–60. <a href="https://doi.org/10.1109/WSC.2009.5429196">https://doi.org/10.1109/WSC.2009.5429196</a>.
