@@ -6,9 +6,15 @@ How have been built ambulance DES in the past?
 
 ## Call arrival timing
 
-Poisson i.e. exponential itnerarrival
+Poisson i.e. exponential interarrival
 
 Often non homogenous i.e. vary by time of day day of week
+
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
 
 ## Call location
 
@@ -18,6 +24,12 @@ c. Calls are assigned to zone (i.e., distribution of probabilities)
 
 Typically impacts chosen resource and travel time
 
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
+
 ## Call categories
 
 Studies that include call categories vary in terms of what it impacts e.g.,:
@@ -26,6 +38,12 @@ Studies that include call categories vary in terms of what it impacts e.g.,:
 * Whether conveyed
 * Time on site, drop-off time, in-hospital time, travel time
 
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
+
 ## Dispatch policy
 
 Normally nearest available vehicle
@@ -33,6 +51,12 @@ Normally nearest available vehicle
 Some incorporate call priority or possible reassignment to Cat1
 
 Some look for team belonging to specific area first
+
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
 
 ## Travel time modelling
 
@@ -51,6 +75,12 @@ Or:
 
 f. Any of those three, with **correction factors** for traffic, time of day, etc.
 
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
+
 ## Processing times
 
 a. Include in **travel times**
@@ -59,11 +89,23 @@ c. **Deterministic** varying by location / priority / etc.
 d. Sampled from a **distribution**, can then vary by priority / day / etc.
 e. **Resource** (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)
 
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
+
 ## Hospital selection
 
 a. Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)
 b. Use closest hospital
 c. Sample from distribution
+
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
 
 ## Scenarios
 
@@ -79,3 +121,9 @@ Scenarios:
 * **Shift** scheduling - working **hours** and **location** *E.g., optimal schedule… avoiding changes during high demand...*
 
 Less relevant: dispatching rules (policy change), destination hospital (mass casualty)
+
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
