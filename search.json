@@ -1,0 +1,438 @@
+[
+  {
+    "objectID": "literature.html",
+    "href": "literature.html",
+    "title": "Literature",
+    "section": "",
+    "text": "How have been built ambulance DES in the past?",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#call-arrival-timing",
+    "href": "literature.html#call-arrival-timing",
+    "title": "Literature",
+    "section": "Call arrival timing",
+    "text": "Call arrival timing\nPoisson i.e. exponential itnerarrival\nOften non homogenous i.e. vary by time of day day of week",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#call-location",
+    "href": "literature.html#call-location",
+    "title": "Literature",
+    "section": "Call location",
+    "text": "Call location\n\nNothing\nEach zone own distribution (i.e., part of possion)\nCalls are assigned to zone (i.e., distribution of probabilities)\n\nTypically impacts chosen resource and travel time",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#call-categories",
+    "href": "literature.html#call-categories",
+    "title": "Literature",
+    "section": "Call categories",
+    "text": "Call categories\nStudies that include call categories vary in terms of what it impacts e.g.,:\n\nPriority of queued calls\nWhether conveyed\nTime on site, drop-off time, in-hospital time, travel time",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#dispatch-policy",
+    "href": "literature.html#dispatch-policy",
+    "title": "Literature",
+    "section": "Dispatch policy",
+    "text": "Dispatch policy\nNormally nearest available vehicle\nSome incorporate call priority or possible reassignment to Cat1\nSome look for team belonging to specific area first",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#travel-time-modelling",
+    "href": "literature.html#travel-time-modelling",
+    "title": "Literature",
+    "section": "Travel time modelling",
+    "text": "Travel time modelling\nDistribution based:\n\nSample from distribution\nDistribution vary by region\n\nOr more like…:\n\nAs crow flies multiplied by speed\nPre-computed shortest path multiplied by speed\nDivide road into segments, calculate travel times for each, sum\n\nOr:\n\nAny of those three, with correction factors for traffic, time of day, etc.",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#processing-times",
+    "href": "literature.html#processing-times",
+    "title": "Literature",
+    "section": "Processing times",
+    "text": "Processing times\n\nInclude in travel times\nAssume 0\nDeterministic varying by location / priority / etc.\nSampled from a distribution, can then vary by priority / day / etc.\nResource (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#hospital-selection",
+    "href": "literature.html#hospital-selection",
+    "title": "Literature",
+    "section": "Hospital selection",
+    "text": "Hospital selection\n\nNot relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)\nUse closest hospital\nSample from distribution",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "literature.html#scenarios",
+    "href": "literature.html#scenarios",
+    "title": "Literature",
+    "section": "Scenarios",
+    "text": "Scenarios\nBaseline: Estimated timings for given parameters\nScenarios:\n\nHow that changes with varying demand\nHow many crew (add or remove)\nHow divide crew between bases\nWhere crew go after release\nWhere bases are\nShift scheduling - working hours and location E.g., optimal schedule… avoiding changes during high demand…\n\nLess relevant: dispatching rules (policy change), destination hospital (mass casualty)",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
+    "objectID": "criteria.html",
+    "href": "criteria.html",
+    "title": "Criteria",
+    "section": "",
+    "text": "STRESS\nSTARS reproducibility recommendations\nSTARS reuse framework\nNHS Levels of RAP\nDES RAP Book Verification and Validation checklist\nHSMA model implementation checklist"
+  },
+  {
+    "objectID": "code.html",
+    "href": "code.html",
+    "title": "Code structure / infrastructure plans",
+    "section": "",
+    "text": "Python (as ambulance team are familiar)\nSimPy (as popular, taught on HSMA, and also should be familiar)\nEnvironment management preferred option is uv as manage python version and dependencies with simple file and full lock file. Need to check whether they can use this though. Other options like conda poetry etc.\nPublic/private:\n\nModel code structured as a package and public\nModel documentation public\nDummy date used in public repo for exampls\nThen will be able to import public package and run on analyses privately on own data. Public version should reproduce all key analytical steps.\n\nDocumentation in single site inc. project spec and code documentation via quartodoc\nCode object-oriented. Uncertainty:\n\nFurther thought required on how to design modular components that can be easily swapped or extended\nThere will be inevitable duplicate - goal is to minimise that with a clear and maintainable structure.\n\nPossible input formats include excel workbook, csv, or json\n\nExcel workbook proprietrary but standard\nJSON not liked in NHS model reuse interviews\n\nUse ruff for linting\nUse type hints\nWrite tests with pytest and CI/CD to run them. Arrange tests by theme, then use pytest markers for test type. Use language from our training to describe them. Have smoke test as a gate.\nHave a logging system in place which can enable/disable. Shouldn’t slow it down too much! Be wary of that\nUncertainty re: improvements to core structure:\n\nScenarios - could it be improved? current way can feel a little clunky\nSpeed - anything we could do?\n\nEnsure address things raised in NHS model reuse interviews e.g. broad logging messages as run\nUse vidigi for animation\nUse sim-tools for distributions\nUse lintquarto for the quarto book and the image alt-text linter\nOnce sim times get longer, use parallel processing.\nmechanism for running all in one go from single command.",
+    "crumbs": [
+      "GitHub",
+      "Code structure / infrastructure plans"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Building an open reproducible DES model of ambulance operations.",
+    "crumbs": [
+      "GitHub",
+      "Ambulance DES"
+    ]
+  },
+  {
+    "objectID": "validation.html",
+    "href": "validation.html",
+    "title": "Validation",
+    "section": "",
+    "text": "Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model’s inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.\nTo discuss: what will / can do",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#conceptual-model-validation",
+    "href": "validation.html#conceptual-model-validation",
+    "title": "Validation",
+    "section": "Conceptual model validation",
+    "text": "Conceptual model validation\n\nDocument and justify all modeling assumptions.\nReview the conceptual model with people familiar with the real system to assess completeness and accuracy.\n\nWill do all these (review conceptual model is with ambulance team involved)",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#input-data-validation",
+    "href": "validation.html#input-data-validation",
+    "title": "Validation",
+    "section": "Input data validation",
+    "text": "Input data validation\n\nCheck the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.\nEnsure you have performed appropriate input modelling steps when choosing your distributions.\n\nWill do input modelling. First point requires discussion with ambulance team.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#graphical-comparison",
+    "href": "validation.html#graphical-comparison",
+    "title": "Validation",
+    "section": "Graphical comparison",
+    "text": "Graphical comparison\n\nCreate time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.\n\nrequires some thought as to what we will plot and compare",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#statistical-comparison",
+    "href": "validation.html#statistical-comparison",
+    "title": "Validation",
+    "section": "Statistical comparison",
+    "text": "Statistical comparison\n\nCollect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.\n\nrequires some thought as to what we compare",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#turing-test",
+    "href": "validation.html#turing-test",
+    "title": "Validation",
+    "section": "Turing test",
+    "text": "Turing test\n\nCollect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.\n\nRequires discussion as to whether we do this and how and who (ambulance team? or to oinvolved?)",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#predictive-validation",
+    "href": "validation.html#predictive-validation",
+    "title": "Validation",
+    "section": "Predictive validation",
+    "text": "Predictive validation\n\nUse historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.\nConsider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.\nUse graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.\n\nrequires some thought as to what we do here",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#animation-visualisation",
+    "href": "validation.html#animation-visualisation",
+    "title": "Validation",
+    "section": "Animation visualisation",
+    "text": "Animation visualisation\n\nCreate an animation to help with validation (as well as communication and reuse).\n\nwill do this",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#comparison-testing",
+    "href": "validation.html#comparison-testing",
+    "title": "Validation",
+    "section": "Comparison testing",
+    "text": "Comparison testing\n\nIf you have multiple models of the same system, compare them!\n\ncan compare basic model to regression model. requires some thought re: any other possible comparisons. we know of existing models and code and/or existing data.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#face-validation",
+    "href": "validation.html#face-validation",
+    "title": "Validation",
+    "section": "Face validation",
+    "text": "Face validation\n\nPresent key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.\n\nrequires discussion as to whether do this",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#experimentation-validation",
+    "href": "validation.html#experimentation-validation",
+    "title": "Validation",
+    "section": "Experimentation validation",
+    "text": "Experimentation validation\n\nUse a warm-up period.\nUse statistical methods to determine sufficient run length and number of replications.\nPerform sensitivity analysis to test how changes in input parameters affect outputs.\n\nWill do this - though sensitivity analysis requires discussion and research to identify what would be important to vary here",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#cross-validation",
+    "href": "validation.html#cross-validation",
+    "title": "Validation",
+    "section": "Cross validation",
+    "text": "Cross validation\n\nSearch for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.\n\nwill need to build up research to do this - have done a bunch, but will require more",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "conceptual.html",
+    "href": "conceptual.html",
+    "title": "Conceptual modelling",
+    "section": "",
+    "text": "The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:\nProgressing through the stages, we can evaluate whether the added detail improves the model’s validity for previous questions, or whether the simpler version remains sufficient.",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-1-whole-system-resourcing",
+    "href": "conceptual.html#stage-1-whole-system-resourcing",
+    "title": "Conceptual modelling",
+    "section": "Stage 1: Whole-system resourcing",
+    "text": "Stage 1: Whole-system resourcing\nKey question:\n\nHow do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?\n\nAdditional possible questions (not from ambulance service):\n\nHow do system-wide demand changes impact response times and utilisation?\n\nModel content/inputs: We are doing by call category, so would expect to do arrivals and service times by that, not one whole\n\n\n\n\n\n\n\n\nElement\nModel content\nInput\n\n\n\n\nArrivals\nBasic arrival process or NHPP based on observed patterns\nMean inter-arrival time for whole system OR mean by period of time\n\n\nCall category\nSeparate arrival times - part of arrival dist or assigned after\nArrival times above should also be by category OR have another distribution with probabilities to assign them\n\n\nResource\nSingle pooled ambulance resource\nNumebr of ambulances for whole system\n\n\nQueue\nFirst come first serve or prioritisation rules with potential reneging/balking\nPriority rules could likely be informed by call guidelines\n\n\nService time\nSingle time (disatpch to resource available)\nMean time, by call category\n\n\n\nFor initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.\nFor uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.\nFor distributions used, will do input modelling.\nOutputs:\n\nPrimary: Category 2 mean response time\nSecondary: Resource utilisation\n\nGive results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)\nNotes:\nThis stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:\n\nMultiple outcomes from the same run (regression just one per model).\nMore intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).\nExtendability (once core structure is in place, we can add more components in later stages).\n\nUncertainities:\n\nJust people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
+    "href": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
+    "title": "Conceptual modelling",
+    "section": "Stage 2: Resourcing by county (without interaction)",
+    "text": "Stage 2: Resourcing by county (without interaction)\nKey question:\n\nIf total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?\n\nDone on county level as that lines up with organisational structure Although is coming up more in conversations about the hospital level as thats where they go\nChanges:\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nSame as stage 1\n\n\nInputs\nCounty-specific parameters for demand, resources and service times\n\n\nOutputs\nSame as stage 1\n\n\n\nNotes:\nThis will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn’t really one separate service per county, and that resources operate across counties on shift.",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-3-job-cycle-times",
+    "href": "conceptual.html#stage-3-job-cycle-times",
+    "title": "Conceptual modelling",
+    "section": "Stage 3: Job cycle times",
+    "text": "Stage 3: Job cycle times\nKey question:\n\nHow do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?\n\nChanges:\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\n(1) Job cycle divided into individual time components (e.g., time on scene, handover time). (2) Separate cfycle times for conveyed v.s. non conveyed\n\n\nInputs\nCycle times and conveyed/nonconveyed breakdown of everything\n\n\nOutputs\nAlso now report by conveyed and non conveyed\n\n\n\nThings to be discussed:\n\nIs conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-4-shifts",
+    "href": "conceptual.html#stage-4-shifts",
+    "title": "Conceptual modelling",
+    "section": "Stage 4: Shifts",
+    "text": "Stage 4: Shifts\nKey question:\n\nCan alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?\n\nCurrent patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:\n\nMidday and midnight dips in resource numbers when many crews are on break at once.\nEffects of protected periods towards the end of shifts.\n\nThe focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.\nChanges:\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nAdd representation of shifts (resource availability over time), including breaks and protected periods\n\n\nInputs\nCurrent and alternative rota schedules (for the whole area, not by station, proportions on different schedules)\n\n\nOutputs\nAdd a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips).\n\n\n\nThings to be discussed:\n\nDoes stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?\nLearn more about break policies and stuff… is this one stage or multiple.\nIs it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn’t something they mentioned\nAlso, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks\nOutcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.\nCost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
+    "href": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
+    "title": "Conceptual modelling",
+    "section": "Stage 5: Resourcing by county (with interaction)",
+    "text": "Stage 5: Resourcing by county (with interaction)\nKey question:\n\nWhen vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?\n\nAdditional possible questions (not from ambulance service):\n\nSocioeconomic inequalities - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.\n\nChanges:\nIntroduce geographic modelling. Possible configurations:\n\nCounties as zones with local queues and spillover rules.\nBreaking down into smaller than county level\n\nResources become linked to area.\nBrings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#stage-6-station-level-questions",
+    "href": "conceptual.html#stage-6-station-level-questions",
+    "title": "Conceptual modelling",
+    "section": "Stage 6: Station-level questions",
+    "text": "Stage 6: Station-level questions\nKey question:\n\nWhat is the impact of adding/moving/removing individual station shifts?\n\nFor example, identifying stations with low utilisation, as candidates.\nChanges:\nThis requires representing individual stations explicitly. And linking resources to those.",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "conceptual.html#assumptions-and-simplifications",
+    "href": "conceptual.html#assumptions-and-simplifications",
+    "title": "Conceptual modelling",
+    "section": "Assumptions and simplifications",
+    "text": "Assumptions and simplifications\nTo reflect on and document. Things like:\n\nMultiple vehicles attending the same incident - not modelling that (should you?)\nIncluding/excluding see-and-treat and hear-and-treat\nOut of ambulance service patch\nNot modelling hospital capacity (AmbModelOpen did that)",
+    "crumbs": [
+      "GitHub",
+      "Conceptual modelling"
+    ]
+  },
+  {
+    "objectID": "verification.html",
+    "href": "verification.html",
+    "title": "Verification",
+    "section": "",
+    "text": "Verification is the process of checking that the simulation model correctly implements the intended conceptual model. It involves checking that the model’s logic, structure and parameters are implemented as planned and free from coding errors.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#desk-checking",
+    "href": "verification.html#desk-checking",
+    "title": "Verification",
+    "section": "Desk checking",
+    "text": "Desk checking\n\nSystematically check code.\nKeep documentation complete and up-to-date.\nMaintain an environment with all required packages.\nLint code.\nGet code review.\n\nWill do all these. Code review requires some thought. Who can / should / best to do it?",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#debugging",
+    "href": "verification.html#debugging",
+    "title": "Verification",
+    "section": "Debugging",
+    "text": "Debugging\n\nWrite tests - they’ll help for spotting bugs.\nDuring model development, monitor the model using logs - they’ll help with spotting bugs.\nUse GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.\n\nWill do all these.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#assertion-checking",
+    "href": "verification.html#assertion-checking",
+    "title": "Verification",
+    "section": "Assertion checking",
+    "text": "Assertion checking\n\nAdd checks in the model which cause errors if something doesn’t look right.\nWrite tests which check that assertions hold true.\n\nWill do all these.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#special-input-testing",
+    "href": "verification.html#special-input-testing",
+    "title": "Verification",
+    "section": "Special input testing",
+    "text": "Special input testing\n\nIf there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.\nWrite stress tests which simulate worst-case load and ensure model is robust under heavy demand.\nWrite tests with little or no activity/waits/service.\n\nWill do all these.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#bottom-up-testing",
+    "href": "verification.html#bottom-up-testing",
+    "title": "Verification",
+    "section": "Bottom-up testing",
+    "text": "Bottom-up testing\n\nWrite unit tests for each individual component of the model.\nOnce individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.\n\nWill do all these.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#regression-testing",
+    "href": "verification.html#regression-testing",
+    "title": "Verification",
+    "section": "Regression testing",
+    "text": "Regression testing\n\nWrite tests early.\nRun tests regularly (locally or automatically via. GitHub actions).\n\nWill do all these.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#mathematical-proof-of-correctness",
+    "href": "verification.html#mathematical-proof-of-correctness",
+    "title": "Verification",
+    "section": "Mathematical proof of correctness",
+    "text": "Mathematical proof of correctness\n\nFor parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.\n\nThis requires some thought - compare to m/m/s queue possible for most basic model - could also compare to regression but is that validation rather than mathematical?",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  }
+]
