@@ -106,15 +106,55 @@ From what I can spot (may have missed some):
 
 ## Call categories
 
-Studies that include call categories vary in terms of what it impacts e.g.,:
+Some studies don't include call categories.
 
-* Priority of queued calls
-* Whether conveyed
-* Time on site, drop-off time, in-hospital time, travel time
+Studies that include call categories will sample probability of each, and this can be time-varying.
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+No call category:
+
+* @berlin_mathematical_1974 (USA)
+* @maxwell_ambulance_2009 (USA)
+* @silva_emergency_2010 (Brazil)
+* @lee_simulation-based_2012 (Korea)
+
+Include call category:
+
+| Study | Country | Categories | How assigned |
+| - | - | -- | - |
+| @fonseca_discrete_2025 | UK | C1, C2, C3, C4 | User-supplied frequency distribution which can vary by hour of day |
+| @pinto_generic_2015 | Brazil and UK | All calls receive attributes concerning nature of emergency, category of call, type of ambulance required, RRV requirement, delivery requirement, and whether dispatch will be missed. Basic life support (BLS), Advanced life support (ALS), Mental care support (MCS), Rapid response vehicle (RRV) | Empirical distribution |
+| @wu_using_2009 | Taiwan | Advanced life support (ALS) or basic life support (BLS) team | Multinomial distribution |
+| @gigante_study_2022 | Brazil | Basic support vehicle or advanced support vehicle | Distribution (95% basic, 5% advanced) |
+| @aboueljinane_reducing_2012 | France | (1) Primary or secondary (2) Severity (0, 1, 2, 3) | Probabilities |
+| @kergosien_generic_2015 | Canada | (1) Urgent or transfer (2) If urgent, transfer to hospital or not | Probabilities |
+| @wei_lam_reducing_2014 | Singapore | Acuity scores | - |
+| @ingolfsson_simulation_2003 | Canada |
+| @henderson_ambulance_2005 | New Zealand |
+| @aboueljinane_reducing_2012 | France |
+| @van_buuren_evaluating_2012 | Netherlands |
+
+:::
+
+As described in @aboueljinane_review_2013, reasons for including include:
+
+* Assign **hierachy** to queued calls.
+* Impact **travel times**.
+* Impact **activity times** (e.g., time on site, drop off time, in hospital time).
+* Impact on whether **activities** happen (e.g., whether conveyed).
+
+Output metrics may be analysed by category.
+
+::: {.callout-note title="View studies" collapse="true"}
+
+* @fonseca_discrete_2025 - care model (hear-and-treat, see-and-treat or see-and-convey), and ED acuity level (1 highest 5 lowest).
+* @pinto_generic_2015 - whether require ambulance, whether call is non-emergency, whether call requires conveyance to hospital, whether call will cause a missing dispatch i.e., care on scene no longer necessary and ambulance makes a missing travel.
+* @wu_using_2009 - on-scene time, in-hospital time.
+* @gigante_study_2022 - unclear.
+* @aboueljinane_reducing_2012 - order of queued calls, whether require transport to hospital, on-site time, travel time, drop-off time.
+* @kergosien_generic_2015 - -
+* @wei_lam_reducing_2014 - on scene treatment time.
 
 :::
 
