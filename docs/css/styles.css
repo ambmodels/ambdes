@@ -1,0 +1,21 @@
+.box-blue {
+  background-color: #c5dfed;
+  color: black;
+  border: 2px solid #8bbfdb;
+  border-radius: 8px;
+  padding: 1.2em 1em 0.5em 1em;
+  margin: 1.5em 0;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+}
+
+.box-hl {
+  background-color: #fffcd3;
+  color: black;
+  border: 8px;
+  border-radius: 8px;
+  padding: 1.2em 1em 0.5em 1em;
+  margin: 1.5em 0;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+}

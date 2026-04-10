@@ -13,10 +13,14 @@ website:
 
   sidebar:
     - contents:
-      - index.qmd
       - conceptual.qmd
       - literature.qmd
       - code.qmd
       - verification.qmd
       - validation.qmd
       - qa.qmd
+
+format:
+  html:
+    css:
+      - css/styles.css

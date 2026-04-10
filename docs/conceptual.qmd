@@ -2,7 +2,9 @@
 title: Conceptual modelling
 ---
 
-The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:
+<br>
+
+The proposed approach begins with a simple prototype and builds up in stages. **Each stage aligns with specific use case proposed by the ambulance service**. Within each stage, we define:
 
 * The key question(s) being asked.
 * Model content and inputs, including optional layers of complexity.
@@ -10,17 +12,25 @@ The proposed approach begins with a simple prototype and builds up in stages. Ea
 
 Progressing through the stages, we can evaluate whether the added detail improves the model's validity for previous questions, or whether the simpler version remains sufficient.
 
+<br>
+
 ## Stage 1: Whole-system resourcing
 
-**Key question:**
+### Key question
 
-> How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?
+::: {.box-blue}
 
-**Additional possible questions** (not from ambulance service):
+How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?
+
+:::
+
+Additional possible questions (not from ambulance service):
 
 * How do system-wide demand changes impact response times and utilisation?
 
-**Model content/inputs:** We are doing by call category, so would expect to do arrivals and service times by that, not one whole
+### Model content and inputs
+
+We are doing by call category, so would expect to do arrivals and service times by that, not one whole
 
 | Element | Model content | Input |
 | - | -- | -- |
@@ -45,7 +55,7 @@ Give results per run
 And overall across reps
 Can quantify uncertainty via 95% confidence interval (or could do prediction interval)
 
-**Notes:**
+### Notes
 
 This stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
@@ -53,20 +63,30 @@ This stage can serve as a benchmark against the current regression models. The D
 * More intuitive system representation (can "see" how resourcing assumptions translate into waits and utilisation).
 * Extendability (once core structure is in place, we can add more components in later stages).
 
-**Uncertainities:**
+::: {.box-hl}
+
+**To discuss:**
 
 * Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing
 
+:::
+
+<br>
+
 ## Stage 2: Resourcing by county (without interaction)
 
-**Key question:**
+### Key question
 
-> If total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?
+::: {.box-blue}
+
+If total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?
+
+:::
 
 Done on county level as that lines up with organisational structure
 Although is coming up more in conversations about the hospital level as thats where they go
 
-**Changes:**
+### Model changes
 
 | Element | Description |
 | - | --- |
@@ -74,17 +94,23 @@ Although is coming up more in conversations about the hospital level as thats wh
 | Inputs | County-specific parameters for demand, resources and service times |
 | Outputs | Same as stage 1 |
 
-**Notes:**
+### Notes
 
 This will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn't really one separate service per county, and that resources operate across counties on shift.
 
+<br>
+
 ## Stage 3: Job cycle times
 
-**Key question:**
+### Key question
 
-> How do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?
+::: {.box-blue}
 
-**Changes:**
+How do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?
+
+:::
+
+### Model changes
 
 | Element | Description |
 | - | --- |
@@ -92,15 +118,27 @@ This will only be an approximation, and may potentially be quite bad. It ignores
 | Inputs | Cycle times and conveyed/nonconveyed breakdown of everything |
 | Outputs | Also now report by conveyed and non conveyed |
 
-**Things to be discussed:**
+### Notes
+
+::: {.box-hl}
+
+**To discuss:**
 
 * Is conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times
 
+:::
+
+<br>
+
 ## Stage 4: Shifts
 
-**Key question:**
+### Key question
 
-> Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?
+::: {.box-blue}
+
+Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?
+
+:::
 
 Current patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:
 
@@ -109,7 +147,7 @@ Current patterns is that many 12-hour shifts starting at 06:00 or 07:00. This me
 
 The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.
 
-**Changes:**
+### Model changes
 
 | Element | Description |
 | - | --- |
@@ -117,7 +155,11 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 | Inputs | Current and alternative rota schedules (for the whole area, not by station, proportions on different schedules) |
 | Outputs | Add a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). |
 
-**Things to be discussed:**
+### Notes
+
+::: {.box-hl}
+
+**To discuss:**
 
 * Does stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?
 * Learn more about break policies and stuff... is this one stage or multiple.
@@ -126,17 +168,25 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 * Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.
 * Cost... I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios
 
+:::
+
+<br>
+
 ## Stage 5: Resourcing by county (with interaction)
 
-**Key question:**
+### Key question
 
-> When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?
+::: {.box-blue}
 
-**Additional possible questions** (not from ambulance service):
+When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?
+
+:::
+
+Additional possible questions (not from ambulance service):
 
 * **Socioeconomic inequalities** - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas... deprivation.. rural urban... known baseline mean response time dispartieeis... then see change from scenarios. you could embed in model itself if wanted to do optimisation.
 
-**Changes:**
+### Model changes
 
 Introduce geographic modelling. Possible configurations:
 
@@ -147,17 +197,25 @@ Resources become linked to area.
 
 Brings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)
 
+<br>
+
 ## Stage 6: Station-level questions
 
-**Key question:**
+### Key question
 
-> What is the impact of adding/moving/removing individual station shifts?
+::: {.box-blue}
+
+What is the impact of adding/moving/removing individual station shifts?
+
+:::
 
 For example, identifying stations with low utilisation, as candidates.
 
-**Changes:**
+### Model changes
 
 This requires representing individual stations explicitly. And linking resources to those.
+
+<br>
 
 ## Assumptions and simplifications
 

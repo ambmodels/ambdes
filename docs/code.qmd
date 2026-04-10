@@ -6,7 +6,7 @@ title: Code structure / infrastructure plans
 
 **SimPy** (as popular, taught on HSMA, and also should be familiar)
 
-Environment management preferred option is **uv** as manage python version and dependencies with simple file and full lock file. Need to check whether they can use this though. Other options like conda poetry etc.
+Environment management preferred option is **uv** as manage python version and dependencies with simple file and full lock file.
 
 Public/private:
 

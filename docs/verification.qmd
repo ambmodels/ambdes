@@ -12,7 +12,13 @@ Verification is the process of checking that the simulation model correctly impl
 * [ ] Lint code.
 * [ ] Get code review.
 
-Will do all these. Code review **requires some thought**. Who can / should / best to do it? Technical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html
+Will do all these.
+
+::: {.box-hl}
+
+Code review **requires some thought**. Who can / should / best to do it? Technical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html
+
+:::
 
 ## Debugging
 
@@ -55,4 +61,10 @@ Will do all these.
 
 * [ ] For parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.
 
-This **requires some thought** - compare to m/m/s queue possible for most basic model - could also compare to regression but is that validation rather than mathematical?
+::: {.box-hl}
+
+This **requires some thought** - compare to m/m/s queue possible for most basic model - maybe that's it
+
+*Have put comparison to regression under comparison testing validation*
+
+:::
