@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.23">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Literature – Ambulance DES</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,15 +36,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="./images/pixelambulance.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-024db641d08105916a6c9cb581aab668.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
@@ -80,8 +83,6 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -118,18 +119,8 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
-      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ambulance DES</span></a>
-  </div>
-</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./conceptual.html" class="sidebar-item-text sidebar-link">
@@ -197,8 +188,24 @@ ul.task-list li input[type="checkbox"] {
 <p>How have been built ambulance DES in the past?</p>
 <section id="call-arrival-timing" class="level2">
 <h2 class="anchored" data-anchor-id="call-arrival-timing">Call arrival timing</h2>
-<p>Poisson i.e.&nbsp;exponential itnerarrival</p>
+<p>Poisson i.e.&nbsp;exponential interarrival</p>
 <p>Often non homogenous i.e.&nbsp;vary by time of day day of week</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="call-location" class="level2">
 <h2 class="anchored" data-anchor-id="call-location">Call location</h2>
@@ -208,6 +215,22 @@ ul.task-list li input[type="checkbox"] {
 <li>Calls are assigned to zone (i.e., distribution of probabilities)</li>
 </ol>
 <p>Typically impacts chosen resource and travel time</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="call-categories" class="level2">
 <h2 class="anchored" data-anchor-id="call-categories">Call categories</h2>
@@ -217,12 +240,44 @@ ul.task-list li input[type="checkbox"] {
 <li>Whether conveyed</li>
 <li>Time on site, drop-off time, in-hospital time, travel time</li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="dispatch-policy" class="level2">
 <h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
 <p>Normally nearest available vehicle</p>
 <p>Some incorporate call priority or possible reassignment to Cat1</p>
 <p>Some look for team belonging to specific area first</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="travel-time-modelling" class="level2">
 <h2 class="anchored" data-anchor-id="travel-time-modelling">Travel time modelling</h2>
@@ -241,6 +296,22 @@ ul.task-list li input[type="checkbox"] {
 <ol start="6" type="a">
 <li>Any of those three, with <strong>correction factors</strong> for traffic, time of day, etc.</li>
 </ol>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="processing-times" class="level2">
 <h2 class="anchored" data-anchor-id="processing-times">Processing times</h2>
@@ -251,6 +322,22 @@ ul.task-list li input[type="checkbox"] {
 <li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
 <li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
 </ol>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="hospital-selection" class="level2">
 <h2 class="anchored" data-anchor-id="hospital-selection">Hospital selection</h2>
@@ -259,6 +346,22 @@ ul.task-list li input[type="checkbox"] {
 <li>Use closest hospital</li>
 <li>Sample from distribution</li>
 </ol>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 </section>
 <section id="scenarios" class="level2">
 <h2 class="anchored" data-anchor-id="scenarios">Scenarios</h2>
@@ -273,6 +376,22 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Shift</strong> scheduling - working <strong>hours</strong> and <strong>location</strong> <em>E.g., optimal schedule… avoiding changes during high demand…</em></li>
 </ul>
 <p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
 
 
 </section>
@@ -351,7 +470,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/ambmodels\.github\.io\/ambdes\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

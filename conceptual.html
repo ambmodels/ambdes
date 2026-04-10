@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.23">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Conceptual modelling – Ambulance DES</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,15 +36,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="./images/pixelambulance.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-024db641d08105916a6c9cb581aab668.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
@@ -80,8 +83,6 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -118,18 +119,8 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
-      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ambulance DES</span></a>
-  </div>
-</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./conceptual.html" class="sidebar-item-text sidebar-link active">
@@ -194,24 +185,30 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:</p>
+<p><br></p>
+<p>The proposed approach begins with a simple prototype and builds up in stages. <strong>Each stage aligns with specific use case proposed by the ambulance service</strong>. Within each stage, we define:</p>
 <ul>
 <li>The key question(s) being asked.</li>
 <li>Model content and inputs, including optional layers of complexity.</li>
 <li>Outputs.</li>
 </ul>
 <p>Progressing through the stages, we can evaluate whether the added detail improves the model’s validity for previous questions, or whether the simpler version remains sufficient.</p>
+<p><br></p>
 <section id="stage-1-whole-system-resourcing" class="level2">
 <h2 class="anchored" data-anchor-id="stage-1-whole-system-resourcing">Stage 1: Whole-system resourcing</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question" class="level3">
+<h3 class="anchored" data-anchor-id="key-question">Key question</h3>
+<div class="box-blue">
 <p>How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?</p>
-</blockquote>
-<p><strong>Additional possible questions</strong> (not from ambulance service):</p>
+</div>
+<p>Additional possible questions (not from ambulance service):</p>
 <ul>
 <li>How do system-wide demand changes impact response times and utilisation?</li>
 </ul>
-<p><strong>Model content/inputs:</strong> We are doing by call category, so would expect to do arrivals and service times by that, not one whole</p>
+</section>
+<section id="model-content-and-inputs" class="level3">
+<h3 class="anchored" data-anchor-id="model-content-and-inputs">Model content and inputs</h3>
+<p>We are doing by call category, so would expect to do arrivals and service times by that, not one whole</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
@@ -262,26 +259,35 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Secondary:</strong> Resource utilisation</li>
 </ul>
 <p>Give results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)</p>
-<p><strong>Notes:</strong></p>
+</section>
+<section id="notes" class="level3">
+<h3 class="anchored" data-anchor-id="notes">Notes</h3>
 <p>This stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:</p>
 <ul>
 <li>Multiple outcomes from the same run (regression just one per model).</li>
 <li>More intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).</li>
 <li>Extendability (once core structure is in place, we can add more components in later stages).</li>
 </ul>
-<p><strong>Uncertainities:</strong></p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
 <ul>
 <li>Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing</li>
 </ul>
+</div>
+<p><br></p>
+</section>
 </section>
 <section id="stage-2-resourcing-by-county-without-interaction" class="level2">
 <h2 class="anchored" data-anchor-id="stage-2-resourcing-by-county-without-interaction">Stage 2: Resourcing by county (without interaction)</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-question-1">Key question</h3>
+<div class="box-blue">
 <p>If total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?</p>
-</blockquote>
+</div>
 <p>Done on county level as that lines up with organisational structure Although is coming up more in conversations about the hospital level as thats where they go</p>
-<p><strong>Changes:</strong></p>
+</section>
+<section id="model-changes" class="level3">
+<h3 class="anchored" data-anchor-id="model-changes">Model changes</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -308,16 +314,23 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p><strong>Notes:</strong></p>
+</section>
+<section id="notes-1" class="level3">
+<h3 class="anchored" data-anchor-id="notes-1">Notes</h3>
 <p>This will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn’t really one separate service per county, and that resources operate across counties on shift.</p>
+<p><br></p>
+</section>
 </section>
 <section id="stage-3-job-cycle-times" class="level2">
 <h2 class="anchored" data-anchor-id="stage-3-job-cycle-times">Stage 3: Job cycle times</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question-2" class="level3">
+<h3 class="anchored" data-anchor-id="key-question-2">Key question</h3>
+<div class="box-blue">
 <p>How do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?</p>
-</blockquote>
-<p><strong>Changes:</strong></p>
+</div>
+</section>
+<section id="model-changes-1" class="level3">
+<h3 class="anchored" data-anchor-id="model-changes-1">Model changes</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -344,24 +357,34 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p><strong>Things to be discussed:</strong></p>
+</section>
+<section id="notes-2" class="level3">
+<h3 class="anchored" data-anchor-id="notes-2">Notes</h3>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
 <ul>
 <li>Is conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times</li>
 </ul>
+</div>
+<p><br></p>
+</section>
 </section>
 <section id="stage-4-shifts" class="level2">
 <h2 class="anchored" data-anchor-id="stage-4-shifts">Stage 4: Shifts</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question-3" class="level3">
+<h3 class="anchored" data-anchor-id="key-question-3">Key question</h3>
+<div class="box-blue">
 <p>Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?</p>
-</blockquote>
+</div>
 <p>Current patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:</p>
 <ul>
 <li>Midday and midnight dips in resource numbers when many crews are on break at once.</li>
 <li>Effects of protected periods towards the end of shifts.</li>
 </ul>
 <p>The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.</p>
-<p><strong>Changes:</strong></p>
+</section>
+<section id="model-changes-2" class="level3">
+<h3 class="anchored" data-anchor-id="model-changes-2">Model changes</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -388,7 +411,11 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p><strong>Things to be discussed:</strong></p>
+</section>
+<section id="notes-3" class="level3">
+<h3 class="anchored" data-anchor-id="notes-3">Notes</h3>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
 <ul>
 <li>Does stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?</li>
 <li>Learn more about break policies and stuff… is this one stage or multiple.</li>
@@ -397,18 +424,24 @@ ul.task-list li input[type="checkbox"] {
 <li>Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.</li>
 <li>Cost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g.&nbsp;staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios</li>
 </ul>
+</div>
+<p><br></p>
+</section>
 </section>
 <section id="stage-5-resourcing-by-county-with-interaction" class="level2">
 <h2 class="anchored" data-anchor-id="stage-5-resourcing-by-county-with-interaction">Stage 5: Resourcing by county (with interaction)</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question-4" class="level3">
+<h3 class="anchored" data-anchor-id="key-question-4">Key question</h3>
+<div class="box-blue">
 <p>When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?</p>
-</blockquote>
-<p><strong>Additional possible questions</strong> (not from ambulance service):</p>
+</div>
+<p>Additional possible questions (not from ambulance service):</p>
 <ul>
 <li><strong>Socioeconomic inequalities</strong> - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.</li>
 </ul>
-<p><strong>Changes:</strong></p>
+</section>
+<section id="model-changes-3" class="level3">
+<h3 class="anchored" data-anchor-id="model-changes-3">Model changes</h3>
 <p>Introduce geographic modelling. Possible configurations:</p>
 <ul>
 <li>Counties as zones with local queues and spillover rules.</li>
@@ -416,16 +449,23 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>Resources become linked to area.</p>
 <p>Brings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)</p>
+<p><br></p>
+</section>
 </section>
 <section id="stage-6-station-level-questions" class="level2">
 <h2 class="anchored" data-anchor-id="stage-6-station-level-questions">Stage 6: Station-level questions</h2>
-<p><strong>Key question:</strong></p>
-<blockquote class="blockquote">
+<section id="key-question-5" class="level3">
+<h3 class="anchored" data-anchor-id="key-question-5">Key question</h3>
+<div class="box-blue">
 <p>What is the impact of adding/moving/removing individual station shifts?</p>
-</blockquote>
+</div>
 <p>For example, identifying stations with low utilisation, as candidates.</p>
-<p><strong>Changes:</strong></p>
+</section>
+<section id="model-changes-4" class="level3">
+<h3 class="anchored" data-anchor-id="model-changes-4">Model changes</h3>
 <p>This requires representing individual stations explicitly. And linking resources to those.</p>
+<p><br></p>
+</section>
 </section>
 <section id="assumptions-and-simplifications" class="level2">
 <h2 class="anchored" data-anchor-id="assumptions-and-simplifications">Assumptions and simplifications</h2>
@@ -514,7 +554,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/ambmodels\.github\.io\/ambdes\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

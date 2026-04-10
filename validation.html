@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.23">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Validation – Ambulance DES</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,15 +36,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="./images/pixelambulance.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-024db641d08105916a6c9cb581aab668.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
@@ -80,8 +83,6 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -118,18 +119,8 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
-      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ambulance DES</span></a>
-  </div>
-</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./conceptual.html" class="sidebar-item-text sidebar-link">
@@ -195,7 +186,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model’s inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.</p>
-<p><strong>To discuss:</strong> what will / can do</p>
 <section id="conceptual-model-validation" class="level2">
 <h2 class="anchored" data-anchor-id="conceptual-model-validation">Conceptual model validation</h2>
 <ul class="task-list">
@@ -210,7 +200,10 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Check the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.</label></li>
 <li><label><input type="checkbox">Ensure you have performed appropriate input modelling steps when choosing your distributions.</label></li>
 </ul>
-<p>Will do input modelling. <strong>First point requires discussion with ambulance team</strong>.</p>
+<p>Will do input modelling.</p>
+<div class="box-hl">
+<p><strong>First point requires discussion with ambulance team</strong>.</p>
+</div>
 </section>
 <section id="graphical-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="graphical-comparison">Graphical comparison</h2>
@@ -224,14 +217,18 @@ ul.task-list li input[type="checkbox"] {
 <ul class="task-list">
 <li><label><input type="checkbox">Collect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.</label></li>
 </ul>
-<p><strong>requires some thought</strong> as to what we compare</p>
+<div class="box-hl">
+<p><strong>Requires some thought</strong> as to what we compare</p>
+</div>
 </section>
 <section id="turing-test" class="level2">
 <h2 class="anchored" data-anchor-id="turing-test">Turing test</h2>
 <ul class="task-list">
 <li><label><input type="checkbox">Collect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.</label></li>
 </ul>
-<p><strong>Requires discussion</strong> as to whether we do this and how and who (ambulance team? or to oinvolved?)</p>
+<div class="box-hl">
+<p><strong>Requires discussion</strong> as to whether we do this and how and who (ambulance team? or too involved?)</p>
+</div>
 </section>
 <section id="predictive-validation" class="level2">
 <h2 class="anchored" data-anchor-id="predictive-validation">Predictive validation</h2>
@@ -240,7 +237,9 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Consider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.</label></li>
 <li><label><input type="checkbox">Use graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.</label></li>
 </ul>
-<p><strong>requires some thought</strong> as to what we do here</p>
+<div class="box-hl">
+<p><strong>Requires some thought</strong> as to what we do here</p>
+</div>
 </section>
 <section id="animation-visualisation" class="level2">
 <h2 class="anchored" data-anchor-id="animation-visualisation">Animation visualisation</h2>
@@ -254,14 +253,18 @@ ul.task-list li input[type="checkbox"] {
 <ul class="task-list">
 <li><label><input type="checkbox">If you have multiple models of the same system, compare them!</label></li>
 </ul>
+<div class="box-hl">
 <p>can compare basic model to regression model. <strong>requires some thought</strong> re: any other possible comparisons. we know of existing models and code and/or existing data.</p>
+</div>
 </section>
 <section id="face-validation" class="level2">
 <h2 class="anchored" data-anchor-id="face-validation">Face validation</h2>
 <ul class="task-list">
 <li><label><input type="checkbox">Present key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.</label></li>
 </ul>
+<div class="box-hl">
 <p><strong>requires discussion</strong> as to whether do this</p>
+</div>
 </section>
 <section id="experimentation-validation" class="level2">
 <h2 class="anchored" data-anchor-id="experimentation-validation">Experimentation validation</h2>
@@ -270,14 +273,18 @@ ul.task-list li input[type="checkbox"] {
 <li><label><input type="checkbox">Use statistical methods to determine sufficient run length and number of replications.</label></li>
 <li><label><input type="checkbox">Perform sensitivity analysis to test how changes in input parameters affect outputs.</label></li>
 </ul>
+<div class="box-hl">
 <p>Will do this - though sensitivity analysis requires <strong>discussion and research</strong> to identify what would be important to vary here</p>
+</div>
 </section>
 <section id="cross-validation" class="level2">
 <h2 class="anchored" data-anchor-id="cross-validation">Cross validation</h2>
 <ul class="task-list">
 <li><label><input type="checkbox">Search for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.</label></li>
 </ul>
+<div class="box-hl">
 <p><strong>will need to build up research</strong> to do this - have done a bunch, but will require more</p>
+</div>
 
 
 </section>
@@ -356,7 +363,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/ambmodels\.github\.io\/ambdes\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

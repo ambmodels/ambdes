@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.23">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Code structure / infrastructure plans – Ambulance DES</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,15 +36,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="./images/pixelambulance.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-024db641d08105916a6c9cb581aab668.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
@@ -80,8 +83,6 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -118,18 +119,8 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
-      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Ambulance DES</span></a>
-  </div>
-</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./conceptual.html" class="sidebar-item-text sidebar-link">
@@ -196,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
 
 <p><strong>Python</strong> (as ambulance team are familiar)</p>
 <p><strong>SimPy</strong> (as popular, taught on HSMA, and also should be familiar)</p>
-<p>Environment management preferred option is <strong>uv</strong> as manage python version and dependencies with simple file and full lock file. Need to check whether they can use this though. Other options like conda poetry etc.</p>
+<p>Environment management preferred option is <strong>uv</strong> as manage python version and dependencies with simple file and full lock file.</p>
 <p>Public/private:</p>
 <ul>
 <li>Model code structured as a <strong>package</strong> and <strong>public</strong></li>
@@ -230,6 +221,19 @@ ul.task-list li input[type="checkbox"] {
 <p>Use <strong>lintquarto</strong> for the quarto book and the image alt-text linter</p>
 <p>Once sim times get longer, use parallel processing.</p>
 <p><strong>mechanism</strong> for running all in one go from single command.</p>
+<p>Use <strong>conventional commits</strong></p>
+<p>Use dev and main. TBC whether do dev feature main and blocking rules etc.</p>
+<p>Numpy style docstrings</p>
+<p>Inc.&nbsp;<strong>test coverage</strong> action</p>
+<p>Inc.&nbsp;<strong>linting</strong> action</p>
+<p>Documentation besides quarto:</p>
+<ul>
+<li>README and CONTRIBUTING with contents outlined in https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html</li>
+<li>CHANGELOG and releases and quarto archive</li>
+<li>LICENSE</li>
+<li>CITATION.cff</li>
+</ul>
+<p>Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html</p>
 
 
 
@@ -307,7 +311,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/ambmodels\.github\.io\/ambdes\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
