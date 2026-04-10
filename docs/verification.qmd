@@ -12,7 +12,7 @@ Verification is the process of checking that the simulation model correctly impl
 * [ ] Lint code.
 * [ ] Get code review.
 
-Will do all these. Code review **requires some thought**. Who can / should / best to do it?
+Will do all these. Code review **requires some thought**. Who can / should / best to do it? Technical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html
 
 ## Debugging
 

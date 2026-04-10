@@ -51,3 +51,22 @@ Use **lintquarto** for the quarto book and the image alt-text linter
 Once sim times get longer, use parallel processing.
 
 **mechanism** for running all in one go from single command.
+
+Use **conventional commits**
+
+Use dev and main. TBC whether do dev feature main and blocking rules etc.
+
+Numpy style docstrings
+
+Inc. **test coverage** action
+
+Inc. **linting** action
+
+Documentation besides quarto:
+
+* README and CONTRIBUTING with contents outlined in https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html
+* CHANGELOG and releases and quarto archive
+* LICENSE
+* CITATION.cff
+
+Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html

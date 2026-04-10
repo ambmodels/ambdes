@@ -1,3 +1,7 @@
 ---
 title: Quality assurance
 ---
+
+Will use **GitHub project**
+
+TODO: Outline this and what discussion would be needed.
