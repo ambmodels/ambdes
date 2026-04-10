@@ -1,34 +1,108 @@
 ---
 title: Literature
+bibliography: references.bib
 ---
 
-How have been built ambulance DES in the past?
+<br>
+
+This page summarises how **published ambulance DES** represent key elements of the ambulance system. It builds on the excellent review by @aboueljinane_review_2013, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.
+
+<br>
 
 ## Call arrival timing
 
-Poisson i.e. exponential interarrival
+In all DES studies, call arrivals are modeled using a **Poisson** process, so inter-arrival times are exponential. This is standard for arrival processes in healthcare DES models.
 
-Often non homogenous i.e. vary by time of day day of week
+Some studies use a **Homogeneous Poisson process (HPP)** with a single arrival rate for the entire simulation period. However, most use a **Non-homogeneous Poisson process (NHPP)** where the arrival rate varies over time (e.g., by hour of day or day of week).
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+HPP:
+
+* @silva_emergency_2010
+* @van_buuren_evaluating_2012
+
+NHPP by time of day only:
+
+* @gigante_study_2022 - by period (00:00-08:00, 08:00-16:00, 16:00-00:00)
+* @kergosien_generic_2015 - by 2-hour intervals
+
+NHPP by time of day and day of week:
+
+* @wei_lam_reducing_2014 - by 2-hour intervals and day of week
+* @fonseca_discrete_2025 - by hour and weekday/weekend
+* @aboueljinane_reducing_2012 - by hour and weekday/weekend
+* @pinto_generic_2015 - by hour and day of week
+* @wu_using_2009 - by hour, day of week and month
+
+NHPP incorporating call location:
+
+* @ingolfsson_simulation_2003 - by time of day, day of week and zone
+* @maxwell_ambulance_2009 - by time of day and zone
+* @berlin_mathematical_1974 - by node
+
+Trace-driven:
+
+* @henderson_ambulance_2005
 
 :::
+
+<br>
 
 ## Call location
 
-a. Nothing
-b. Each zone own distribution (i.e., part of possion)
-c. Calls are assigned to zone (i.e., distribution of probabilities)
+Models differ in how they represent where call occur:
 
-Typically impacts chosen resource and travel time
+* Some do **nothing** to represent location.
+* Some embed location in the **NHPP**, giving each zone its own arrival rate.
+* Some generate calls first, then **assign each call to a zone** using a probability distribution, with that distribution sometimes time-varying.
+
+@aboueljinane_review_2013 note that studies generally assume demand is located at the **centre** of the corresponding zone (though not always).
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+Do not represent call location:
+
+* @fonseca_discrete_2025
+
+NHPP incorporating call location (as above): 
+
+* @ingolfsson_simulation_2003
+* @maxwell_ambulance_2009
+* @berlin_mathematical_1974
+
+Assign zones to generated calls:
+
+* @wu_using_2009 - cluster historical calls into nodes using Nearest Neighbor Hierarchical clustering, then estimate probability a call comes from each node, and use that for a **multinomial distribution** sampling probability of each node.
+* @gigante_study_2022 - calls are **evenly distributed** among the 4 regions
+* @pinto_generic_2015 - city divided into cells, calls assigned using an **empirical discrete distribution** over cells that **varies by time of day and day of week**, and coordinates drawn randomly within the chosen cell.
+* @kergosien_generic_2015
+    * Urgent calls: assign to zone using **discrete distribution** with probability proportional to demographic weight.
+    * Transfer calls: assigned to hospital (85%) or home (15%) - home coordinates drawn randomly.
+* @wei_lam_reducing_2014 - call locations within each district sampled from an **empirical distribution** for each **4‑hour interval over the week**.
+
+Unclear call location mechanism:
+
+* @aboueljinane_reducing_2012
 
 :::
+
+In the studies, call location typically affects **travel times** - but can also influence resource dispatching, hospital selection and shifts.
+
+::: {.callout-note title="View studies" collapse="true"}
+
+From what I can spot (may have missed some):
+
+* @wu_using_2009 - travel time, maybe hospital selection.
+* @aboueljinane_reducing_2012 - travel time.
+* @gigante_study_2022 - travel time to scene (not to hospital).
+* @pinto_generic_2015 - dispatch, travel time, hospital selection, shifts (number of ambulances at base).
+* @kergosien_generic_2015 - TODO.
+* @wei_lam_reducing_2014 - TODO.
+
+:::
+
+<br>
 
 ## Call categories
 
@@ -44,6 +118,8 @@ TODO
 
 :::
 
+<br>
+
 ## Dispatch policy
 
 Normally nearest available vehicle
@@ -57,6 +133,8 @@ Some look for team belonging to specific area first
 TODO
 
 :::
+
+<br>
 
 ## Travel time modelling
 
@@ -81,6 +159,8 @@ TODO
 
 :::
 
+<br>
+
 ## Processing times
 
 a. Include in **travel times**
@@ -95,6 +175,8 @@ TODO
 
 :::
 
+<br>
+
 ## Hospital selection
 
 a. Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)
@@ -106,6 +188,8 @@ c. Sample from distribution
 TODO
 
 :::
+
+<br>
 
 ## Scenarios
 
