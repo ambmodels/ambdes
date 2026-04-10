@@ -185,57 +185,91 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Python</strong> (as ambulance team are familiar)</p>
-<p><strong>SimPy</strong> (as popular, taught on HSMA, and also should be familiar)</p>
-<p>Environment management preferred option is <strong>uv</strong> as manage python version and dependencies with simple file and full lock file.</p>
-<p>Public/private:</p>
+<section id="core-tools" class="level2">
+<h2 class="anchored" data-anchor-id="core-tools">Core tools</h2>
 <ul>
-<li>Model code structured as a <strong>package</strong> and <strong>public</strong></li>
-<li>Model documentation <strong>public</strong></li>
-<li>Dummy date used in public repo for exampls</li>
-<li>Then will be able to import public package and run on analyses privately on own data. Public version should reproduce all key analytical steps.</li>
+<li>Use <strong>Python</strong> (as ambulance team are familiar).</li>
+<li>Use <strong>uv</strong> for environment management, as it handles Python versions and dependencies, with a simple configuration and a lock file.</li>
+<li>Use <strong>SimPy</strong> for DES (as it is popular, taught on HSMA, and also should be familiar).</li>
+<li>Use <strong>sim-tools</strong> for distributions</li>
+<li>Use <strong>vidigi</strong> for animation</li>
 </ul>
-<p>Documentation in <strong>single site</strong> inc. project spec and code documentation via <strong>quartodoc</strong></p>
-<p>Code <strong>object-oriented</strong>. <strong>Uncertainty:</strong></p>
+</section>
+<section id="open-and-private-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="open-and-private-workflow">Open and private workflow</h2>
 <ul>
-<li>Further thought required on how to design modular components that can be easily swapped or extended</li>
-<li>There will be inevitable duplicate - goal is to minimise that with a clear and maintainable structure.</li>
+<li>Structure the model code as a <strong>public Python package</strong>.</li>
+<li>Make the model documentation <strong>public</strong>.</li>
+<li>Use <strong>dummy data</strong> in the public repository for examples.</li>
+<li>Design the public package so it can be imported and run privately on local data. Ensure the public version reproduces all key analytical steps.</li>
 </ul>
-<p>Possible <strong>input</strong> formats include excel workbook, csv, or json</p>
+</section>
+<section id="documentation" class="level2">
+<h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+<p>Use Quarto on GitHub pages for a single documentation site including the project specification, code documentation via <strong>quartodoc</strong>, and examples run on dummy data.</p>
+<p>Also maintain the following repository documentation:</p>
 <ul>
-<li>Excel workbook proprietrary but standard</li>
-<li>JSON not liked in NHS model reuse interviews</li>
-</ul>
-<p>Use <strong>ruff</strong> for linting</p>
-<p>Use <strong>type hints</strong></p>
-<p>Write tests with <strong>pytest</strong> and CI/CD to run them. Arrange tests by theme, then use pytest markers for test type. Use language from our training to describe them. Have smoke test as a gate.</p>
-<p>Have a <strong>logging</strong> system in place which can enable/disable. Shouldn’t slow it down too much! Be wary of that</p>
-<p><strong>Uncertainty</strong> re: improvements to core structure:</p>
-<ul>
-<li><strong>Scenarios</strong> - could it be improved? current way can feel a little clunky</li>
-<li><strong>Speed</strong> - anything we could do?</li>
-</ul>
-<p>Ensure address things raised in NHS model reuse interviews e.g.&nbsp;broad logging messages as run</p>
-<p>Use <strong>vidigi</strong> for animation</p>
-<p>Use <strong>sim-tools</strong> for distributions</p>
-<p>Use <strong>lintquarto</strong> for the quarto book and the image alt-text linter</p>
-<p>Once sim times get longer, use parallel processing.</p>
-<p><strong>mechanism</strong> for running all in one go from single command.</p>
-<p>Use <strong>conventional commits</strong></p>
-<p>Use dev and main. TBC whether do dev feature main and blocking rules etc.</p>
-<p>Numpy style docstrings</p>
-<p>Inc.&nbsp;<strong>test coverage</strong> action</p>
-<p>Inc.&nbsp;<strong>linting</strong> action</p>
-<p>Documentation besides quarto:</p>
-<ul>
-<li>README and CONTRIBUTING with contents outlined in https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html</li>
-<li>CHANGELOG and releases and quarto archive</li>
-<li>LICENSE</li>
-<li>CITATION.cff</li>
+<li><code>README.md</code> (see <a href="https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html">here</a> for contents)</li>
+<li><code>CONTRIBUTING.md</code> (see <a href="https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html">here</a> for contents)</li>
+<li><code>CHANGELOG.md</code> - doing releases and archiving to Zenodo</li>
+<li><code>LICENSE</code></li>
+<li><code>CITATION.cff</code></li>
 </ul>
 <p>Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html</p>
+</section>
+<section id="code-design" class="level2">
+<h2 class="anchored" data-anchor-id="code-design">Code design</h2>
+<p>Use an <strong>object-oriented</strong> design.</p>
+<p>Have a <strong>logging</strong> system in place which can enable/disable. Shouldn’t slow it down too much! Be wary of that. Ensure address things raised in NHS model reuse interviews e.g.&nbsp;broad logging messages as run.</p>
+<p>Once run times get longer, use <strong>parallel</strong> processing.</p>
+<p>Provide a <strong>single-command mechanism</strong> to run everything end to end.</p>
+<div class="box-hl">
+<p>Will require some thought around how best to design modular components that can be <strong>easily swapped or extended</strong>. Some duplication will be inevitable, so the aim should be to minimise it with a clear and maintainable structure.</p>
+<p>Also, review whether current <strong>scenario</strong> approach could be improved, as can feel a little clunky.</p>
+<p>Consider how could improve <strong>speed</strong>… monitor speed as build - identify what slows it down</p>
+</div>
+</section>
+<section id="inputs" class="level2">
+<h2 class="anchored" data-anchor-id="inputs">Inputs</h2>
+<p>Possible input formats:</p>
+<ul>
+<li>Excel workbook - proprietary but standard</li>
+<li>CSV</li>
+<li>JSON - not well liked in NHS model reuse interviews</li>
+</ul>
+</section>
+<section id="quality-and-style" class="level2">
+<h2 class="anchored" data-anchor-id="quality-and-style">Quality and style</h2>
+<ul>
+<li>Use <strong>type hints</strong>.</li>
+<li>Use <strong>NumPy-style docstrings</strong>.</li>
+<li>Use <strong>ruff</strong> for linting.</li>
+<li>Use <strong>lintquarto</strong> for linting the quarto site, and the image alt-text linter action.</li>
+<li>Include a linting <strong>CI/CD</strong> GitHub action.</li>
+</ul>
+</section>
+<section id="testing" class="level2">
+<h2 class="anchored" data-anchor-id="testing">Testing</h2>
+<ul>
+<li>Write tests with <strong>pytest</strong>.</li>
+<li>Run tests through <strong>CI/CD</strong>.</li>
+<li>Include a <strong>test coverage</strong> action.</li>
+<li>Arrange tests by theme, then use <strong>pytest markers</strong> for test type. se language from our training to describe them.</li>
+<li>Include a <strong>smoke test</strong> as a gate.</li>
+</ul>
+</section>
+<section id="version-control" class="level2">
+<h2 class="anchored" data-anchor-id="version-control">Version control</h2>
+<ul>
+<li>Use <strong>conventional commits</strong></li>
+<li>Use <code>dev</code> and <code>main</code>.</li>
+</ul>
+<div class="box-hl">
+<p>TBC whether do dev feature main and blocking rules etc.</p>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
