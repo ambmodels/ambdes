@@ -92,7 +92,7 @@
     "href": "literature.html",
     "title": "Literature",
     "section": "",
-    "text": "How have been built ambulance DES in the past?",
+    "text": "This page summarises how published ambulance DES represent key elements of the ambulance system. It builds on the excellent review by Aboueljinane et al. (2013), whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.",
     "crumbs": [
       "GitHub",
       "Literature"
@@ -103,7 +103,7 @@
     "href": "literature.html#call-arrival-timing",
     "title": "Literature",
     "section": "Call arrival timing",
-    "text": "Call arrival timing\nPoisson i.e. exponential interarrival\nOften non homogenous i.e. vary by time of day day of week\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nTODO",
+    "text": "Call arrival timing\nIn all DES studies, call arrivals are modeled using a Poisson process, so inter-arrival times are exponential. This is standard for arrival processes in healthcare DES models.\nSome studies use a Homogeneous Poisson process (HPP) with a single arrival rate for the entire simulation period. However, most use a Non-homogeneous Poisson process (NHPP) where the arrival rate varies over time (e.g., by hour of day or day of week).\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nHPP:\n\nSilva and Pinto (2010)\nBuuren et al. (2012)\n\nNHPP by time of day only:\n\nGigante and Azevedo (2022) - by period (00:00-08:00, 08:00-16:00, 16:00-00:00)\nKergosien et al. (2015) - by 2-hour intervals\n\nNHPP by time of day and day of week:\n\nWei Lam et al. (2014) - by 2-hour intervals and day of week\nFonseca et al. (2025) - by hour and weekday/weekend\nAboueljinane et al. (2012) - by hour and weekday/weekend\nPinto et al. (2015) - by hour and day of week\nWu and Hwang (2009) - by hour, day of week and month\n\nNHPP incorporating call location:\n\nIngolfsson et al. (2003) - by time of day, day of week and zone\nMaxwell et al. (2009) - by time of day and zone\nBerlin and Liebman (1974) - by node\n\nTrace-driven:\n\nHenderson and Mason (2005)",
     "crumbs": [
       "GitHub",
       "Literature"
@@ -114,7 +114,7 @@
     "href": "literature.html#call-location",
     "title": "Literature",
     "section": "Call location",
-    "text": "Call location\n\nNothing\nEach zone own distribution (i.e., part of possion)\nCalls are assigned to zone (i.e., distribution of probabilities)\n\nTypically impacts chosen resource and travel time\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nTODO",
+    "text": "Call location\nModels differ in how they represent where call occur:\n\nSome do nothing to represent location.\nSome embed location in the NHPP, giving each zone its own arrival rate.\nSome generate calls first, then assign each call to a zone using a probability distribution, with that distribution sometimes time-varying.\n\nAboueljinane et al. (2013) note that studies generally assume demand is located at the centre of the corresponding zone (though not always).\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nDo not represent call location:\n\nFonseca et al. (2025)\n\nNHPP incorporating call location (as above):\n\nIngolfsson et al. (2003)\nMaxwell et al. (2009)\nBerlin and Liebman (1974)\n\nAssign zones to generated calls:\n\nWu and Hwang (2009) - cluster historical calls into nodes using Nearest Neighbor Hierarchical clustering, then estimate probability a call comes from each node, and use that for a multinomial distribution sampling probability of each node.\nGigante and Azevedo (2022) - calls are evenly distributed among the 4 regions\nPinto et al. (2015) - city divided into cells, calls assigned using an empirical discrete distribution over cells that varies by time of day and day of week, and coordinates drawn randomly within the chosen cell.\nKergosien et al. (2015)\n\nUrgent calls: assign to zone using discrete distribution with probability proportional to demographic weight.\nTransfer calls: assigned to hospital (85%) or home (15%) - home coordinates drawn randomly.\n\nWei Lam et al. (2014) - call locations within each district sampled from an empirical distribution for each 4‑hour interval over the week.\n\nUnclear call location mechanism:\n\nAboueljinane et al. (2012)\n\n\n\n\nIn the studies, call location typically affects travel times - but can also influence resource dispatching, hospital selection and shifts.\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nFrom what I can spot (may have missed some):\n\nWu and Hwang (2009) - travel time, maybe hospital selection.\nAboueljinane et al. (2012) - travel time.\nGigante and Azevedo (2022) - travel time to scene (not to hospital).\nPinto et al. (2015) - dispatch, travel time, hospital selection, shifts (number of ambulances at base).\nKergosien et al. (2015) - TODO.\nWei Lam et al. (2014) - TODO.",
     "crumbs": [
       "GitHub",
       "Literature"

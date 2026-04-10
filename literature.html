@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -185,11 +204,13 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>How have been built ambulance DES in the past?</p>
+<p><br></p>
+<p>This page summarises how <strong>published ambulance DES</strong> represent key elements of the ambulance system. It builds on the excellent review by <span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span>, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.</p>
+<p><br></p>
 <section id="call-arrival-timing" class="level2">
 <h2 class="anchored" data-anchor-id="call-arrival-timing">Call arrival timing</h2>
-<p>Poisson i.e.&nbsp;exponential interarrival</p>
-<p>Often non homogenous i.e.&nbsp;vary by time of day day of week</p>
+<p>In all DES studies, call arrivals are modeled using a <strong>Poisson</strong> process, so inter-arrival times are exponential. This is standard for arrival processes in healthcare DES models.</p>
+<p>Some studies use a <strong>Homogeneous Poisson process (HPP)</strong> with a single arrival rate for the entire simulation period. However, most use a <strong>Non-homogeneous Poisson process (NHPP)</strong> where the arrival rate varies over time (e.g., by hour of day or day of week).</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -202,19 +223,48 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p>HPP:</p>
+<ul>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span></li>
+<li><span class="citation" data-cites="van_buuren_evaluating_2012">Buuren et al. (<a href="#ref-van_buuren_evaluating_2012" role="doc-biblioref">2012</a>)</span></li>
+</ul>
+<p>NHPP by time of day only:</p>
+<ul>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - by period (00:00-08:00, 08:00-16:00, 16:00-00:00)</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - by 2-hour intervals</li>
+</ul>
+<p>NHPP by time of day and day of week:</p>
+<ul>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - by 2-hour intervals and day of week</li>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> - by hour and weekday/weekend</li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - by hour and weekday/weekend</li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - by hour and day of week</li>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> - by hour, day of week and month</li>
+</ul>
+<p>NHPP incorporating call location:</p>
+<ul>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> - by time of day, day of week and zone</li>
+<li><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span> - by time of day and zone</li>
+<li><span class="citation" data-cites="berlin_mathematical_1974">Berlin and Liebman (<a href="#ref-berlin_mathematical_1974" role="doc-biblioref">1974</a>)</span> - by node</li>
+</ul>
+<p>Trace-driven:</p>
+<ul>
+<li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></li>
+</ul>
 </div>
 </div>
 </div>
+<p><br></p>
 </section>
 <section id="call-location" class="level2">
 <h2 class="anchored" data-anchor-id="call-location">Call location</h2>
-<ol type="a">
-<li>Nothing</li>
-<li>Each zone own distribution (i.e., part of possion)</li>
-<li>Calls are assigned to zone (i.e., distribution of probabilities)</li>
-</ol>
-<p>Typically impacts chosen resource and travel time</p>
+<p>Models differ in how they represent where call occur:</p>
+<ul>
+<li>Some do <strong>nothing</strong> to represent location.</li>
+<li>Some embed location in the <strong>NHPP</strong>, giving each zone its own arrival rate.</li>
+<li>Some generate calls first, then <strong>assign each call to a zone</strong> using a probability distribution, with that distribution sometimes time-varying.</li>
+</ul>
+<p><span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span> note that studies generally assume demand is located at the <strong>centre</strong> of the corresponding zone (though not always).</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -227,19 +277,36 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
-</div>
-</div>
-</div>
-</section>
-<section id="call-categories" class="level2">
-<h2 class="anchored" data-anchor-id="call-categories">Call categories</h2>
-<p>Studies that include call categories vary in terms of what it impacts e.g.,:</p>
+<p>Do not represent call location:</p>
 <ul>
-<li>Priority of queued calls</li>
-<li>Whether conveyed</li>
-<li>Time on site, drop-off time, in-hospital time, travel time</li>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></li>
 </ul>
+<p>NHPP incorporating call location (as above):</p>
+<ul>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></li>
+<li><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span></li>
+<li><span class="citation" data-cites="berlin_mathematical_1974">Berlin and Liebman (<a href="#ref-berlin_mathematical_1974" role="doc-biblioref">1974</a>)</span></li>
+</ul>
+<p>Assign zones to generated calls:</p>
+<ul>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> - cluster historical calls into nodes using Nearest Neighbor Hierarchical clustering, then estimate probability a call comes from each node, and use that for a <strong>multinomial distribution</strong> sampling probability of each node.</li>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - calls are <strong>evenly distributed</strong> among the 4 regions</li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - city divided into cells, calls assigned using an <strong>empirical discrete distribution</strong> over cells that <strong>varies by time of day and day of week</strong>, and coordinates drawn randomly within the chosen cell.</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span>
+<ul>
+<li>Urgent calls: assign to zone using <strong>discrete distribution</strong> with probability proportional to demographic weight.</li>
+<li>Transfer calls: assigned to hospital (85%) or home (15%) - home coordinates drawn randomly.</li>
+</ul></li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - call locations within each district sampled from an <strong>empirical distribution</strong> for each <strong>4‑hour interval over the week</strong>.</li>
+</ul>
+<p>Unclear call location mechanism:</p>
+<ul>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<p>In the studies, call location typically affects <strong>travel times</strong> - but can also influence resource dispatching, hospital selection and shifts.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -252,16 +319,28 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p>From what I can spot (may have missed some):</p>
+<ul>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> - travel time, maybe hospital selection.</li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - travel time.</li>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - travel time to scene (not to hospital).</li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - dispatch, travel time, hospital selection, shifts (number of ambulances at base).</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - TODO.</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - TODO.</li>
+</ul>
 </div>
 </div>
 </div>
+<p><br></p>
 </section>
-<section id="dispatch-policy" class="level2">
-<h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
-<p>Normally nearest available vehicle</p>
-<p>Some incorporate call priority or possible reassignment to Cat1</p>
-<p>Some look for team belonging to specific area first</p>
+<section id="call-categories" class="level2">
+<h2 class="anchored" data-anchor-id="call-categories">Call categories</h2>
+<p>Studies that include call categories vary in terms of what it impacts e.g.,:</p>
+<ul>
+<li>Priority of queued calls</li>
+<li>Whether conveyed</li>
+<li>Time on site, drop-off time, in-hospital time, travel time</li>
+</ul>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -278,6 +357,30 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p><br></p>
+</section>
+<section id="dispatch-policy" class="level2">
+<h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
+<p>Normally nearest available vehicle</p>
+<p>Some incorporate call priority or possible reassignment to Cat1</p>
+<p>Some look for team belonging to specific area first</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<p><br></p>
 </section>
 <section id="travel-time-modelling" class="level2">
 <h2 class="anchored" data-anchor-id="travel-time-modelling">Travel time modelling</h2>
@@ -297,32 +400,6 @@ ul.task-list li input[type="checkbox"] {
 <li>Any of those three, with <strong>correction factors</strong> for traffic, time of day, etc.</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>View studies
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>TODO</p>
-</div>
-</div>
-</div>
-</section>
-<section id="processing-times" class="level2">
-<h2 class="anchored" data-anchor-id="processing-times">Processing times</h2>
-<ol type="a">
-<li>Include in <strong>travel times</strong></li>
-<li>Assume <strong>0</strong></li>
-<li><strong>Deterministic</strong> varying by location / priority / etc.</li>
-<li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
-<li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
-</ol>
-<div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -338,13 +415,16 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p><br></p>
 </section>
-<section id="hospital-selection" class="level2">
-<h2 class="anchored" data-anchor-id="hospital-selection">Hospital selection</h2>
+<section id="processing-times" class="level2">
+<h2 class="anchored" data-anchor-id="processing-times">Processing times</h2>
 <ol type="a">
-<li>Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)</li>
-<li>Use closest hospital</li>
-<li>Sample from distribution</li>
+<li>Include in <strong>travel times</strong></li>
+<li>Assume <strong>0</strong></li>
+<li><strong>Deterministic</strong> varying by location / priority / etc.</li>
+<li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
+<li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
@@ -362,20 +442,15 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p><br></p>
 </section>
-<section id="scenarios" class="level2">
-<h2 class="anchored" data-anchor-id="scenarios">Scenarios</h2>
-<p>Baseline: Estimated timings for given parameters</p>
-<p>Scenarios:</p>
-<ul>
-<li>How that changes with varying <strong>demand</strong></li>
-<li>How many <strong>crew</strong> (add or remove)</li>
-<li>How divide crew between <strong>bases</strong></li>
-<li>Where crew go after <strong>release</strong></li>
-<li><strong>Where</strong> bases are</li>
-<li><strong>Shift</strong> scheduling - working <strong>hours</strong> and <strong>location</strong> <em>E.g., optimal schedule… avoiding changes during high demand…</em></li>
-</ul>
-<p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
+<section id="hospital-selection" class="level2">
+<h2 class="anchored" data-anchor-id="hospital-selection">Hospital selection</h2>
+<ol type="a">
+<li>Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)</li>
+<li>Use closest hospital</li>
+<li>Sample from distribution</li>
+</ol>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -392,11 +467,86 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p><br></p>
+</section>
+<section id="scenarios" class="level2">
+<h2 class="anchored" data-anchor-id="scenarios">Scenarios</h2>
+<p>Baseline: Estimated timings for given parameters</p>
+<p>Scenarios:</p>
+<ul>
+<li>How that changes with varying <strong>demand</strong></li>
+<li>How many <strong>crew</strong> (add or remove)</li>
+<li>How divide crew between <strong>bases</strong></li>
+<li>Where crew go after <strong>release</strong></li>
+<li><strong>Where</strong> bases are</li>
+<li><strong>Shift</strong> scheduling - working <strong>hours</strong> and <strong>location</strong> <em>E.g., optimal schedule… avoiding changes during high demand…</em></li>
+</ul>
+<p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>TODO</p>
+</div>
+</div>
+</div>
+
 
 
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aboueljinane_reducing_2012" class="csl-entry" role="listitem">
+Aboueljinane, Lina, Zied Jemai, and Evren Sahin. 2012. <span>“Reducing Ambulance Response Time Using Simulation: <span>The</span> Case of <span>Val</span>-de-<span>Marne</span> Department <span>Emergency</span> <span>Medical</span> Service.”</span> <em>Proceedings of the 2012 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1–12. <a href="https://doi.org/10.1109/WSC.2012.6465018">https://doi.org/10.1109/WSC.2012.6465018</a>.
+</div>
+<div id="ref-aboueljinane_review_2013" class="csl-entry" role="listitem">
+Aboueljinane, L., E. Sahin, and Z. Jemai. 2013. <span>“A Review on Simulation Models Applied to Emergency Medical Service Operations.”</span> <em>Computers &amp; Industrial Engineering</em> 66 (4): 734–50. <a href="https://doi.org/10.1016/j.cie.2013.09.017">https://doi.org/10.1016/j.cie.2013.09.017</a>.
+</div>
+<div id="ref-berlin_mathematical_1974" class="csl-entry" role="listitem">
+Berlin, Geoffrey N., and Jon C. Liebman. 1974. <span>“Mathematical Analysis of Emergency Ambulance Location.”</span> <em>Socio-Economic Planning Sciences</em> 8 (6): 323–28. <a href="https://doi.org/10.1016/0038-0121(74)90036-6">https://doi.org/10.1016/0038-0121(74)90036-6</a>.
+</div>
+<div id="ref-van_buuren_evaluating_2012" class="csl-entry" role="listitem">
+Buuren, Martin van, Rob van der Mei, Karen Aardal, and Henk Post. 2012. <span>“Evaluating Dynamic Dispatch Strategies for Emergency Medical Services: <span>TIFAR</span> Simulation Tool.”</span> <em>Proceedings of the 2012 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1–12. <a href="https://doi.org/10.1109/WSC.2012.6465214">https://doi.org/10.1109/WSC.2012.6465214</a>.
+</div>
+<div id="ref-fonseca_discrete_2025" class="csl-entry" role="listitem">
+Fonseca, Martina, Jonathan Pearson, and NHS England. 2025. <span>“Discrete Event Simulation to Understand Ambulance Performance and Improvement Strategies.”</span> <em>12th <span>Simulation</span> <span>Workshop</span> (<span>SW25</span>) <span>Proceedings</span></em>, April. <a href="https://doi.org/10.36819/SW25.042">https://doi.org/10.36819/SW25.042</a>.
+</div>
+<div id="ref-gigante_study_2022" class="csl-entry" role="listitem">
+Gigante, Rodrigo Luiz, and Aníbal Tavares de Azevedo. 2022. <span>“Study of the Impact of the Start Time of Work Shift on the Efficiency of an Emergency System Through a Simulation Model of Discrete Events.”</span> <em>Gestão &amp; Produção</em> 29: e4421. https://doi.org/<a href="https://doi.org/10.1590/1806-9649-2022v29e4421">https://doi.org/10.1590/1806-9649-2022v29e4421</a>.
+</div>
+<div id="ref-henderson_ambulance_2005" class="csl-entry" role="listitem">
+Henderson, Shane G., and Andrew J. Mason. 2005. <span>“Ambulance <span>Service</span> <span>Planning</span>: <span>Simulation</span> and <span>Data</span> <span>Visualisation</span>.”</span> In <em>Operations <span>Research</span> and <span>Health</span> <span>Care</span></em>, vol. 70. Springer US. <a href="https://doi.org/10.1007/1-4020-8066-2_4">https://doi.org/10.1007/1-4020-8066-2_4</a>.
+</div>
+<div id="ref-ingolfsson_simulation_2003" class="csl-entry" role="listitem">
+Ingolfsson, A, E Erkut, and S Budge. 2003. <span>“Simulation of Single Start Station for <span>Edmonton</span> <span>EMS</span>.”</span> <em>Journal of the Operational Research Society</em> 54 (7): 736–46. <a href="https://doi.org/10.1057/palgrave.jors.2601574">https://doi.org/10.1057/palgrave.jors.2601574</a>.
+</div>
+<div id="ref-kergosien_generic_2015" class="csl-entry" role="listitem">
+Kergosien, Y., V. Bélanger, P. Soriano, M. Gendreau, and A. Ruiz. 2015. <span>“A Generic and Flexible Simulation-Based Analysis Tool for <span>EMS</span> Management.”</span> <em>International Journal of Production Research</em> 53 (24): 7299–316. <a href="https://doi.org/10.1080/00207543.2015.1037405">https://doi.org/10.1080/00207543.2015.1037405</a>.
+</div>
+<div id="ref-maxwell_ambulance_2009" class="csl-entry" role="listitem">
+Maxwell, Matthew S., Shane G. Henderson, and Huseyin Topaloglu. 2009. <span>“Ambulance Redeployment: <span>An</span> Approximate Dynamic Programming Approach.”</span> <em>Proceedings of the 2009 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1850–60. <a href="https://doi.org/10.1109/WSC.2009.5429196">https://doi.org/10.1109/WSC.2009.5429196</a>.
+</div>
+<div id="ref-pinto_generic_2015" class="csl-entry" role="listitem">
+Pinto, L. R., P. M. S. Silva, and T. P. Young. 2015. <span>“A Generic Method to Develop Simulation Models for Ambulance Systems.”</span> <em>Simulation Modelling Practice and Theory</em> 51 (February): 170–83. <a href="https://doi.org/10.1016/j.simpat.2014.12.001">https://doi.org/10.1016/j.simpat.2014.12.001</a>.
+</div>
+<div id="ref-silva_emergency_2010" class="csl-entry" role="listitem">
+Silva, Pedro Marinho Sizenando, and Luiz Ricardo Pinto. 2010. <span>“Emergency Medical Systems Analysis by Simulation and Optimization.”</span> <em>Proceedings of the 2010 <span>Winter</span> <span>Simulation</span> <span>Conference</span></em>, December, 2422–32. <a href="https://doi.org/10.1109/WSC.2010.5678938">https://doi.org/10.1109/WSC.2010.5678938</a>.
+</div>
+<div id="ref-wei_lam_reducing_2014" class="csl-entry" role="listitem">
+Wei Lam, Sean Shao, Zhong Cheng Zhang, Hong Choon Oh, Yih Ying Ng, Win Wah, and Marcus Eng Hock Ong. 2014. <span>“Reducing <span>Ambulance</span> <span>Response</span> <span>Times</span> <span>Using</span> <span>Discrete</span> <span>Event</span> <span>Simulation</span>.”</span> <em>Prehospital Emergency Care</em> 18 (2): 207–16. <a href="https://doi.org/10.3109/10903127.2013.836266">https://doi.org/10.3109/10903127.2013.836266</a>.
+</div>
+<div id="ref-wu_using_2009" class="csl-entry" role="listitem">
+Wu, Ching-Han, and Kevin P. Hwang. 2009. <span>“Using a <span>Discrete</span>-Event <span>Simulation</span> to <span>Balance</span> <span>Ambulance</span> <span>Availability</span> and <span>Demand</span> in <span>Static</span> <span>Deployment</span> <span>Systems</span>.”</span> <em>Academic Emergency Medicine</em> 16 (12): 1359–66. <a href="https://doi.org/10.1111/j.1553-2712.2009.00583.x">https://doi.org/10.1111/j.1553-2712.2009.00583.x</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
