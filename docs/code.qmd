@@ -2,71 +2,86 @@
 title: Code structure / infrastructure plans
 ---
 
-**Python** (as ambulance team are familiar)
+## Core tools
 
-**SimPy** (as popular, taught on HSMA, and also should be familiar)
+* Use **Python** (as ambulance team are familiar).
+* Use **uv** for environment management, as it handles Python versions and dependencies, with a simple configuration and a lock file.
+* Use **SimPy** for DES (as it is popular, taught on HSMA, and also should be familiar).
+* Use **sim-tools** for distributions
+* Use **vidigi** for animation
 
-Environment management preferred option is **uv** as manage python version and dependencies with simple file and full lock file.
+## Open and private workflow
 
-Public/private:
+* Structure the model code as a **public Python package**.
+* Make the model documentation **public**.
+* Use **dummy data** in the public repository for examples.
+* Design the public package so it can be imported and run privately on local data. Ensure the public version reproduces all key analytical steps.
 
-* Model code structured as a **package** and **public**
-* Model documentation **public**
-* Dummy date used in public repo for exampls
-* Then will be able to import public package and run on analyses privately on own data. Public version should reproduce all key analytical steps.
+## Documentation
 
-Documentation in **single site** inc. project spec and code documentation via **quartodoc**
+Use Quarto on GitHub pages for a single documentation site including the project specification, code documentation via **quartodoc**, and examples run on dummy data.
 
-Code **object-oriented**. **Uncertainty:**
+Also maintain the following repository documentation:
 
-* Further thought required on how to design modular components that can be easily swapped or extended
-* There will be inevitable duplicate - goal is to minimise that with a clear and maintainable structure.
-
-Possible **input** formats include excel workbook, csv, or json
-
-* Excel workbook proprietrary but standard
-* JSON not liked in NHS model reuse interviews
-
-Use **ruff** for linting
-
-Use **type hints**
-
-Write tests with **pytest** and CI/CD to run them. Arrange tests by theme, then use pytest markers for test type. Use language from our training to describe them. Have smoke test as a gate.
-
-Have a **logging** system in place which can enable/disable. Shouldn't slow it down too much! Be wary of that
-
-**Uncertainty** re: improvements to core structure:
-
-* **Scenarios** - could it be improved? current way can feel a little clunky
-* **Speed** - anything we could do?
-
-Ensure address things raised in NHS model reuse interviews e.g. broad logging messages as run
-
-Use **vidigi** for animation
-
-Use **sim-tools** for distributions
-
-Use **lintquarto** for the quarto book and the image alt-text linter
-
-Once sim times get longer, use parallel processing.
-
-**mechanism** for running all in one go from single command.
-
-Use **conventional commits**
-
-Use dev and main. TBC whether do dev feature main and blocking rules etc.
-
-Numpy style docstrings
-
-Inc. **test coverage** action
-
-Inc. **linting** action
-
-Documentation besides quarto:
-
-* README and CONTRIBUTING with contents outlined in https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html
-* CHANGELOG and releases and quarto archive
-* LICENSE
-* CITATION.cff
+* `README.md` (see [here](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html) for contents)
+* `CONTRIBUTING.md` (see [here](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/style_docs/documentation.html) for contents)
+* `CHANGELOG.md` - doing releases and archiving to Zenodo
+* `LICENSE`
+* `CITATION.cff`
 
 Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html
+
+## Code design
+
+Use an **object-oriented** design.
+
+Have a **logging** system in place which can enable/disable. Shouldn't slow it down too much! Be wary of that. Ensure address things raised in NHS model reuse interviews e.g. broad logging messages as run.
+
+Once run times get longer, use **parallel** processing.
+
+Provide a **single-command mechanism** to run everything end to end.
+
+::: {.box-hl}
+
+Will require some thought around how best to design modular components that can be **easily swapped or extended**. Some duplication will be inevitable, so the aim should be to minimise it with a clear and maintainable structure.
+
+Also, review whether current **scenario** approach could be improved, as can feel a little clunky.
+
+Consider how could improve **speed**... monitor speed as build - identify what slows it down
+
+:::
+
+## Inputs
+
+Possible input formats:
+
+* Excel workbook - proprietary but standard
+* CSV
+* JSON - not well liked in NHS model reuse interviews
+
+## Quality and style
+
+* Use **type hints**.
+* Use **NumPy-style docstrings**.
+* Use **ruff** for linting.
+* Use **lintquarto** for linting the quarto site, and the image alt-text linter action.
+* Include a linting **CI/CD** GitHub action.
+
+## Testing
+
+* Write tests with **pytest**.
+* Run tests through **CI/CD**.
+* Include a **test coverage** action.
+* Arrange tests by theme, then use **pytest markers** for test type. se language from our training to describe them.
+* Include a **smoke test** as a gate.
+
+## Version control
+
+* Use **conventional commits**
+* Use `dev` and `main`.
+
+::: {.box-hl}
+
+TBC whether do dev feature main and blocking rules etc.
+
+:::
