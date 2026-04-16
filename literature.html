@@ -250,6 +250,7 @@ div.csl-indent {
 <p>Trace-driven:</p>
 <ul>
 <li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></li>
+<li><span class="citation" data-cites="uyeno_practical_1984">Uyeno and Seeberg (<a href="#ref-uyeno_practical_1984" role="doc-biblioref">1984</a>)</span></li>
 </ul>
 </div>
 </div>
@@ -299,6 +300,7 @@ div.csl-indent {
 </ul></li>
 <li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - call locations within each district sampled from an <strong>empirical distribution</strong> for each <strong>4‑hour interval over the week</strong>.</li>
 </ul>
+<p><em>Empirical is often used when data doesn’t fit well to a distribution. An empirical distribution will divide the data into groups and calculate the probabilities of each.</em></p>
 <p>Unclear call location mechanism:</p>
 <ul>
 <li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></li>
@@ -478,11 +480,12 @@ div.csl-indent {
 </div>
 <p><br></p>
 </section>
-<section id="dispatch-policy" class="level2">
-<h2 class="anchored" data-anchor-id="dispatch-policy">Dispatch policy</h2>
-<p>Normally nearest available vehicle</p>
-<p>Some incorporate call priority or possible reassignment to Cat1</p>
-<p>Some look for team belonging to specific area first</p>
+<section id="queue-and-dispatch-policy" class="level2">
+<h2 class="anchored" data-anchor-id="queue-and-dispatch-policy">Queue and dispatch policy</h2>
+<p>Normally nearest available vehicle.</p>
+<p>Some incorporate call priority or possible reassignment to Cat1.</p>
+<p>Some look for team belonging to specific area first.</p>
+<p>Some include busy crews, if will finish their job soon.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -495,7 +498,44 @@ div.csl-indent {
 </div>
 <div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p><strong>Nearest available vehicle:</strong></p>
+<ul>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span></li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span></li>
+<li><span class="citation" data-cites="berlin_mathematical_1974">Berlin and Liebman (<a href="#ref-berlin_mathematical_1974" role="doc-biblioref">1974</a>)</span></li>
+<li><span class="citation" data-cites="uyeno_practical_1984">Uyeno and Seeberg (<a href="#ref-uyeno_practical_1984" role="doc-biblioref">1984</a>)</span></li>
+<li><span class="citation" data-cites="wears_simulation_1993">Wears and Winton (<a href="#ref-wears_simulation_1993" role="doc-biblioref">1993</a>)</span></li>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></li>
+<li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></li>
+<li><span class="citation" data-cites="aringhieri_integrated_2010">Aringhieri (<a href="#ref-aringhieri_integrated_2010" role="doc-biblioref">2010</a>)</span></li>
+<li><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span></li>
+<li><span class="citation" data-cites="lee_simulation-based_2012">Lee et al. (<a href="#ref-lee_simulation-based_2012" role="doc-biblioref">2012</a>)</span></li>
+<li><span class="citation" data-cites="van_buuren_evaluating_2012">Buuren et al. (<a href="#ref-van_buuren_evaluating_2012" role="doc-biblioref">2012</a>)</span></li>
+</ul>
+<p><strong>Nearest available vehicle, conditioned on call priority:</strong></p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> - Queue order by Cat1-4 priority, but if they have waited a long time, they may have their priority increased. There is also balking due to max queue size and reneging for lower priority incidents to drop out entirely or switch to ED attendance path (<a href="https://nhsengland.github.io/AmbModelOpen/run/">source</a>).</li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - Queue order depends on call priority.</li>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> - Queue order depends on priority, but lower priority incidents can increase in priority if wait beyond a threshold. Some supply can be marked as holdout so a subset of ambulances is reserved for Cat1 incidents, either alwayds or triggered under certain conditions.</li>
+</ul>
+<p><strong>Nearest base:</strong></p>
+<ul>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - If no crews available, checks next nearest base.</li>
+<li><span class="citation" data-cites="iskander_simulation_1989">Iskander (<a href="#ref-iskander_simulation_1989" role="doc-biblioref">1989</a>)</span> - If no crews available in (or en-route to) nearest or neighbouring bases, it queues at nearest base.</li>
+</ul>
+<p><strong>Crews/base assigned an area:</strong> Each rescue team or base is assigned a specific area. If assigned team unavailable or all teams of assigned base are busy, then the closest available rescue team/base must take it.</p>
+<ul>
+<li><span class="citation" data-cites="gunes_simulation_2005">Gunes and Szechtman (<a href="#ref-gunes_simulation_2005" role="doc-biblioref">2005</a>)</span> (helicopters)</li>
+</ul>
+<p><strong>Team with smallest estimated arrival time including crews on a job</strong> (if soon to finish and nearby, they might be smallest):</p>
+<ul>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span></li>
+</ul>
+<p><strong>Nearest available vehicle, but possible to reassign a rescue team serving low priority class to high priority</strong> - <span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> list two examples, neither are DES.</p>
+<p><strong>Unclear:</strong></p>
+<ul>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></li>
+</ul>
 </div>
 </div>
 </div>
@@ -503,6 +543,17 @@ div.csl-indent {
 </section>
 <section id="travel-time-modelling" class="level2">
 <h2 class="anchored" data-anchor-id="travel-time-modelling">Travel time modelling</h2>
+<p>In <span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span>, they state that travel times are related to:</p>
+<ul>
+<li>Distance travelled</li>
+<li>Traffic conditions - rush hour, weekend v.s., weekday, day v.s., night</li>
+<li>Weather</li>
+<li>Priority of rescue</li>
+<li>Traffic accidents</li>
+<li>Quality of the roads</li>
+<li>Difficulty finding the exact call location.</li>
+</ul>
+<p>Several different travel time models are used in the literature.</p>
 <p>Distribution based:</p>
 <ol type="a">
 <li>Sample from <strong>distribution</strong></li>
@@ -530,7 +581,93 @@ div.csl-indent {
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p>Several studies talk about the importance of travel time modelling…</p>
+<blockquote class="blockquote">
+<p><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span>: “The effort we devote to this topic is justified by the great sensitivity of results to travel time assumptions, as noted both by the authors in a preliminary queueing analysis, and by a large proportion of the papers dealing with ambulance planning. For example, Carson and Batta [17] describe how the 30% savings predicted by their model turned into a 6% savings in actual tests, primarily due to the model not effectively capturing a certain travel time/distance relationship.”</p>
+<p><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span>: “Since the performance measures are ambulance response times and utilization levels, travel time estimation forms an important consideration.”</p>
+</blockquote>
+<p><strong>(a) Distribution based - sample from distribution</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Times</th>
+<th>Distribution</th>
+<th>Varies by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></td>
+<td>“Time to scene” and “time to ED site”</td>
+<td>Empirical or lognormal (lists various times using these - would need to check code to know exact)</td>
+<td>N/A</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>Time of “sending patient to hospital, release of stretcher, cleaning vehicle and returning”</td>
+<td>Uniform</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><strong>(b) Distribution based - distribution vary by region</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Times</th>
+<th>Distribution</th>
+<th>Varies by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span></td>
+<td>Station to scene, scene to hospital, hospital to station</td>
+<td>Unclear</td>
+<td>Time (by call arrival time, day divided into segments) and location of activating station (ambulance usually respond within district, each district have more homogeneous traffic patterns than whole city, so calibrate based on district)</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>Travel time to emergency</td>
+<td>Triangular</td>
+<td>If vehicle doesn’t belong to region of ticket, add 5 minutes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>(c) As crow flies multiplied by speed</strong> (+ (f) correction factors for traffic, time of day, etc.)</p>
+<ul>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span></li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - speed differs by time (weekday/weekend), type of unit and area of city - so is corrected with a speed factor</li>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span></li>
+</ul>
+<p><strong>(d) Pre-computed shortest path multiplied by speed</strong> (+ (f) correction factors for traffic, time of day, etc.)</p>
+<ul>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - Found shortest route between each origin destination pair and found ideal travel times using ArcGIS10 (based on distance and speed limit). Then calculated a correction factor for every pair based on historical ambulance travelling time. Multiple distributions of correction factors were derived by time of day, day of week, ideal travel time span, and nature of trip.</li>
+<li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></li>
+</ul>
+<p><strong>(e) Divide road into segments, calculate travel times for each, sum</strong> (+ (f) correction factors for traffic, time of day, etc.)</p>
+<ul>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - Average travel time assigned to each section of road depending on type (motorway, main road, minor road, local street). For each hour of day, day of week, rescue type and priority, the travel time is calculated by diving the section length by the average speed observed in the GPS data. Travel time is sum of segments that form shortest path between origin and destination</li>
+</ul>
+<p><strong>Unclear:</strong></p>
+<ul>
+<li><span class="citation" data-cites="uyeno_practical_1984">Uyeno and Seeberg (<a href="#ref-uyeno_practical_1984" role="doc-biblioref">1984</a>)</span> - unclear, but speed depends on location (rural/urban) and time of day.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -545,6 +682,7 @@ div.csl-indent {
 <li>Sampled from a <strong>distribution</strong>, can then vary by priority / day / etc.</li>
 <li><strong>Resource</strong> (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)</li>
 </ol>
+<p><em>Note: More aggregation means less scope to explore scenarios where change specific times</em></p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -557,7 +695,120 @@ div.csl-indent {
 </div>
 <div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p><strong>(a) Include in travel times</strong></p>
+<ul>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - travel to hospital includes everything up to release of vehicle (release of stratecher, cleaning of vehicle and return)</li>
+</ul>
+<p><strong>(b) Assume 0</strong></p>
+<ul>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - no wait time for calls to be answered by call handler</li>
+</ul>
+<p><strong>(c) Deterministic varying by location/priority/etc.</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Time</th>
+<th>Varies by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span></td>
+<td>Preparation time</td>
+<td>Initial location of vehicles (i.e., at base or on the road)</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></td>
+<td>On-site time</td>
+<td>Call location, and whether transport to hospital is required</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span></td>
+<td>Drop-off time</td>
+<td>Hospital, and call priority</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span></td>
+<td>Time betewen mterial replacements</td>
+<td>Vehicle type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>(d) Sampled from a distribution</strong>, can then vary by priority/day/etc.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Time</th>
+<th>Distribution</th>
+<th>Varies by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>“Time for local care and patient preparation for travel”</td>
+<td>Triangular</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span></td>
+<td>On-scene time and In-hospital time</td>
+<td>Lognormal</td>
+<td>Call type (4 types) and responder (2 skill levels)</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></td>
+<td>Time from allocation to mobilise, time at scene, and time to clear</td>
+<td>Empirical or lognormal</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></td>
+<td>Regulation time, preparation time, on site time, DTR time, drop off time</td>
+<td>Empirical</td>
+<td>Call type (2) and priority level (4)</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span></td>
+<td>Time at scene, discharge time at hospital, and call processing times</td>
+<td>Gamma</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span></td>
+<td>Empirical</td>
+<td>Dispatch time and time on scene</td>
+<td>Patient emergency status and conveyance status</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span></td>
+<td>Empirical</td>
+<td>Handover delay</td>
+<td>Patient emergency status</td>
+</tr>
+</tbody>
+</table>
+<p><strong>(e) Resource</strong></p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> - time from ED arrival to handover is an emerging parameter based on availability of resources… ED is modelled as a server with a given capacity and length of stay, have to queue and wait for resource.</li>
+</ul>
+<p><strong>Unclear</strong></p>
+<ul>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> (time on scene, time at hospital, time to replenish)</li>
+</ul>
 </div>
 </div>
 </div>
@@ -569,7 +820,17 @@ div.csl-indent {
 <li>Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)</li>
 <li>Use closest hospital</li>
 <li>Sample from distribution</li>
+<li>Pre-determined destination by emergency type</li>
+<li>Trace-driven</li>
 </ol>
+<p>In <span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span>, they discuss how it is common to select the closest hospital, but that <span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> say 50% of patients are not transported to the closest hospital, and <a href="http://doi.org/10.1287/mnsc.15.12.B608">Savas et al.&nbsp;1969</a> say factors include:</p>
+<ul>
+<li>Available capacity of hospitals</li>
+<li>Hospital having appropriate facilities (e.g., specialists, equipment)</li>
+<li>Patient choice due to economic resources</li>
+<li>Hospital policy for selectivity</li>
+</ul>
+<p><span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span> note that hospital selection is more critical in certain scenarios like mass casualty incidents.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -582,7 +843,36 @@ div.csl-indent {
 </div>
 <div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>TODO</p>
+<p><strong>(a) Not relevant</strong></p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></li>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span></li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> (one hospital)</li>
+</ul>
+<p><strong>(b) Use closest hospital</strong></p>
+<ul>
+<li><span class="citation" data-cites="lee_simulation-based_2012">Lee et al. (<a href="#ref-lee_simulation-based_2012" role="doc-biblioref">2012</a>)</span></li>
+<li><span class="citation" data-cites="van_buuren_evaluating_2012">Buuren et al. (<a href="#ref-van_buuren_evaluating_2012" role="doc-biblioref">2012</a>)</span></li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> (closest that supplies the required care for the emergency)</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> (except paediatric or maternity which go to a specialty hospital)</li>
+</ul>
+<p><strong>(c) Sample from distribution</strong></p>
+<ul>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> (empirical)</li>
+<li><span class="citation" data-cites="wu_using_2009">Wu and Hwang (<a href="#ref-wu_using_2009" role="doc-biblioref">2009</a>)</span> (multinomial - unclear if stratified, but do mention that determinants include distance from scene to hospital and that other factors are also important… but doesn’t appear to be stratified, think just describing context)</li>
+</ul>
+<p><strong>(d) Pre-determined destination by emergency type</strong></p>
+<ul>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span> (pre-determined schedule depending on nature and location of case, will be referred to specific centre)</li>
+</ul>
+<p><strong>(e) Trace-driven</strong></p>
+<ul>
+<li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span></li>
+</ul>
+<p><strong>Unclear</strong></p>
+<ul>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span></li>
+</ul>
 </div>
 </div>
 </div>
@@ -596,8 +886,8 @@ div.csl-indent {
 <li>How that changes with varying <strong>demand</strong></li>
 <li>How many <strong>crew</strong> (add or remove)</li>
 <li>How divide crew between <strong>bases</strong></li>
-<li>Where crew go after <strong>release</strong></li>
 <li><strong>Where</strong> bases are</li>
+<li>Where crew go after <strong>release</strong></li>
 <li><strong>Shift</strong> scheduling - working <strong>hours</strong> and <strong>location</strong> <em>E.g., optimal schedule… avoiding changes during high demand…</em></li>
 </ul>
 <p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
@@ -613,7 +903,135 @@ div.csl-indent {
 </div>
 <div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
+<p><strong>How that changes with varying demand</strong></p>
+<p><strong>How many crew (add or remove), how divide crew between bases, and where bases are</strong></p>
+<ul>
+<li><span class="citation" data-cites="gunes_simulation_2005">Gunes and Szechtman (<a href="#ref-gunes_simulation_2005" role="doc-biblioref">2005</a>)</span> - extend helicopter operation from 5 to 7 days per week</li>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> - adding new teams and bases</li>
+<li><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span> - adding new teams and bases</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - 150 or 200 teams, with independent or pooled fleet</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - changing locations</li>
+<li><span class="citation" data-cites="henderson_ambulance_2005">Henderson and Mason (<a href="#ref-henderson_ambulance_2005" role="doc-biblioref">2005</a>)</span> - vary ambulance allocations between bases</li>
+<li><span class="citation" data-cites="berlin_mathematical_1974">Berlin and Liebman (<a href="#ref-berlin_mathematical_1974" role="doc-biblioref">1974</a>)</span></li>
+<li><span class="citation" data-cites="uyeno_practical_1984">Uyeno and Seeberg (<a href="#ref-uyeno_practical_1984" role="doc-biblioref">1984</a>)</span></li>
+<li><span class="citation" data-cites="lee_simulation-based_2012">Lee et al. (<a href="#ref-lee_simulation-based_2012" role="doc-biblioref">2012</a>)</span></li>
+</ul>
+<p><strong>Where crew go after release</strong> (<span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span> refer to this as dynamic/multi-period redeployment)</p>
+<ul>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> (e.g., system where don’t send team to a base that already has one)</li>
+<li><span class="citation" data-cites="van_buuren_evaluating_2012">Buuren et al. (<a href="#ref-van_buuren_evaluating_2012" role="doc-biblioref">2012</a>)</span> (test different strategies to keep vehicles well distributed)</li>
+<li><span class="citation" data-cites="maxwell_ambulance_2009">Maxwell et al. (<a href="#ref-maxwell_ambulance_2009" role="doc-biblioref">2009</a>)</span></li>
+</ul>
+<p><strong>Shift scheduling</strong></p>
+<ul>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - vary times (all shifts start/end at 7, 8, 9, etc.)</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - change start time of private ambulances (7am, 9am, 10am)</li>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> - test new schdule that avoids shift changes during high demand periods to reduce overtime</li>
+</ul>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="shifts" class="level2">
+<h2 class="anchored" data-anchor-id="shifts">Shifts</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - Shifts are 12 hours, initially 7-7. To represent reduced resources during night shift, half the vehicles will be available.</li>
+<li><span class="citation" data-cites="pinto_generic_2015">Pinto et al. (<a href="#ref-pinto_generic_2015" role="doc-biblioref">2015</a>)</span> - Resourcing levels based on schedule giving number of ambulance of each type at each base during given hour of the week</li>
+<li><span class="citation" data-cites="ingolfsson_simulation_2003">Ingolfsson et al. (<a href="#ref-ingolfsson_simulation_2003" role="doc-biblioref">2003</a>)</span> - Shift changes occur 6.30-8am, 4.30-6pm, except three units that begin 12h shift at 9am and 3pm - and also model another set of shifts too which mirror variations in call volume over time</li>
+<li><span class="citation" data-cites="kergosien_generic_2015">Kergosien et al. (<a href="#ref-kergosien_generic_2015" role="doc-biblioref">2015</a>)</span> - Assumes teams work each day on 8h shifts. Total 150-200 teams. Assigned teams and vehicles to time slots to respect standard working constraints (e.g., maximum shift length and lunch breaks). Number of paramedic teams on duty depends on time of day.</li>
+<li><span class="citation" data-cites="wei_lam_reducing_2014">Wei Lam et al. (<a href="#ref-wei_lam_reducing_2014" role="doc-biblioref">2014</a>)</span> - 10 private ambulances with shifts Monday to Saturday 8am to 8pm.</li>
+</ul>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="initialisation-bias" class="level2">
+<h2 class="anchored" data-anchor-id="initialisation-bias">Initialisation bias</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><span class="citation" data-cites="uyeno_practical_1984">Uyeno and Seeberg (<a href="#ref-uyeno_practical_1984" role="doc-biblioref">1984</a>)</span> - “starts at a time of day when congestion is very low, so no initialisation is necessary”</p>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="run-length-and-replications" class="level2">
+<h2 class="anchored" data-anchor-id="run-length-and-replications">Run length and replications</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <p>TODO</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sensitivity-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="sensitivity-analysis">Sensitivity analysis</h2>
+<ul>
+<li>Demand</li>
+<li>Processing times</li>
+<li>Number of resources</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="View studies">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View studies
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Demand</p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> change percentage see and treat and hear and treat</li>
+<li><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span> evaluate 10-100% increase in demand</li>
+<li><span class="citation" data-cites="iskander_simulation_1989">Iskander (<a href="#ref-iskander_simulation_1989" role="doc-biblioref">1989</a>)</span> test 25% reduction in calls</li>
+</ul>
+<p>Processing time</p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> reduce time in ED</li>
+<li><span class="citation" data-cites="iskander_simulation_1989">Iskander (<a href="#ref-iskander_simulation_1989" role="doc-biblioref">1989</a>)</span> test 50% reduction in dispatching time and 25% reduction in time on scene</li>
+</ul>
+<p>Number of resources</p>
+<ul>
+<li><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> increase the number of ambulances</li>
+</ul>
 </div>
 </div>
 </div>
@@ -629,6 +1047,9 @@ Aboueljinane, Lina, Zied Jemai, and Evren Sahin. 2012. <span>“Reducing Ambulan
 <div id="ref-aboueljinane_review_2013" class="csl-entry" role="listitem">
 Aboueljinane, L., E. Sahin, and Z. Jemai. 2013. <span>“A Review on Simulation Models Applied to Emergency Medical Service Operations.”</span> <em>Computers &amp; Industrial Engineering</em> 66 (4): 734–50. <a href="https://doi.org/10.1016/j.cie.2013.09.017">https://doi.org/10.1016/j.cie.2013.09.017</a>.
 </div>
+<div id="ref-aringhieri_integrated_2010" class="csl-entry" role="listitem">
+Aringhieri, Roberto. 2010. <span>“An Integrated <span>DE</span> and <span>AB</span> Simulation Model for <span>EMS</span> Management.”</span> <em>2010 <span>IEEE</span> <span>Workshop</span> on <span>Health</span> <span>Care</span> <span>Management</span> (<span>WHCM</span>)</em>, February, 1–6. <a href="https://doi.org/10.1109/WHCM.2010.5441260">https://doi.org/10.1109/WHCM.2010.5441260</a>.
+</div>
 <div id="ref-berlin_mathematical_1974" class="csl-entry" role="listitem">
 Berlin, Geoffrey N., and Jon C. Liebman. 1974. <span>“Mathematical Analysis of Emergency Ambulance Location.”</span> <em>Socio-Economic Planning Sciences</em> 8 (6): 323–28. <a href="https://doi.org/10.1016/0038-0121(74)90036-6">https://doi.org/10.1016/0038-0121(74)90036-6</a>.
 </div>
@@ -641,11 +1062,17 @@ Fonseca, Martina, Jonathan Pearson, and NHS England. 2025. <span>“Discrete Eve
 <div id="ref-gigante_study_2022" class="csl-entry" role="listitem">
 Gigante, Rodrigo Luiz, and Aníbal Tavares de Azevedo. 2022. <span>“Study of the Impact of the Start Time of Work Shift on the Efficiency of an Emergency System Through a Simulation Model of Discrete Events.”</span> <em>Gestão &amp; Produção</em> 29: e4421. https://doi.org/<a href="https://doi.org/10.1590/1806-9649-2022v29e4421">https://doi.org/10.1590/1806-9649-2022v29e4421</a>.
 </div>
+<div id="ref-gunes_simulation_2005" class="csl-entry" role="listitem">
+Gunes, E., and R. Szechtman. 2005. <span>“A Simulation Model of a Helicopter Ambulance Service.”</span> <em>Proceedings of the <span>Winter</span> <span>Simulation</span> <span>Conference</span>, 2005.</em>, December, 7 pp.–. <a href="https://doi.org/10.1109/WSC.2005.1574344">https://doi.org/10.1109/WSC.2005.1574344</a>.
+</div>
 <div id="ref-henderson_ambulance_2005" class="csl-entry" role="listitem">
 Henderson, Shane G., and Andrew J. Mason. 2005. <span>“Ambulance <span>Service</span> <span>Planning</span>: <span>Simulation</span> and <span>Data</span> <span>Visualisation</span>.”</span> In <em>Operations <span>Research</span> and <span>Health</span> <span>Care</span></em>, vol. 70. Springer US. <a href="https://doi.org/10.1007/1-4020-8066-2_4">https://doi.org/10.1007/1-4020-8066-2_4</a>.
 </div>
 <div id="ref-ingolfsson_simulation_2003" class="csl-entry" role="listitem">
 Ingolfsson, A, E Erkut, and S Budge. 2003. <span>“Simulation of Single Start Station for <span>Edmonton</span> <span>EMS</span>.”</span> <em>Journal of the Operational Research Society</em> 54 (7): 736–46. <a href="https://doi.org/10.1057/palgrave.jors.2601574">https://doi.org/10.1057/palgrave.jors.2601574</a>.
+</div>
+<div id="ref-iskander_simulation_1989" class="csl-entry" role="listitem">
+Iskander, W. H. 1989. <span>“Simulation Modeling for Emergency Medical Service Systems.”</span> <em>Proceedings of the 21st Conference on <span>Winter</span> Simulation</em> (New York, NY, USA), <span>WSC</span> ’89, October, 1107–11. <a href="https://doi.org/10.1145/76738.76879">https://doi.org/10.1145/76738.76879</a>.
 </div>
 <div id="ref-kergosien_generic_2015" class="csl-entry" role="listitem">
 Kergosien, Y., V. Bélanger, P. Soriano, M. Gendreau, and A. Ruiz. 2015. <span>“A Generic and Flexible Simulation-Based Analysis Tool for <span>EMS</span> Management.”</span> <em>International Journal of Production Research</em> 53 (24): 7299–316. <a href="https://doi.org/10.1080/00207543.2015.1037405">https://doi.org/10.1080/00207543.2015.1037405</a>.
@@ -661,6 +1088,12 @@ Pinto, L. R., P. M. S. Silva, and T. P. Young. 2015. <span>“A Generic Method t
 </div>
 <div id="ref-silva_emergency_2010" class="csl-entry" role="listitem">
 Silva, Pedro Marinho Sizenando, and Luiz Ricardo Pinto. 2010. <span>“Emergency Medical Systems Analysis by Simulation and Optimization.”</span> <em>Proceedings of the 2010 <span>Winter</span> <span>Simulation</span> <span>Conference</span></em>, December, 2422–32. <a href="https://doi.org/10.1109/WSC.2010.5678938">https://doi.org/10.1109/WSC.2010.5678938</a>.
+</div>
+<div id="ref-uyeno_practical_1984" class="csl-entry" role="listitem">
+Uyeno, Dean H., and C. Seeberg. 1984. <span>“A Practical Methodology for Ambulance Location.”</span> <em>SIMULATION</em> 43 (2): 79–87. <a href="https://doi.org/10.1177/003754978404300202">https://doi.org/10.1177/003754978404300202</a>.
+</div>
+<div id="ref-wears_simulation_1993" class="csl-entry" role="listitem">
+Wears, Robert L., and Charles N. Winton. 1993. <span>“Simulation Modeling of Prehospital Trauma Care.”</span> <em>Proceedings of the 25th Conference on <span>Winter</span> Simulation</em> (New York, NY, USA), <span>WSC</span> ’93, December, 1216–24. <a href="https://doi.org/10.1145/256563.257008">https://doi.org/10.1145/256563.257008</a>.
 </div>
 <div id="ref-wei_lam_reducing_2014" class="csl-entry" role="listitem">
 Wei Lam, Sean Shao, Zhong Cheng Zhang, Hong Choon Oh, Yih Ying Ng, Win Wah, and Marcus Eng Hock Ong. 2014. <span>“Reducing <span>Ambulance</span> <span>Response</span> <span>Times</span> <span>Using</span> <span>Discrete</span> <span>Event</span> <span>Simulation</span>.”</span> <em>Prehospital Emergency Care</em> 18 (2): 207–16. <a href="https://doi.org/10.3109/10903127.2013.836266">https://doi.org/10.3109/10903127.2013.836266</a>.
