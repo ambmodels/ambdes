@@ -82,6 +82,8 @@ Assign zones to generated calls:
     * Transfer calls: assigned to hospital (85%) or home (15%) - home coordinates drawn randomly.
 * @wei_lam_reducing_2014 - call locations within each district sampled from an **empirical distribution** for each **4‑hour interval over the week**.
 
+*Empirical is often used when data doesn't fit well to a distribution. An empirical distribution will divide the data into groups and calculate the probabilities of each.*
+
 Unclear call location mechanism:
 
 * @aboueljinane_reducing_2012
@@ -299,9 +301,46 @@ c. **Deterministic** varying by location / priority / etc.
 d. Sampled from a **distribution**, can then vary by priority / day / etc.
 e. **Resource** (time from ED arrival to handover emerging as ED modelled as server with given capacity and LOS)
 
+*Note: More aggregation means less scope to explore scenarios where change specific times*
+
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+**(a) Include in travel times**
+
+* @gigante_study_2022 - travel to hospital includes everything up to release of vehicle (release of stratecher, cleaning of vehicle and return)
+
+**(b) Assume 0**
+
+* @kergosien_generic_2015 - no wait time for calls to be answered by call handler
+
+**(c) Deterministic varying by location/priority/etc.**
+
+| Study | Time | Varies by |
+| - | - | - |
+| @maxwell_ambulance_2009 | Preparation time | Initial location of vehicles (i.e., at base or on the road) |
+| @ingolfsson_simulation_2003 | On-site time | Call location, and whether transport to hospital is required |
+| @ingolfsson_simulation_2003 | Drop-off time | Hospital, and call priority |
+| @silva_emergency_2010 | Time betewen mterial replacements | Vehicle type |
+
+**(d) Sampled from a distribution**, can then vary by priority/day/etc.
+
+| Study | Time | Distribution | Varies by |
+| - | - | - | - |
+| @gigante_study_2022 | "Time for local care and patient preparation for travel" | Triangular | - |
+| @wu_using_2009 | On-scene time and In-hospital time | Lognormal | Call type (4 types) and responder (2 skill levels) |
+| @fonseca_discrete_2025 | Time from allocation to mobilise, time at scene, and time to clear | Empirical or lognormal | - |
+| @aboueljinane_reducing_2012 | Regulation time, preparation time, on site time, DTR time, drop off time | Empirical | Call type (2) and priority level (4) |
+| @kergosien_generic_2015 | Time at scene, discharge time at hospital, and call processing times | Gamma | - |
+| @wei_lam_reducing_2014 | Empirical | Dispatch time and time on scene | Patient emergency status and conveyance status |
+| @wei_lam_reducing_2014 | Empirical | Handover delay | Patient emergency status |
+
+**(e) Resource**
+
+* @fonseca_discrete_2025 - time from ED arrival to handover is an emerging parameter based on availability of resources... ED is modelled as a server with a given capacity and length of stay, have to queue and wait for resource.
+
+**Unclear**
+
+* @pinto_generic_2015 (time on scene, time at hospital, time to replenish)
 
 :::
 
@@ -312,10 +351,49 @@ TODO
 a. Not relevant - no choice involved (e.g., one hospital, or simple system with no individual hospital modelling)
 b. Use closest hospital
 c. Sample from distribution
+d. Pre-determined destination by emergency type
+e. Trace-driven
+
+In @aboueljinane_review_2013, they discuss how it is common to select the closest hospital, but that @ingolfsson_simulation_2003 say 50% of patients are not transported to the closest hospital, and [Savas et al. 1969](http://doi.org/10.1287/mnsc.15.12.B608) say factors include:
+
+* Available capacity of hospitals
+* Hospital having appropriate facilities (e.g., specialists, equipment)
+* Patient choice due to economic resources
+* Hospital policy for selectivity
+
+@aboueljinane_review_2013 note that hospital selection is more critical in certain scenarios like mass casualty incidents.
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+**(a) Not relevant**
+
+* @fonseca_discrete_2025
+* @gigante_study_2022
+* @aboueljinane_reducing_2012 (one hospital)
+
+**(b) Use closest hospital**
+
+* @lee_simulation-based_2012
+* @van_buuren_evaluating_2012
+* @pinto_generic_2015 (closest that supplies the required care for the emergency)
+* @wei_lam_reducing_2014 (except paediatric or maternity which go to a specialty hospital)
+
+**(c) Sample from distribution**
+
+* @ingolfsson_simulation_2003 (empirical)
+* @wu_using_2009 (multinomial - unclear if stratified, but do mention that determinants include distance from scene to hospital and that other factors are also important... but doesn't appear to be stratified, think just describing context)
+
+**(d) Pre-determined destination by emergency type**
+
+* @silva_emergency_2010 (pre-determined schedule depending on nature and location of case, will be referred to specific centre)
+
+**(e) Trace-driven**
+
+* @henderson_ambulance_2005
+
+**Unclear**
+
+* @kergosien_generic_2015
 
 :::
 
@@ -330,15 +408,53 @@ Scenarios:
 * How that changes with varying **demand**
 * How many **crew** (add or remove)
 * How divide crew between **bases**
-* Where crew go after **release**
 * **Where** bases are
+* Where crew go after **release**
 * **Shift** scheduling - working **hours** and **location** *E.g., optimal schedule… avoiding changes during high demand...*
 
 Less relevant: dispatching rules (policy change), destination hospital (mass casualty)
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+**How that changes with varying demand**
+
+**How many crew (add or remove), how divide crew between bases, and where bases are**
+
+* @gunes_simulation_2005 - extend helicopter operation from 5 to 7 days per week
+* @ingolfsson_simulation_2003 - adding new teams and bases
+* @aboueljinane_reducing_2012 - adding new teams and bases
+* @kergosien_generic_2015 - 150 or 200 teams, with independent or pooled fleet
+* @wei_lam_reducing_2014 - changing locations
+* @henderson_ambulance_2005 - vary ambulance allocations between bases
+* @berlin_mathematical_1974
+* @uyeno_practical_1984
+* @lee_simulation-based_2012
+
+**Where crew go after release** (@aboueljinane_review_2013 refer to this as dynamic/multi-period redeployment)
+
+* @ingolfsson_simulation_2003 (e.g., system where don't send team to a base that already has one)
+* @van_buuren_evaluating_2012 (test different strategies to keep vehicles well distributed)
+* @maxwell_ambulance_2009
+
+**Shift scheduling**
+
+* @gigante_study_2022 - vary times (all shifts start/end at 7, 8, 9, etc.)
+* @wei_lam_reducing_2014 - change start time of private ambulances (7am, 9am, 10am)
+* @ingolfsson_simulation_2003 - test new schdule that avoids shift changes during high demand periods to reduce overtime
+
+:::
+
+<br>
+
+## Shifts
+
+::: {.callout-note title="View studies" collapse="true"}
+
+* @gigante_study_2022 - Shifts are 12 hours, initially 7-7. To represent reduced resources during night shift, half the vehicles will be available.
+* @pinto_generic_2015 - Resourcing levels based on schedule giving number of ambulance of each type at each base during given hour of the week
+* @ingolfsson_simulation_2003 - Shift changes occur 6.30-8am, 4.30-6pm, except three units that begin 12h shift at 9am and 3pm - and also model another set of shifts too which mirror variations in call volume over time
+* @kergosien_generic_2015 - Assumes teams work each day on 8h shifts. Total 150-200 teams. Assigned teams and vehicles to time slots to respect standard working constraints (e.g., maximum shift length and lunch breaks). Number of paramedic teams on duty depends on time of day.
+* @wei_lam_reducing_2014 - 10 private ambulances with shifts Monday to Saturday 8am to 8pm.
 
 :::
 
@@ -359,5 +475,30 @@ TODO
 ::: {.callout-note title="View studies" collapse="true"}
 
 TODO
+
+:::
+
+## Sensitivity analysis
+
+* Demand
+* Processing times
+* Number of resources
+
+::: {.callout-note title="View studies" collapse="true"}
+
+Demand
+
+* @fonseca_discrete_2025 change percentage see and treat and hear and treat
+* @silva_emergency_2010 evaluate 10-100% increase in demand
+* @iskander_simulation_1989 test 25% reduction in calls
+
+Processing time
+
+* @fonseca_discrete_2025 reduce time in ED
+* @iskander_simulation_1989 test 50% reduction in dispatching time and 25% reduction in time on scene
+
+Number of resources
+
+* @fonseca_discrete_2025 increase the number of ambulances
 
 :::
