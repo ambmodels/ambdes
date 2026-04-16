@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Criteria – Ambulance DES</title>
+<title>Best practice criteria – Ambulance DES</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -112,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Criteria</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./criteria.html">Best practice criteria</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -156,6 +191,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./criteria.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Best practice criteria</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./qa.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quality assurance</span></a>
   </div>
@@ -171,7 +212,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Criteria</h1>
+<h1 class="title">Best practice criteria</h1>
 </div>
 
 
@@ -188,14 +229,647 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>STRESS</p>
-<p>STARS reproducibility recommendations</p>
-<p>STARS reuse framework</p>
-<p>NHS Levels of RAP</p>
-<p>DES RAP Book Verification and Validation checklist</p>
-<p>HSMA model implementation checklist</p>
+<p>This page documents the best practice criteria we are aiming to adhere to across this work as part of our <a href="./qa.html">quality assurance</a>.</p>
+<p>We include the raw Markdown checklists that you can copy and adapt for your own projects, along with links to the corresponding GitHub issues for this project where progress against each checklist is tracked.</p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Is there any others worth including?</li>
+</ul>
+</div>
+<p><br></p>
+<section id="stress-des" class="level2">
+<h2 class="anchored" data-anchor-id="stress-des">STRESS-DES</h2>
+<p>STRESS-DES is a reporting checklist for discrete-event simulation studies. It helps ensure the model, data, assumptions, experimentation, and implementation are described clearly enough for others to <strong>replicate</strong> the work.</p>
+<blockquote class="blockquote">
+<p><strong>Replicable:</strong> New code based on described methods produces consistent results. Gives confidence in results, their validity and reliability.</p>
+</blockquote>
+<p><a href="https://github.com/ambmodels/ambdes/issues/13" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>**Source:** Monks, T., Currie, C. S. M., Onggo, B. S., Robinson, S., Kunc, M., &amp; Taylor, S. J. E. (2019). Strengthening the reporting of empirical simulation studies: Introducing the STRESS guidelines. Journal of Simulation, 13(1), 55–67. https://doi.org/10.1080/17477778.2018.1442155</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Objectives</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **1.1 Purpose of the model**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Explain the background and objectives for the model</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **1.2 Model outputs**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Define all quantitative performance measures that are reported, using equations where necessary.  Specify how and when they are calculated during the model run along with how any measures of error such as confidence intervals are calculated.</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **1.3 Experimentation aims**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>If the model has been used for experimentation, state the objectives that it was used to investigate.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>(A) Scenario based analysis – Provide a name and description for each scenario, providing a rationale for the choice of scenarios and ensure that item 2.3 (below) is completed.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>(B) Design of experiments – Provide details of the overall design of the experiments with reference to performance measures and their parameters (provide further details in data below).<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>(C) Simulation Optimisation – (if appropriate) Provide full details of what is to be optimised, the parameters that were included and the algorithm(s) that was be used.  Where possible provide a citation of the algorithm(s).</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Logic</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.1 Base model overview diagram**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Describe the base model using appropriate diagrams and description.  This could include one or more process flow, activity cycle or equivalent diagrams sufficient to describe the model to readers.  Avoid complicated diagrams in the main text.  The goal is to describe the breadth and depth of the model with respect to the system being studied.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.2 Base model logic**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Give details of the base model logic. Give additional model logic details sufficient to communicate to the reader how the model works.</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.3 Scenario logic**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Give details of the logical difference between the base case model and scenarios (if any).  This could be incorporated as text or where differences are substantial could be incorporated in the same manner as 2.2.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.4 Algorithms**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Provide further detail on any algorithms in the model that (for example) mimic complex or manual processes in the real world (i.e.  scheduling of arrivals/ appointments/ operations/ maintenance, operation of a conveyor system, machine breakdowns, etc.). Sufficient detail should be included (or referred to in other published work) for the algorithms to be reproducible.  Pseudo-code may be used to describe an algorithm.</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.5.1 Components - entities**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Give details of all entities within the simulation including a description of their role in the model and a description of all their attributes.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.5.2 Components - activities**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Describe the activities that entities engage in within the model. Provide details of entity routing into and out of the activity.</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.5.3 Components - resources**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>List all the resources included within the model and which activities make use of them.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.5.4 Components - queues**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Give details of the assumed queuing discipline used in the model (e.g. First in First Out, Last in First Out, prioritisation, etc.). Where one or more queues have a different discipline from the rest, provide a list of queues, indicating the queuing discipline used for each.  If reneging, balking or jockeying occur, etc., provide details of the rules. Detail any delays or capacity constraints on the queues.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **2.5.5 Components - entry/exit points**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Give details of the model boundaries i.e. all arrival and exit points of entities.  Detail the arrival mechanism (e.g. ‘thinning’ to mimic a non-homogenous Poisson process or balking)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **3.1 Data sources**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>List and detail all data sources. Sources may include:<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Interviews with stakeholders,<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Samples of routinely collected data,<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Prospectively collected samples for the purpose of the simulation study,<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Public domain data published in either academic or organisational literature.   Provide, where possible, the link and DOI to the data or reference to published literature.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>All data source descriptions should include details of the sample size, sample date ranges and use within the study.</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **3.2 Pre-processing**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Provide details of any data manipulation that has taken place before its use in the simulation, e.g. interpolation to account for missing data or the removal of outliers.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **3.3 Input parameters**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>List all input variables in the model. Provide a description of their use and include parameter values.  For stochastic inputs provide details of any continuous, discrete or empirical distributions used along with all associated parameters.  Give details of all time dependent parameters and correlation.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Clearly state:<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Base case data<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Data use in experimentation, where different from the base case.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Where optimisation or design of experiments has been used, state the range of values that parameters can take.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>• Where theoretical distributions are used, state how these were selected and prioritised above other candidate distributions.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **3.4 Assumptions**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Where data or knowledge of the real system is unavailable what assumptions are included in the model?  This might include parameter values, distributions or routing logic within the model.</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## Experimentation</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **4.1 Initialisation**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Report if the system modelled is terminating or non-terminating.  State if a warm-up period has been used, its length and the analysis method used to select it.  For terminating systems state the stopping condition.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State what if any initial model conditions have been included, e.g., pre-loaded queues and activities.  Report whether initialisation of these variables is deterministic or stochastic.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **4.2 Run length**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Detail the run length of the simulation model and time units.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **4.3 Estimation approach**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the method used to account for the stochasticity: For example, two common methods are multiple replications or batch means. Where multiple replications have been used, state the number of replications and for batch means, indicate the batch length and whether the batch means procedure is standard, spaced or overlapping. For both procedures provide a justification for the methods used and the number of replications/size of batches.</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Implementation</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **5.1 Software or programming language**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the operating system and version and build number.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the name, version and build number of commercial or open source DES software that the model is implemented in.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the name and version of general-purpose programming languages used (e.g. Python 3.5).<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Where frameworks and libraries have been used provide all details including version numbers.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **5.2 Random sampling**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the algorithm used to generate random samples in the software/programming language used e.g. Mersenne Twister.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>If common random numbers are used, state how seeds (or random number streams) are distributed among sampling processes.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **5.3 Model execution**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the event processing mechanism used e.g. three phase, event, activity, process interaction.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>*Note that in some commercial software the event processing mechanism may not be published. In these cases authors should adhere to item 5.1 software recommendations.*<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State all priority rules included if entities/activities compete for resources.<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>If the model is parallel, distributed and/or use grid or cloud computing, etc., state and preferably reference the technology used.  For parallel and distributed simulations the time management algorithms used.  If the HLA is used then state the version of the standard, which run-time infrastructure (and version), and any supporting documents (FOMs, etc.)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **5.4 System specification**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>State the model run time and specification of hardware used.  This is particularly important for large scale models that require substantial computing power.  For parallel, distributed and/or use grid or cloud computing, etc. state the details of all systems used in the implementation (processors, network, etc.)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Code access</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> **6.1 Computer model sharing statement**<span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span>Describe how someone could obtain the model described in the paper, the simulation software and any other associated software (or hardware) needed to reproduce the results.  Provide, where possible, the link and DOIs to these.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="stars-reproducibility-recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="stars-reproducibility-recommendations">STARS reproducibility recommendations</h2>
+<p>These recommendations focus on making simulations <strong>reproducible</strong>, derived from computational reproducibility assessments of published healthcare DES models.</p>
+<blockquote class="blockquote">
+<p><strong>Reproducible:</strong> Running code regenerates the published results. Verifies code is working as expected and increases trust.</p>
+</blockquote>
+<p><a href="https://github.com/ambmodels/ambdes/issues/14" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>**Source:** Heather, A., Monks, T., Harper, A., Mustafee, N., &amp; Mayne, A. (2025). On the reproducibility of discrete-event simulation studies in health research: an empirical study using open models. Journal of Simulation, 1–25. https://doi.org/10.1080/17477778.2025.2552177</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommendations to support reproducibility</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Set-up:</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ⭐ Share code with an open licence</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Link publication to a specific version of the code</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> List dependencies and versions</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Running the model:</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ⭐ Provide code for all scenarios and sensitivity analyses</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ⭐ Ensure model parameters are correct</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Control randomness</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Outputs:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ⭐ Include code to generate the tables, figures and other reported results</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ⭐ Include code to calculate all required model outputs</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommendations to support troubleshooting and reuse</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>Design:</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Separate model code from applications</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Avoid hard-coded parameters</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Minimise code duplication</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>Clarity:</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Comment sufficiently</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Ensure clarity and consistency in the model results tables</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Include run instructions</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> State run time and machine specifications</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>Functionality:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Address large file sizes</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Avoid excessive output files</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Save outputs to a file</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Optimise model run time</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="stars-reuse-framework" class="level2">
+<h2 class="anchored" data-anchor-id="stars-reuse-framework">STARS reuse framework</h2>
+<p>This framework focuses on making DES models more <strong>reusable</strong>.</p>
+<blockquote class="blockquote">
+<p><strong>Reusable:</strong> Code can be adapted and used in next contexts. Saves time and increases impact.</p>
+</blockquote>
+<p><a href="https://github.com/ambmodels/ambdes/issues/15" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>**Source:** Monks, T., Harper, A., &amp; Mustafee, N. (2025). Towards sharing tools and artefacts for reusable simulations in healthcare. Journal of Simulation, 19(6), 619–638. https://doi.org/10.1080/17477778.2024.2347882</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Essential components</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Open licence</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Dependency management</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> FOSS model</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Minimum documentation - minimal instructions (e.g. in README) that overview (a) what model does, (b) how to install and run model to obtain results, and (c) how to vary parameters to run new experiments</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> ORCID</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Citation information</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Remote code repository</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Open science archive</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Optional components</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Enhanced documentation - Open and high quality documentation on how the model is implemented and works (e.g. via notebooks and markdown files, brought together using software like Quarto and Jupyter Book). Suggested content includes:</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Plain english summary of project and model</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Clarifying licence</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Citation instructions</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Contribution instructions</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Model installation instructions</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Structured code walk through of model</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Documentation of modelling cycle using TRACE</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Annotated simulation reporting guidelines</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ss">  * </span>Clear description of model validation including its intended purpose</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Documentation hosting</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Online coding environment</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Model interface</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Web app hosting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="nhs-levels-of-rap" class="level2">
+<h2 class="anchored" data-anchor-id="nhs-levels-of-rap">NHS Levels of RAP</h2>
+<p>This framework provides a staged path for NHS teams to implement RAPs into their analytical work.</p>
+<p><a href="https://github.com/ambmodels/ambdes/issues/16" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="an">The following framework is from the NHS RAP Community of Practice:</span><span class="co"> **[NHS RAP Levels of RAP Framework](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/levels_of_RAP/)**.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>It is © 2024 Crown Copyright (NHS England), shared under the terms of the <span class="co">[</span><span class="ot">Open Government 3.0 licence</span><span class="co">](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)</span>.</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>The specific version of the framework copied below is that from commit <span class="co">[</span><span class="ot">2549256</span><span class="co">](https://github.com/NHSDigital/rap-community-of-practice/commit/2549256498886d6d7ea4cdb736e2a2864c8bb461)</span> (9th September 2024).</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🥉 Baseline</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>RAP fundamentals offering resilience against future change.</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Data produced by code in an open-source language (e.g., Python, R).</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code is version controlled (see <span class="co">[</span><span class="ot">Git basics</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/git/introduction-to-git/)</span> and <span class="co">[</span><span class="ot">using Git collaboratively</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/git/using-git-collaboratively/)</span> guides).</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Repository includes a README.md file (or equivalent) that clearly details steps a user must follow to reproduce the code (use <span class="co">[</span><span class="ot">NHS Open Source Policy section on Readmes</span><span class="co">](https://github.com/nhsx/open-source-policy/blob/main/open-source-policy.md#b-readmes)</span> as a guide).</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code has been <span class="co">[</span><span class="ot">peer reviewed</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/implementing_RAP/workflow/code-review/)</span>.</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code is <span class="co">[</span><span class="ot">published in the open</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/implementing_RAP/publishing_code/how-to-publish-your-code-in-the-open/)</span> and linked to &amp; from accompanying publication (if relevant).</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🥈 Silver</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>Implementing best practice by following good analytical and software engineering standards.</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>Meeting all of the above requirements, plus:</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Outputs are produced by code with minimal manual intervention.</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code is well-documented including user guidance, explanation of code structure &amp; methodology and <span class="co">[</span><span class="ot">docstrings</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/python-functions/#documentation)</span> for functions.</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code is well-organised following <span class="co">[</span><span class="ot">standard directory format</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/project-structure-and-packaging/)</span>.</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Reusable functions</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/python-functions/)</span> and/or classes are used where appropriate.</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code adheres to agreed coding standards (e.g PEP8, <span class="co">[</span><span class="ot">style guide for Pyspark</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/pyspark/pyspark-style-guide/)</span>).</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Pipeline includes a testing framework (<span class="co">[</span><span class="ot">unit tests</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/unit-testing/)</span>, <span class="co">[</span><span class="ot">back tests</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/backtesting/)</span>).</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Repository includes dependency information (e.g. <span class="co">[</span><span class="ot">requirements.txt</span><span class="co">](https://pip.pypa.io/en/stable/user_guide/#requirements-files)</span>, <span class="co">[</span><span class="ot">PipFile</span><span class="co">](https://github.com/pypa/pipfile/blob/main/README.rst)</span>, <span class="co">[</span><span class="ot">environment.yml</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/virtual-environments/conda/)</span>).</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Logs</span><span class="co">](https://nhsdigital.github.io/rap-community-of-practice/training_resources/python/logging-and-error-handling/)</span> are automatically recorded by the pipeline to ensure outputs are as expected.</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Data is handled and output in a <span class="co">[</span><span class="ot">Tidy data format</span><span class="co">](https://medium.com/@kimrodrikwa/untidy-data-a90b6e3ebe4c)</span>.</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🥇 Gold </span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>Analysis as a product to further elevate your analytical work and enhance its reusability to the public.</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>Meeting all of the above requirements, plus:</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Code is fully <span class="co">[</span><span class="ot">packaged</span><span class="co">](https://packaging.python.org/en/latest/)</span>.</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Repository automatically runs tests etc. via CI/CD or a different integration/deployment tool e.g. <span class="co">[</span><span class="ot">GitHub Actions</span><span class="co">](https://docs.github.com/en/actions)</span>.</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Process runs based on event-based triggers (e.g., new data in database) or on a schedule.</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Changes to the RAP are clearly signposted. E.g. a changelog in the package, releases etc. (See gov.uk info on <span class="co">[</span><span class="ot">Semantic Versioning</span><span class="co">](https://github.com/alphagov/govuk-frontend/blob/main/docs/contributing/versioning.md)</span>).</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="des-rap-book-verification-and-validation-checklist" class="level2">
+<h2 class="anchored" data-anchor-id="des-rap-book-verification-and-validation-checklist">DES RAP Book verification and validation checklist</h2>
+<p>This checklist translates verification and validation guidance from the simulation literature into concrete, practical steps to build confidence in DES models.</p>
+<p><a href="https://github.com/ambmodels/ambdes/issues/17" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>**Source**: https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/verification_validation.html from Heather, A., Monks, T., Mustafee, N., Harper, A., Alidoost, F., Challen, R., &amp; Slater, T. (2025). DES RAP Book: Reproducible Discrete-Event Simulation in Python and R. https://github.com/pythonhealthdatascience/des_rap_book. https://doi.org/10.5281/zenodo.17094155.</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Verification</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Desk checking</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Systematically check code.</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Keep documentation complete and up-to-date.</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Maintain an environment with all required packages.</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Lint code.</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Get code review.</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>Debugging</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write tests - they'll help for spotting bugs.</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> During model development, monitor the model using logs - they'll help with spotting bugs.</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Use GitHub issues to record bugs as they arise, so they aren't forgotten and are recorded for future reference.</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>Assertion checking</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Add checks in the model which cause errors if something doesn't look right.</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write tests which check that assertions hold true.</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>Special input testing</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> If there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write stress tests which simulate worst-case load and ensure model is robust under heavy demand.</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write tests with little or no activity/waits/service.</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>Bottom-up testing</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write unit tests for each individual component of the model.</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Once individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>Regression testing</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Write tests early.</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Run tests regularly (locally or automatically via. GitHub actions).</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>Mathematical proof of correctness</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> For parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Validation</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>Conceptual model validation</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Document and justify all modeling assumptions.</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Review the conceptual model with people familiar with the real system to assess completeness and accuracy.</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>Input data validation</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Check the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Ensure you have performed appropriate input modelling steps when choosing your distributions.</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>Graphical comparison</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Create time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>Statistical comparison</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Collect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>Turing test</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Collect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>Predictive validation</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Use historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation's predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Consider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Use graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>Animation visualisation</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Create an animation to help with validation (as well as communication and reuse).</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>Comparison testing</span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> If you have multiple models of the same system, compare them!</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>Face validation</span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Present key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results "look right". Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.</span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>Experimentation validation</span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Use a warm-up period.</span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Use statistical methods to determine sufficient run length and number of replications.</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Perform sensitivity analysis to test how changes in input parameters affect outputs.</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>Cross validation</span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="va">[ ]</span> Search for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="hsma-model-readiness-checklist" class="level2">
+<h2 class="anchored" data-anchor-id="hsma-model-readiness-checklist">HSMA model readiness checklist</h2>
+<p>This staged checklist provides guidance for deciding whether a DES model is ready enough to support real-world decision-making.</p>
+<p><a href="https://github.com/ambmodels/ambdes/issues/18" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>**Source:** Model Readiness Checklist. Sammi Rosser &amp; Amy Heather. HSMA - the little book of DES. https://des.hsma.co.uk/model_checklist.html</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bronze</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualisations</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>*Creating simple visualisations of a few key areas is one of the best ways to spot unexpected behaviour and quickly validate key parts of your model logic. They allow you to quickly verify whether something looks unusually high or low, or if patterns are intuitively 'wrong'.*</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>Visualise the following:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Arrivals over time</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This could be done as a dot/scatter plot with time on the x axis and each dot representing the arrival of an individual, with separate runs represented on the y axis, or as a heatmap*</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This helps to see if there are any unexpectedly large gaps between arrivals and if the general pace of arrivals over different time periods matches your understanding of the system*</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*You could also do this recurrently at relevant timescale if recurrent patterns of arrivals - e.g if you are using time-dependent arrival generators to reflect patterns within a day, or across days/weeks/months. You could take an existing dotplot, filter it to a single run, and make the y axis instead reflect the day of week, for example.*</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Resource use over time</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This can be done overall as a line plot with simulation or clock time on the x axis and number or percentage of resources in use over time*</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*You could also do this recurrently at relevant timescale if recurrent patterns of resource use - for example, if resources are obstructed in the evenings or at weekends*.</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Distributions of generated activity times **AND** generated inter-arrival times (one plot per activity or arrival generator).</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This could be done with a histogram, box plot, swarm plot or violin plot*</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This helps to check that the distribution of generated times roughly matches the real-world pattern, as well as checking for any implausibly long or short times*</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Queue lengths over time.</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This can be done with a line plot with simulation or clock time on the x axis and queue length on the y axis*</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This is useful for checking whether queues do build up, and if so, if they are implausibly large or small in comparison to the real system*</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### Core Logic Checks</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>*When you are doing these checks, you are really just looking for something being 'off'.*</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Watch the journey of several individuals (via logs or animations).</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*Do the journeys look 'right'? Do entities follow the paths you'd expect?*</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Review the code to check that time units have been used consistently throughout the code (e.g. time inputs don't swap from minutes to hours at any point).</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>*The following items can be robustly checked using [event logs](https://des.hsma.co.uk/event_logging.html).*</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>*However, you may be able to do some more basic checks with [console logs](https://des.hsma.co.uk/basic_debugging_tactics.html#using-simple-print-statements).*</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Check that all described stages demonstrate at least some activity during a sufficiently long, representative run.</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*For example, in a model where patients arrive, all patients are triaged, then **some** patients are advised by a nurse while others are treated by a doctor, before all patients are discharged, you would want to confirm that entities are reaching each of these stages (e.g. through [console logs](https://des.hsma.co.uk/basic_debugging_tactics.html#using-simple-print-statements)), or that resources at each stage show at least some utilisation (e.g. via the plot you generate), helping you identify if there is an issue with logic that decides which pathway entities follow*</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Manually check that the number of entities entering the model equals the number of leaving the model plus the number still in the model.</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*This ensures no entities are "lost" in queues with no output no sink.*</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Manually check that entities are never in two places at once.</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Manually check that resources are never simultaneously in use by two entities at once (or whatever variation is appropriate for your model).</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Manually check that resources are not used at times where they should be obstructed/unavailable (e.g. during breaks, evenings, weekends).</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="fu">### Robustness for decision-making</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Number of runs set to a **minimum of 30** (ideally more) for generating any metrics or other outputs that will be used for decision-making.</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Warm up length visually checked</span><span class="co">](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/output_analysis/length_warmup.html)</span> to be appropriate.</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reproducibility</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Add a random seed to the model, then test it by running the model twice with the same seed, and visually check outputs to confirm that the results do not change.</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key checks against the real system</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Number of entities arriving in simulation verified against historical patterns (averages sensible, distributions sensible).</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> If relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Generated activity times visually verified (averages sensible, distribution sensible).</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> If relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Visual check that there are no implausible activity lengths.</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> If necessary, apply a cap to generated activity times to resolve this.</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Visual check that there are no implausible inter-arrival times for entities</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> If necessary, apply a cap to generated inter-arrival times to resolve this.</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Visual check of KPI outputs against the historical baseline - do these look sensible and similar to historical data?</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="fu">### Process and Stakeholder Checks</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Approve the simulation process map with stakeholders.</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Check the scenario outputs with stakeholders - do they feel reasonable?</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Note that stakeholder responses to outputs shouldn't necessarily be taken as a definite right/wrong judgment on the model - but they may help to sense check or indicate areas for more attention.</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Documentation</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Write a readme that explains how to run the model, how to change parameters in the model, and gives a brief overview of the system being modelled.</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Include sufficient comments in your work to help people understand non-obvious elements of the code.</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Clearly document</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> data sources</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> assumptions</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> inputs</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> decisions - including any changes to the analytical plan or decisions made during analysis</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Document the versions of packages you have used</span><span class="co">](https://des.hsma.co.uk/stars.html#dependency-management)</span>, ideally using a requirements.txt or environment.yml file.</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Silver</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="fu">### Documentation</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Add <span class="co">[</span><span class="ot">docstrings</span><span class="co">](https://hsma-programme.github.io/h6_march_2025_forum_presentation/#/making-your-code-super-readable-with-docstrings)</span>.</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Complete a formal model reporting checklist (e.g <span class="co">[</span><span class="ot">STRESS-DES</span><span class="co">](https://des.hsma.co.uk/stress_des.html)</span>).</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="fu">### Code Review</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Have a code review undertaken by someone else (see <span class="co">[</span><span class="ot">the DES RAP book: peer review</span><span class="co">](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html)</span>).</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Automated Testing</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>Define <span class="co">[</span><span class="ot">formal automated tests</span><span class="co">](https://des.hsma.co.uk/tests.html)</span>:</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Model running successfully.</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Varying results are obtained when using different seeds and the same parameters.</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Identical results are obtained when the same seed and parameters are used.</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Number of entities entering the model equals the number of leaving the model plus the number still in the model. This ensures no entities are "lost" in queues with no output no sink.</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Utilisation never exceeds capacity (i.e. resources are never in use by multiple entities, unless allowed in your model).</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> All stages of the model show some activity (i.e. there are no 'orphaned' steps).</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Simple 'expected behaviour' when parameters are varied:</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Longer activity time = worse performance.</span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> More arrivals = longer queues.</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Write tests for behaviour under extreme conditions:</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Heavy demand.</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Little to no demand.</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reusability</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Add an <span class="co">[</span><span class="ot">Open Licence</span><span class="co">](https://des.hsma.co.uk/stars.html#open-licence)</span> to your repository</span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="fu">### Version Control</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Use version control for code (Git)</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Make the model available on a remote code hosting service (e.g. GitHub, BitBucket)</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model Robustness</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Undertake sensitivity analysis (i.e. check how much changes in model input variables affect output performance measures, and consider whether results appear sensible/expected)</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="fu">## Gold</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="fu">### Documentation</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Create a documentation site and host this</span><span class="co">](https://des.hsma.co.uk/stars.html#documentation-hosting)</span>.</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Consider using a framework like <span class="co">[</span><span class="ot">mkdocs-material</span><span class="co">](https://squidfunk.github.io/mkdocs-material/)</span> to automatically display the docstrings of your functions and classes in an easy-to-access manner</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Set up and maintain a changelog</span><span class="co">](https://keepachangelog.com/en/1.1.0/)</span>.</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Use <span class="co">[</span><span class="ot">GitHub Issues</span><span class="co">](https://hsma-programme.github.io/h6_march_2025_forum_presentation/#/github-issues)</span> to track bugs and highlight remaining tasks.</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Document your quality assurance process.</span><span class="co">](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/quality_assurance.html)</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reusability</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Research artifact metadata (ORCID)</span><span class="co">](https://des.hsma.co.uk/stars.html#open-researcher-and-contributor-identifier-orcid)</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Open Science Archive</span><span class="co">](https://des.hsma.co.uk/stars.html#open-science-archive)</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Online Coding Environment</span><span class="co">](https://des.hsma.co.uk/stars.html#online-coding-environment)</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model Efficiency</span></span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Parallelisation</span><span class="co">](https://des.hsma.co.uk/running_parallel_cpus.html)</span> implemented.</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model Communication and Validation</span></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Create a web app interface for your model</span><span class="co">](https://des.hsma.co.uk/stars.html#model-interface)</span></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Host the web app interface for your model</span><span class="co">](https://des.hsma.co.uk/stars.html#web-app-hosting)</span></span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Animated model output</span><span class="co">](https://hsma-tools.github.io/vidigi/vidigi_docs/adding_vidigi_to_a_simple_simpy_model_hsma_structure.html)</span> created (if appropriate).</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>*Animations also have a role to play in model validation - inspecting the animation, including with non-technical stakeholders, can help identify subtle bugs.*</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a><span class="fu">### Best Practice around Variability and Model Setup</span></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Formal automated method implemented for determining warm-up period.</span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> <span class="co">[</span><span class="ot">Formal method used for determining appropriate replication count</span><span class="co">](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/output_analysis/n_reps.html)</span>.</span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a><span class="fu">### Automated Testing</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Define formal automated tests for:</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Comparison of base case outputs to historical data for key metrics.</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Statistical testing of generated distributions against real-world data (e.g. Kolgomorov-Smirnov Test).</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="pyopensci-package-checks" class="level2">
+<h2 class="anchored" data-anchor-id="pyopensci-package-checks">PyOpenSci package checks</h2>
+<p>PyOpenSci is a volunteer-led organisation that conducts peer review of scientific Python packages. Their review template is a curated checklist of best-practice criteria covering packaging, testing, documentation, and sustainability, which they apply when assessing packages.</p>
+<p><a href="https://github.com/ambmodels/ambdes/issues/19" target="_blank" rel="noopener noreferrer" class="btn btn-primary"> <i class="bi bi-github" aria-hidden="true"></i> View progress </a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="View blank checklist">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View blank checklist
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>**Source:** https://www.pyopensci.org/software-peer-review/appendices/templates.html</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Documentation</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>The package includes all the following forms of documentation:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **A statement of need** clearly stating problems the software is designed to solve and its target audience in the README file.</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Installation instructions:** for the development version of the package and any non-standard dependencies in README.</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Short quickstart tutorials** demonstrating significant functionality that successfully runs locally.</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Function Documentation:** for all user-facing functions.</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Examples** for all user-facing functions.</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Community guidelines** including contribution guidelines in the README or CONTRIBUTING.</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Metadata** including author(s), author e-mail(s), a URL, and any other relevant metadata, for example, in a <span class="in">`pyproject.toml`</span> file or elsewhere.</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>Readme file  requirements</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>The package meets the readme requirements below:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Package has a README.md file in the root directory.</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>The README should include, from top to bottom:</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> The package name</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Badges for:</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Continuous integration and test coverage,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Docs building (if you have a documentation website),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Python versions supported,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Current package version (on PyPI / Conda).</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>*NOTE: If the README has many more badges, you might want to consider using a table for badges: [see this example](https://github.com/ropensci/drake). Such a table should be wider than high. A badge for pyOpenSci peer review will be provided when the package is accepted.*</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Short description of package goals.</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Package installation instructions</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Any additional setup required to use the package (authentication tokens, etc.)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Descriptive links to all vignettes. If the package is small, there may only be a need for one vignette which could be placed in the README.md file.</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Brief demonstration of package usage (as it makes sense - links to vignettes could also suffice here if package description is clear)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Link to your documentation website.</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> If applicable, how the package compares to other similar packages and/or how it relates to other packages in the scientific ecosystem.</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Citation information</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Usability</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>Reviewers are encouraged to submit suggestions (or pull requests) that will improve the usability of the package as a whole.</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>The package structure should follow the general community best practices. In general, please consider whether:</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> Package documentation is clear and easy to find and use.</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> The need for the package is clear</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> All functions have documentation and associated examples for use</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> The package is easy to install</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Functionality</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Installation:** Installation succeeds as documented.</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Functionality:** Any functional claims of the software been confirmed.</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Performance:** Any performance claims of the software been confirmed.</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Automated tests:**</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span><span class="va">[ ]</span> All tests pass on the reviewer's local machine for the package version submitted by the author. Ideally this should be a tagged version making it easy for reviewers to install.</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span><span class="va">[ ]</span> Tests cover essential functions of the package and a reasonable range of inputs and conditions.</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Continuous Integration:** Has continuous integration setup (We suggest using Github actions but any CI platform is acceptable for review)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> **Packaging guidelines**: The package conforms to the pyOpenSci <span class="co">[</span><span class="ot">packaging guidelines</span><span class="co">](https://www.pyopensci.org/python-package-guide)</span>.</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    A few notable highlights to look at:</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Package supports modern versions of Python and not <span class="co">[</span><span class="ot">End of life versions</span><span class="co">](https://endoflife.date/python)</span>.</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span><span class="va">[ ]</span> Code format is standard throughout package and follows PEP 8 guidelines (CI tests for linting pass)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
