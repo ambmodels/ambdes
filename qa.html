@@ -43,20 +43,19 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
-  "type": "overlay",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -65,7 +64,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
+    "search-text-placeholder": "Search",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -83,6 +82,10 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/pixelambulance.png" alt="" class="navbar-logo light-content">
+    <img src="./images/pixelambulance.png" alt="" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -185,10 +188,87 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Will use <strong>GitHub project</strong></p>
-<p>TODO: Outline this and what discussion would be needed.</p>
+<p><strong>Quality assurance (QA)</strong> is the formal, systematic process of ensuring our analysis meets appropriate standards of quality and is suitable for its intended use. It means planning how we will check the work, carrying out those checks, and keeping clear evidence of what we did. This plan was created based on <a href="https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/quality_assurance.html">Quality assurance - DES RAP Book</a>.</p>
+<p><br></p>
+<section id="quality-assurance-when-scoping-the-project-and-designing-the-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="quality-assurance-when-scoping-the-project-and-designing-the-analysis">Quality assurance when scoping the project and designing the analysis</h2>
+<p>We are documenting what we want to do publicly within this Quarto site - e.g., <a href="./conceptual.html">Conceptual modelling</a> page. This ensures are aims are clear and transparent, and means we can check against plans later in V&amp;V.</p>
+<p>We will plan and document how the analysis will work, and how it will be checked. This includes:</p>
+<ul>
+<li>Our design decisions and analytical approach - methods, data, software, assumptions - see <a href="./code.html">Code structure/infrastructure plans</a> page and <a href="./conceptual.html">Conceptual modelling</a> page.</li>
+<li>Decide on our verification and validation strategy before writing code - see <a href="./verification.html">Verification</a> page and <a href="./validation.html">Validation</a> page.</li>
+</ul>
+<p><br></p>
+</section>
+<section id="quality-assurance-when-performing-the-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="quality-assurance-when-performing-the-analysis">Quality assurance when performing the analysis</h2>
+<p>We will carry out <a href="./verification.html">verification</a> and <a href="./validation.html">validation</a> - which will include sensitivity analysis.</p>
+<p>We will adhere to best practice for our code and workflows - see <a href="./criteria.html">Criteria</a> page.</p>
+<p>We will create clear and comprehensive documentation including docstrings and comments, as well as several things that will be documented within this Quarto site:</p>
+<ul>
+<li>User documentation explaining how to run and interpret the model</li>
+<li>Technical documentation explaining the model structure and implementation</li>
+<li>An ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.</li>
+</ul>
+<p>This documentation will be reviewed by <strong>?</strong></p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Related to question about <a href="./code.html">Code review</a> on earlier page - review of documentation too.</li>
+</ul>
+</div>
+<p>We will use <strong>GitHub projects</strong> as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit’s New Hospital Programme model <a href="https://github.com/orgs/The-Strategy-Unit/projects/6">QA project board</a>.</p>
+<p><br></p>
+</section>
+<section id="roles" class="level2">
+<h2 class="anchored" data-anchor-id="roles">Roles</h2>
+<p>QA roles, as per the <a href="https://www.gov.uk/guidance/the-aqua-book">GOV.UK AQuA book</a>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 60%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Role</th>
+<th>Responsibilities</th>
+<th>Who</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Commissioner</strong></td>
+<td>Requests the analysis, sets requirements, confirms the approach will meet their needs, accepts the final work as fit for purpose.</td>
+<td><strong>Ambulance service partner</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Analyst</strong></td>
+<td>Designs and carries out the analysis, performs self-assurance (including verification and validation), acts on assurer feedback, documents the work.</td>
+<td><strong>Amy Heather</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Assurer</strong></td>
+<td>Reviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst.</td>
+<td><strong>Supervisor and ambulance service partners</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Approver</strong></td>
+<td>Scrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off.</td>
+<td><strong>Supervisor and ambulance service partners</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Given time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.</p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Thoughts on this plan?</li>
+</ul>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

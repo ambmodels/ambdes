@@ -15,7 +15,7 @@
     "href": "conceptual.html#stage-1-whole-system-resourcing",
     "title": "Conceptual modelling",
     "section": "Stage 1: Whole-system resourcing",
-    "text": "Stage 1: Whole-system resourcing\n\nKey question\n\nHow do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?\n\nAdditional possible questions (not from ambulance service):\n\nHow do system-wide demand changes impact response times and utilisation?\n\n\n\nModel content and inputs\nWe are doing by call category, so would expect to do arrivals and service times by that, not one whole\n\n\n\n\n\n\n\n\nElement\nModel content\nInput\n\n\n\n\nArrivals\nBasic arrival process or NHPP based on observed patterns\nMean inter-arrival time for whole system OR mean by period of time\n\n\nCall category\nSeparate arrival times - part of arrival dist or assigned after\nArrival times above should also be by category OR have another distribution with probabilities to assign them\n\n\nResource\nSingle pooled ambulance resource\nNumebr of ambulances for whole system\n\n\nQueue\nFirst come first serve or prioritisation rules with potential reneging/balking\nPriority rules could likely be informed by call guidelines\n\n\nService time\nSingle time (disatpch to resource available)\nMean time, by call category\n\n\n\nFor initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.\nFor uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.\nFor distributions used, will do input modelling.\nOutputs:\n\nPrimary: Category 2 mean response time\nSecondary: Resource utilisation\n\nGive results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)\n\n\nNotes\nThis stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:\n\nMultiple outcomes from the same run (regression just one per model).\nMore intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).\nExtendability (once core structure is in place, we can add more components in later stages).\n\n\nTo discuss:\n\nJust people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing",
+    "text": "Stage 1: Whole-system resourcing\n\nKey question\n\nHow do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?\n\nAdditional possible questions (not from ambulance service):\n\nHow do system-wide demand changes impact response times and utilisation?\n\n\n\nModel content and inputs\nWe are doing by call category, so would expect to do arrivals and service times by that, not one whole\n\n\n\n\n\n\n\n\nElement\nModel content\nInput\n\n\n\n\nArrivals\nBasic arrival process or NHPP based on observed patterns\nMean inter-arrival time for whole system OR mean by period of time\n\n\nCall category\nSeparate arrival times - part of arrival distribution or assigned after\nArrival times above should also be by category OR have another distribution with probabilities to assign them\n\n\nResource\nSingle pooled ambulance resource\nNumebr of ambulances for whole system\n\n\nQueue\nFirst come first serve or prioritisation rules with potential reneging/balking\nPriority rules could likely be informed by call guidelines\n\n\nService time\nSingle time (disatpch to resource available)\nMean time, by call category\n\n\n\nFor initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.\nFor uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.\nFor distributions used, will do input modelling.\nOutputs:\n\nPrimary: Category 2 mean response time\nSecondary: Resource utilisation\n\nGive results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)\n\n\nNotes\nThis stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:\n\nMultiple outcomes from the same run (regression just one per model).\nMore intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).\nExtendability (once core structure is in place, we can add more components in later stages).\n\n\nTo discuss:\n\nJust people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing\n\nIf excluded, does it bias utilisation estimates? Or is that a reasonable simplification?\n\nAny existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is.",
     "crumbs": [
       "GitHub",
       "Conceptual modelling"
@@ -48,7 +48,7 @@
     "href": "conceptual.html#stage-4-shifts",
     "title": "Conceptual modelling",
     "section": "Stage 4: Shifts",
-    "text": "Stage 4: Shifts\n\nKey question\n\nCan alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?\n\nCurrent patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:\n\nMidday and midnight dips in resource numbers when many crews are on break at once.\nEffects of protected periods towards the end of shifts.\n\nThe focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.\n\n\nModel changes\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nAdd representation of shifts (resource availability over time), including breaks and protected periods\n\n\nInputs\nCurrent and alternative rota schedules (for the whole area, not by station, proportions on different schedules)\n\n\nOutputs\nAdd a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips).\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?\nLearn more about break policies and stuff… is this one stage or multiple.\nIs it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn’t something they mentioned\nAlso, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks\nOutcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.\nCost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios",
+    "text": "Stage 4: Shifts\n\nKey question\n\nCan alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?\n\nCurrent patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:\n\nMidday and midnight dips in resource numbers when many crews are on break at once.\nEffects of protected periods towards the end of shifts.\n\nThe focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.\n\n\nModel changes\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nAdd representation of shifts (resource availability over time), including breaks and protected periods\n\n\nInputs\nCurrent and alternative rota schedules (for the whole area, not by station, proportions on different schedules)\n\n\nOutputs\nAdd a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips).\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?\nLearn more about break policies and stuff… is this one stage or multiple.\nIs it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn’t something they mentioned\nAlso, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks\nOutcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)\nCost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios",
     "crumbs": [
       "GitHub",
       "Conceptual modelling"
@@ -231,6 +231,17 @@
     ]
   },
   {
+    "objectID": "literature.html#verification-and-validation",
+    "href": "literature.html#verification-and-validation",
+    "title": "Literature",
+    "section": "Verification and validation",
+    "text": "Verification and validation\n\n\n\n\n\n\nNoteView studies\n\n\n\n\n\nAboueljinane et al. (2012)\n\nSimilar mean response time\nSimilar distribution of response times",
+    "crumbs": [
+      "GitHub",
+      "Literature"
+    ]
+  },
+  {
     "objectID": "validation.html",
     "href": "validation.html",
     "title": "Validation",
@@ -400,7 +411,7 @@
     "href": "code.html#documentation",
     "title": "Code structure / infrastructure plans",
     "section": "Documentation",
-    "text": "Documentation\nUse Quarto on GitHub pages for a single documentation site including the project specification, code documentation via quartodoc, and examples run on dummy data.\nAlso maintain the following repository documentation:\n\nREADME.md (see here for contents)\nCONTRIBUTING.md (see here for contents)\nCHANGELOG.md - doing releases and archiving to Zenodo\nLICENSE\nCITATION.cff\n\nCitation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html",
+    "text": "Documentation\nUse Quarto on GitHub pages for a single documentation site including the project specification, code documentation via quartodoc, and examples run on dummy data. This will include:\n\nUser documentation explaining how to run and interpret the model\nTechnical documentation explaining the model structure and implementation\nAn ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis\n\nAlso maintain the following repository documentation:\n\nREADME.md (see here for contents)\nCONTRIBUTING.md (see here for contents)\nCHANGELOG.md - doing releases and archiving to Zenodo\nLICENSE\nCITATION.cff\n\nCitation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html",
     "crumbs": [
       "GitHub",
       "Code structure / infrastructure plans"
@@ -466,7 +477,40 @@
     "href": "qa.html",
     "title": "Quality assurance",
     "section": "",
-    "text": "Will use GitHub project\nTODO: Outline this and what discussion would be needed.",
+    "text": "Quality assurance (QA) is the formal, systematic process of ensuring our analysis meets appropriate standards of quality and is suitable for its intended use. It means planning how we will check the work, carrying out those checks, and keeping clear evidence of what we did. This plan was created based on Quality assurance - DES RAP Book.",
+    "crumbs": [
+      "GitHub",
+      "Quality assurance"
+    ]
+  },
+  {
+    "objectID": "qa.html#quality-assurance-when-scoping-the-project-and-designing-the-analysis",
+    "href": "qa.html#quality-assurance-when-scoping-the-project-and-designing-the-analysis",
+    "title": "Quality assurance",
+    "section": "Quality assurance when scoping the project and designing the analysis",
+    "text": "Quality assurance when scoping the project and designing the analysis\nWe are documenting what we want to do publicly within this Quarto site - e.g., Conceptual modelling page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.\nWe will plan and document how the analysis will work, and how it will be checked. This includes:\n\nOur design decisions and analytical approach - methods, data, software, assumptions - see Code structure/infrastructure plans page and Conceptual modelling page.\nDecide on our verification and validation strategy before writing code - see Verification page and Validation page.",
+    "crumbs": [
+      "GitHub",
+      "Quality assurance"
+    ]
+  },
+  {
+    "objectID": "qa.html#quality-assurance-when-performing-the-analysis",
+    "href": "qa.html#quality-assurance-when-performing-the-analysis",
+    "title": "Quality assurance",
+    "section": "Quality assurance when performing the analysis",
+    "text": "Quality assurance when performing the analysis\nWe will carry out verification and validation - which will include sensitivity analysis.\nWe will adhere to best practice for our code and workflows - see Criteria page.\nWe will create clear and comprehensive documentation including docstrings and comments, as well as several things that will be documented within this Quarto site:\n\nUser documentation explaining how to run and interpret the model\nTechnical documentation explaining the model structure and implementation\nAn ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.\n\nThis documentation will be reviewed by ?\n\nTo discuss:\n\nRelated to question about Code review on earlier page - review of documentation too.\n\n\nWe will use GitHub projects as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit’s New Hospital Programme model QA project board.",
+    "crumbs": [
+      "GitHub",
+      "Quality assurance"
+    ]
+  },
+  {
+    "objectID": "qa.html#roles",
+    "href": "qa.html#roles",
+    "title": "Quality assurance",
+    "section": "Roles",
+    "text": "Roles\nQA roles, as per the GOV.UK AQuA book:\n\n\n\n\n\n\n\n\nRole\nResponsibilities\nWho\n\n\n\n\nCommissioner\nRequests the analysis, sets requirements, confirms the approach will meet their needs, accepts the final work as fit for purpose.\nAmbulance service partner\n\n\nAnalyst\nDesigns and carries out the analysis, performs self-assurance (including verification and validation), acts on assurer feedback, documents the work.\nAmy Heather\n\n\nAssurer\nReviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst.\nSupervisor and ambulance service partners\n\n\nApprover\nScrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off.\nSupervisor and ambulance service partners\n\n\n\nGiven time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.\n\nTo discuss:\n\nThoughts on this plan?",
     "crumbs": [
       "GitHub",
       "Quality assurance"
@@ -565,7 +609,7 @@
     "href": "index.html",
     "title": "Ambulance DES",
     "section": "",
-    "text": "Building an open reproducible DES model of ambulance operations."
+    "text": "Building an open reproducible DES model of ambulance operations.\nWork in progress!"
   },
   {
     "objectID": "criteria.html",

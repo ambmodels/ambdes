@@ -43,20 +43,19 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
-  "type": "overlay",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
     "/",
     "s"
   ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -65,7 +64,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
+    "search-text-placeholder": "Search",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -83,6 +82,10 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/pixelambulance.png" alt="" class="navbar-logo light-content">
+    <img src="./images/pixelambulance.png" alt="" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Ambulance DES</span>
     </a>
@@ -230,7 +233,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Call category</td>
-<td>Separate arrival times - part of arrival dist or assigned after</td>
+<td>Separate arrival times - part of arrival distribution or assigned after</td>
 <td>Arrival times above should also be by category OR have another distribution with probabilities to assign them</td>
 </tr>
 <tr class="odd">
@@ -271,7 +274,11 @@ ul.task-list li input[type="checkbox"] {
 <div class="box-hl">
 <p><strong>To discuss:</strong></p>
 <ul>
-<li>Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing</li>
+<li>Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing
+<ul>
+<li>If excluded, does it bias utilisation estimates? Or is that a reasonable simplification?</li>
+</ul></li>
+<li>Any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is.</li>
 </ul>
 </div>
 <p><br></p>
@@ -421,7 +428,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Learn more about break policies and stuff… is this one stage or multiple.</li>
 <li>Is it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn’t something they mentioned</li>
 <li>Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks</li>
-<li>Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.</li>
+<li>Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)</li>
 <li>Cost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g.&nbsp;staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios</li>
 </ul>
 </div>
