@@ -19,7 +19,11 @@ title: Code structure / infrastructure plans
 
 ## Documentation
 
-Use Quarto on GitHub pages for a single documentation site including the project specification, code documentation via **quartodoc**, and examples run on dummy data.
+Use Quarto on GitHub pages for a single documentation site including the project specification, code documentation via **quartodoc**, and examples run on dummy data. This will include:
+
+* User documentation explaining how to run and interpret the model
+* Technical documentation explaining the model structure and implementation
+* An ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis
 
 Also maintain the following repository documentation:
 

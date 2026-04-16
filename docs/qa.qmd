@@ -2,6 +2,64 @@
 title: Quality assurance
 ---
 
-Will use **GitHub project**
+**Quality assurance (QA)** is the formal, systematic process of ensuring our analysis meets appropriate standards of quality and is suitable for its intended use. It means planning how we will check the work, carrying out those checks, and keeping clear evidence of what we did. This plan was created based on [Quality assurance - DES RAP Book](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/quality_assurance.html).
 
-TODO: Outline this and what discussion would be needed.
+<br>
+
+## Quality assurance when scoping the project and designing the analysis
+
+We are documenting what we want to do publicly within this Quarto site - e.g., [Conceptual modelling](conceptual.qmd) page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.
+
+We will plan and document how the analysis will work, and how it will be checked. This includes:
+
+* Our design decisions and analytical approach - methods, data, software, assumptions - see [Code structure/infrastructure plans](code.qmd) page and [Conceptual modelling](conceptual.qmd) page.
+* Decide on our verification and validation strategy before writing code - see [Verification](verification.qmd) page and [Validation](validation.qmd) page.
+
+<br>
+
+## Quality assurance when performing the analysis
+
+We will carry out [verification](verification.qmd) and [validation](validation.qmd) - which will include sensitivity analysis.
+
+We will adhere to best practice for our code and workflows - see [Criteria](criteria.qmd) page.
+
+We will create clear and comprehensive documentation including docstrings and comments, as well as several things that will be documented within this Quarto site:
+
+* User documentation explaining how to run and interpret the model
+* Technical documentation explaining the model structure and implementation
+* An ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.
+
+This documentation will be reviewed by **?**
+
+::: {.box-hl}
+
+**To discuss:**
+
+* Related to question about [Code review](code.qmd) on earlier page - review of documentation too.
+
+:::
+
+We will use **GitHub projects** as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit's New Hospital Programme model [QA project board](https://github.com/orgs/The-Strategy-Unit/projects/6).
+
+<br>
+
+## Roles
+
+QA roles, as per the [GOV.UK AQuA book](https://www.gov.uk/guidance/the-aqua-book):
+
+| Role | Responsibilities | Who |
+| - | --- | - |
+| **Commissioner** | Requests the analysis, sets requirements, confirms the approach will meet their needs, accepts the final work as fit for purpose. | **Ambulance service partner** |
+| **Analyst** | Designs and carries out the analysis, performs self-assurance (including verification and validation), acts on assurer feedback, documents the work. | **Amy Heather** |
+| **Assurer** | Reviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst. | **Supervisor and ambulance service partners** |
+| **Approver** | Scrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off. | **Supervisor and ambulance service partners** |
+
+Given time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.
+
+::: {.box-hl}
+
+**To discuss:**
+
+* Thoughts on this plan?
+
+:::
