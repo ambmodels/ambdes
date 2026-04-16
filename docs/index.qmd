@@ -5,3 +5,13 @@ title: Ambulance DES
 Building an open reproducible DES model of ambulance operations.
 
 *Work in progress!*
+
+This work is part of the [STARS project](https://pythonhealthdatascience.github.io/stars/), supported by the Medical Research Council [grant number MR/Z503915/1]. 
+
+::: {.box-hl}
+
+**To discuss:**
+
+* Add names and organisations here yet?
+
+:::
