@@ -44,6 +44,7 @@ NHPP incorporating call location:
 Trace-driven:
 
 * @henderson_ambulance_2005
+* @uyeno_practical_1984
 
 :::
 
@@ -160,23 +161,74 @@ Output metrics may be analysed by category.
 
 <br>
 
-## Dispatch policy
+## Queue and dispatch policy
 
-Normally nearest available vehicle
+Normally nearest available vehicle.
 
-Some incorporate call priority or possible reassignment to Cat1
+Some incorporate call priority or possible reassignment to Cat1.
 
-Some look for team belonging to specific area first
+Some look for team belonging to specific area first.
+
+Some include busy crews, if will finish their job soon.
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+**Nearest available vehicle:**
+
+* @pinto_generic_2015
+* @kergosien_generic_2015
+* @berlin_mathematical_1974
+* @uyeno_practical_1984
+* @wears_simulation_1993
+* @ingolfsson_simulation_2003
+* @henderson_ambulance_2005
+* @aringhieri_integrated_2010
+* @maxwell_ambulance_2009
+* @lee_simulation-based_2012
+* @van_buuren_evaluating_2012
+
+**Nearest available vehicle, conditioned on call priority:**
+
+* @fonseca_discrete_2025 - Queue order by Cat1-4 priority, but if they have waited a long time, they may have their priority increased. There is also balking due to max queue size and reneging for lower priority incidents to drop out entirely or switch to ED attendance path ([source](https://nhsengland.github.io/AmbModelOpen/run/)).
+* @aboueljinane_reducing_2012 - Queue order depends on call priority.
+* @wu_using_2009 - Queue order depends on priority, but lower priority incidents can increase in priority if wait beyond a threshold. Some supply can be marked as holdout so a subset of ambulances is reserved for Cat1 incidents, either alwayds or triggered under certain conditions.
+
+**Nearest base:**
+
+* @wei_lam_reducing_2014 - If no crews available, checks next nearest base.
+* @iskander_simulation_1989 - If no crews available in (or en-route to) nearest or neighbouring bases, it queues at nearest base.
+
+**Crews/base assigned an area:** Each rescue team or base is assigned a specific area. If assigned team unavailable or all teams of assigned base are busy, then the closest available rescue team/base must take it.
+
+* @gunes_simulation_2005 (helicopters)
+
+**Team with smallest estimated arrival time including crews on a job** (if soon to finish and nearby, they might be smallest):
+
+* @silva_emergency_2010
+
+**Nearest available vehicle, but possible to reassign a rescue team serving low priority class to high priority** - @aboueljinane_reducing_2012 list two examples, neither are DES.
+
+**Unclear:**
+
+* @gigante_study_2022
 
 :::
 
 <br>
 
 ## Travel time modelling
+
+In @aboueljinane_review_2013, they state that travel times are related to:
+
+* Distance travelled
+* Traffic conditions - rush hour, weekend v.s., weekday, day v.s., night
+* Weather
+* Priority of rescue
+* Traffic accidents
+* Quality of the roads
+* Difficulty finding the exact call location.
+
+Several different travel time models are used in the literature.
 
 Distribution based:
 
@@ -195,7 +247,45 @@ f. Any of those three, with **correction factors** for traffic, time of day, etc
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-TODO
+Several studies talk about the importance of travel time modelling...
+
+> @henderson_ambulance_2005: "The effort we devote to this topic is justified by the great sensitivity of results to travel time assumptions, as noted both by the authors in a preliminary queueing analysis, and by a large proportion of the papers dealing with ambulance planning. For example, Carson and Batta [17] describe how the 30% savings predicted by their model turned into a 6% savings in actual tests, primarily due to the model not effectively capturing a certain travel time/distance relationship."
+>
+> @wei_lam_reducing_2014: "Since the performance measures are ambulance response times and utilization levels, travel time estimation forms an important consideration."
+
+**(a) Distribution based - sample from distribution**
+
+| Study | Times | Distribution | Varies by |
+| - | - | - | - |
+| @fonseca_discrete_2025 | "Time to scene" and "time to ED site" | Empirical or lognormal (lists various times using these - would need to check code to know exact) | N/A |
+| @gigante_study_2022 | Time of "sending patient to hospital, release of stretcher, cleaning vehicle and returning" | Uniform | N/A |
+
+**(b) Distribution based - distribution vary by region**
+
+| Study | Times | Distribution | Varies by |
+| - | - | - | - |
+| @wu_using_2009 | Station to scene, scene to hospital, hospital to station | Unclear | Time (by call arrival time, day divided into segments) and location of activating station (ambulance usually respond within district, each district have more homogeneous traffic patterns than whole city, so calibrate based on district) |
+| @gigante_study_2022 | Travel time to emergency | Triangular | If vehicle doesn't belong to region of ticket, add 5 minutes |
+
+**(c) As crow flies multiplied by speed** (+ (f) correction factors for traffic, time of day, etc.)
+
+* @kergosien_generic_2015
+* @pinto_generic_2015 - speed differs by time (weekday/weekend), type of unit and area of city - so is corrected with a speed factor
+* @silva_emergency_2010
+
+**(d) Pre-computed shortest path multiplied by speed** (+ (f) correction factors for traffic, time of day, etc.)
+
+* @ingolfsson_simulation_2003
+* @wei_lam_reducing_2014 - Found shortest route between each origin destination pair and found ideal travel times using ArcGIS10 (based on distance and speed limit). Then calculated a correction factor for every pair based on historical ambulance travelling time. Multiple distributions of correction factors were derived by time of day, day of week, ideal travel time span, and nature of trip.
+* @henderson_ambulance_2005
+
+**(e) Divide road into segments, calculate travel times for each, sum** (+ (f) correction factors for traffic, time of day, etc.)
+
+* @aboueljinane_reducing_2012 - Average travel time assigned to each section of road depending on type (motorway, main road, minor road, local street). For each hour of day, day of week, rescue type and priority, the travel time is calculated by diving the section length by the average speed observed in the GPS data. Travel time is sum of segments that form shortest path between origin and destination
+
+**Unclear:**
+
+* @uyeno_practical_1984 - unclear, but speed depends on location (rural/urban) and time of day.
 
 :::
 
@@ -245,6 +335,26 @@ Scenarios:
 * **Shift** scheduling - working **hours** and **location** *E.g., optimal schedule… avoiding changes during high demand...*
 
 Less relevant: dispatching rules (policy change), destination hospital (mass casualty)
+
+::: {.callout-note title="View studies" collapse="true"}
+
+TODO
+
+:::
+
+<br>
+
+## Initialisation bias
+
+::: {.callout-note title="View studies" collapse="true"}
+
+@uyeno_practical_1984 - "starts at a time of day when congestion is very low, so no initialisation is necessary"
+
+:::
+
+<br>
+
+## Run length and replications
 
 ::: {.callout-note title="View studies" collapse="true"}
 
