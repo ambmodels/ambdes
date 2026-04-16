@@ -163,3 +163,27 @@ This staged checklist provides guidance for deciding whether a DES model is read
 ```
 
 :::
+
+<br>
+
+## PyOpenSci package checks
+
+PyOpenSci is a volunteer-led organisation that conducts peer review of scientific Python packages. Their review template is a curated checklist of best-practice criteria covering packaging, testing, documentation, and sustainability, which they apply when assessing packages.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/19"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/pyopensci.md >}}
+```
+
+:::
