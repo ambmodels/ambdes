@@ -4,8 +4,11 @@ project:
 website:
   title: "Ambulance DES"
   favicon: images/pixelambulance.png
+  search:
+    type: textbox
 
   navbar:
+    logo: images/pixelambulance.png
     right:
       - icon: github
         text: GitHub
@@ -20,7 +23,14 @@ website:
       - validation.qmd
       - qa.qmd
 
+language:
+  search-text-placeholder:
+    Search
+
 format:
   html:
+    theme:
+      - minty
+      - css/theme.scss
     css:
       - css/styles.css

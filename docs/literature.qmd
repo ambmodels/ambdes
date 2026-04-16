@@ -478,6 +478,8 @@ TODO
 
 :::
 
+<br>
+
 ## Sensitivity analysis
 
 * Demand
@@ -500,5 +502,18 @@ Processing time
 Number of resources
 
 * @fonseca_discrete_2025 increase the number of ambulances
+
+:::
+
+<br>
+
+## Verification and validation
+
+::: {.callout-note title="View studies" collapse="true"}
+
+@aboueljinane_reducing_2012
+
+* Similar mean response time
+* Similar distribution of response times
 
 :::

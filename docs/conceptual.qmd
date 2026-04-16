@@ -35,7 +35,7 @@ We are doing by call category, so would expect to do arrivals and service times 
 | Element | Model content | Input |
 | - | -- | -- |
 | Arrivals | Basic arrival process or NHPP based on observed patterns | Mean inter-arrival time for whole system OR mean by period of time |
-| Call category | Separate arrival times - part of arrival dist or assigned after | Arrival times above should also be by category OR have another distribution with probabilities to assign them |
+| Call category | Separate arrival times - part of arrival distribution or assigned after | Arrival times above should also be by category OR have another distribution with probabilities to assign them |
 | Resource | Single pooled ambulance resource | Numebr of ambulances for whole system |
 | Queue | First come first serve or prioritisation rules with potential reneging/balking | Priority rules could likely be informed by call guidelines |
 | Service time | Single time (disatpch to resource available) | Mean time, by call category |
@@ -68,6 +68,8 @@ This stage can serve as a benchmark against the current regression models. The D
 **To discuss:**
 
 * Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing
+    * If excluded, does it bias utilisation estimates? Or is that a reasonable simplification?
+* Any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is.
 
 :::
 
@@ -165,7 +167,7 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 * Learn more about break policies and stuff... is this one stage or multiple.
 * Is it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn't something they mentioned
 * Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks
-* Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made.
+* Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)
 * Cost... I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios
 
 :::

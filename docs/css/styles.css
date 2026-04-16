@@ -1,7 +1,6 @@
 .box-blue {
-  background-color: #c5dfed;
-  color: black;
-  border: 2px solid #8bbfdb;
+  background-color: #dff3f1;
+  border: 2px solid #7fcac3;
   border-radius: 8px;
   padding: 1.2em 1em 0.5em 1em;
   margin: 1.5em 0;
@@ -10,9 +9,8 @@
 }
 
 .box-hl {
-  background-color: #fffcd3;
-  color: black;
-  border: 8px;
+  background-color: #fff8c4;
+  border: 2px solid #e6d85c;
   border-radius: 8px;
   padding: 1.2em 1em 0.5em 1em;
   margin: 1.5em 0;
