@@ -21,6 +21,7 @@ website:
       - code.qmd
       - verification.qmd
       - validation.qmd
+      - criteria.qmd
       - qa.qmd
 
 language:

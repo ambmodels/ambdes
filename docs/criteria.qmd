@@ -1,15 +1,165 @@
 ---
-title: Criteria
+title: Best practice criteria
 ---
 
-STRESS
+This page documents the best practice criteria we are aiming to adhere to across this work as part of our [quality assurance](qa.qmd).
 
-STARS reproducibility recommendations
+We include the raw Markdown checklists that you can copy and adapt for your own projects, along with links to the corresponding GitHub issues for this project where progress against each checklist is tracked.
 
-STARS reuse framework
+::: {.box-hl}
 
-NHS Levels of RAP
+**To discuss:**
 
-DES RAP Book Verification and Validation checklist
+* Is there any others worth including?
 
-HSMA model implementation checklist
+:::
+
+<br>
+
+## STRESS-DES
+
+STRESS-DES is a reporting checklist for discrete-event simulation studies. It helps ensure the model, data, assumptions, experimentation, and implementation are described clearly enough for others to **replicate** the work.
+
+> **Replicable:** New code based on described methods produces consistent results. Gives confidence in results, their validity and reliability.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/13"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/stressdes.md >}}
+```
+
+:::
+
+<br>
+
+## STARS reproducibility recommendations
+
+These recommendations focus on making simulations **reproducible**, derived from computational reproducibility assessments of published healthcare DES models.
+
+> **Reproducible:** Running code regenerates the published results. Verifies code is working as expected and increases trust.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/14"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/stars_reproducibility.md >}}
+```
+
+:::
+
+<br>
+
+## STARS reuse framework
+
+This framework focuses on making DES models more **reusable**.
+
+> **Reusable:** Code can be adapted and used in next contexts. Saves time and increases impact.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/15"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/stars_reuse.md >}}
+```
+
+:::
+
+<br>
+
+## NHS Levels of RAP
+
+This framework provides a staged path for NHS teams to implement RAPs into their analytical work.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/16"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/nhs_levels_of_rap.md >}}
+```
+
+:::
+
+<br>
+
+## DES RAP Book verification and validation checklist
+
+This checklist translates verification and validation guidance from the simulation literature into concrete, practical steps to build confidence in DES models.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/17"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/vv.md >}}
+```
+
+:::
+
+<br>
+
+## HSMA model readiness checklist
+
+This staged checklist provides guidance for deciding whether a DES model is ready enough to support real-world decision-making.
+
+<a
+   href="https://github.com/ambmodels/ambdes/issues/18"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="btn btn-primary"
+>
+  <i class="bi bi-github" aria-hidden="true"></i>
+  View progress
+</a>
+
+::: {.callout-note title="View blank checklist" collapse="true"}
+
+```markdown
+{{< include checklists/hsma_model_readiness.md >}}
+```
+
+:::

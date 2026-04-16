@@ -24,6 +24,7 @@ Use Quarto on GitHub pages for a single documentation site including the project
 * User documentation explaining how to run and interpret the model
 * Technical documentation explaining the model structure and implementation
 * An ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis
+* [STRESS-DES items](https://github.com/ambmodels/ambdes/issues/13)
 
 Also maintain the following repository documentation:
 
