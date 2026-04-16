@@ -6,7 +6,9 @@ title: Quality assurance
 
 <br>
 
-## Quality assurance when scoping the project and designing the analysis
+## Quality assurance plan
+
+### Quality assurance when scoping the project and designing the analysis
 
 We are documenting what we want to do publicly within this Quarto site - e.g., [Conceptual modelling](conceptual.qmd) page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.
 
@@ -17,7 +19,7 @@ We will plan and document how the analysis will work, and how it will be checked
 
 <br>
 
-## Quality assurance when performing the analysis
+### Quality assurance when performing the analysis
 
 We will carry out [verification](verification.qmd) and [validation](validation.qmd) - which will include sensitivity analysis.
 
@@ -39,11 +41,9 @@ This documentation will be reviewed by **?**
 
 :::
 
-We will use **GitHub projects** as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit's New Hospital Programme model [QA project board](https://github.com/orgs/The-Strategy-Unit/projects/6).
-
 <br>
 
-## Roles
+### Roles
 
 QA roles, as per the [GOV.UK AQuA book](https://www.gov.uk/guidance/the-aqua-book):
 
@@ -63,3 +63,13 @@ Given time-scales, scope and risk, I have assumed that not including an independ
 * Thoughts on this plan?
 
 :::
+
+<br>
+
+## Quality assurance log
+
+We are using **GitHub projects** as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit's New Hospital Programme model [QA project board](https://github.com/orgs/The-Strategy-Unit/projects/6).
+
+You can view our QA log here: <https://github.com/orgs/ambmodels/projects/1/views/1>
+
+[![Screenshot of the QA log, as of 16th April 2026](images/qa_log.png)](https://github.com/orgs/ambmodels/projects/1/views/1)
