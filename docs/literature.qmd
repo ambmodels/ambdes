@@ -100,8 +100,7 @@ From what I can spot (may have missed some):
 * @aboueljinane_reducing_2012 - travel time.
 * @gigante_study_2022 - travel time to scene (not to hospital).
 * @pinto_generic_2015 - dispatch, travel time, hospital selection, shifts (number of ambulances at base).
-* @kergosien_generic_2015 - TODO.
-* @wei_lam_reducing_2014 - TODO.
+* @kergosien_generic_2015 - travel times.
 
 :::
 
@@ -133,9 +132,9 @@ Include call category:
 | @aboueljinane_reducing_2012 | France | (1) Primary or secondary (2) Severity (0, 1, 2, 3) | Probabilities |
 | @kergosien_generic_2015 | Canada | (1) Urgent or transfer (2) If urgent, transfer to hospital or not | Probabilities |
 | @wei_lam_reducing_2014 | Singapore | Acuity scores | - |
-| @ingolfsson_simulation_2003 | Canada |
-| @henderson_ambulance_2005 | New Zealand |
-| @aboueljinane_reducing_2012 | France |
+| @ingolfsson_simulation_2003 | Canada | Unclear | Unclear |
+| @henderson_ambulance_2005 | New Zealand | Priority 1 and 2 | Unclear |
+| @aboueljinane_reducing_2012 | France | Primary or secondary, and priority levels too | Probabilities |
 | @van_buuren_evaluating_2012 | Netherlands |
 
 :::
@@ -158,6 +157,7 @@ Output metrics may be analysed by category.
 * @aboueljinane_reducing_2012 - order of queued calls, whether require transport to hospital, on-site time, travel time, drop-off time.
 * @kergosien_generic_2015 - -
 * @wei_lam_reducing_2014 - on scene treatment time.
+* @ingolfsson_simulation_2003 - appears to be hospital drop-off time and hospital selection.
 
 :::
 
@@ -452,7 +452,7 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 
 * @gigante_study_2022 - Shifts are 12 hours, initially 7-7. To represent reduced resources during night shift, half the vehicles will be available.
 * @pinto_generic_2015 - Resourcing levels based on schedule giving number of ambulance of each type at each base during given hour of the week
-* @ingolfsson_simulation_2003 - Shift changes occur 6.30-8am, 4.30-6pm, except three units that begin 12h shift at 9am and 3pm - and also model another set of shifts too which mirror variations in call volume over time
+* @ingolfsson_simulation_2003 - Shifts and overtime are represented. Shift changes occur 6.30-8am, 4.30-6pm, except three units that begin 12h shift at 9am and 3pm - and also model another set of shifts too which mirror variations in call volume over time
 * @kergosien_generic_2015 - Assumes teams work each day on 8h shifts. Total 150-200 teams. Assigned teams and vehicles to time slots to respect standard working constraints (e.g., maximum shift length and lunch breaks). Number of paramedic teams on duty depends on time of day.
 * @wei_lam_reducing_2014 - 10 private ambulances with shifts Monday to Saturday 8am to 8pm.
 
@@ -460,21 +460,21 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 
 <br>
 
-## Initialisation bias
+## Initialisation bias, run length and replications
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-@uyeno_practical_1984 - "starts at a time of day when congestion is very low, so no initialisation is necessary"
-
-:::
-
-<br>
-
-## Run length and replications
-
-::: {.callout-note title="View studies" collapse="true"}
-
-TODO
+| Study | Initialisation bias | Run length | Replications |
+| - | - | - | - |
+| @fonseca_discrete_2025 | [1 day warm-up](https://github.com/nhsengland/AmbModelOpen/blob/main/docs/config.md) | [14 days](https://github.com/nhsengland/AmbModelOpen/blob/main/docs/config.md) | 10 |
+| @uyeno_practical_1984 | "Starts at a time of day when congestion is very low, so no initialisation is necessary" | Unsure | Unsure |
+| @wu_using_2009 | Unsure | 1 year | 5 |
+| @wei_lam_reducing_2014 | "A simulation run time of 6 months was chosen to ameliorate transient start-up effects" | 6 months | Unsure |
+| @aboueljinane_reducing_2012 | 15 day warm-up | 11 months | 10 |
+| @gigante_study_2022 | Unclear | 30 days | 1 |
+| @ingolfsson_simulation_2003 | Unclear | 6 months | Unclear |
+| @kergosien_generic_2015 | 1 day warm-up plus 1 day at end ("to remove the transient states corresponding to the first and last day of the horizon") | 5 days | 20 |
+| @pinto_generic_2015 | 15 days (Figure 8 shows they even reach steady state before then) | 30 days | 10 |
 
 :::
 
@@ -503,6 +503,11 @@ Number of resources
 
 * @fonseca_discrete_2025 increase the number of ambulances
 
+Doesn't mention sensitivity analysis:
+
+* @kergosien_generic_2015
+* @pinto_generic_2015
+
 :::
 
 <br>
@@ -511,9 +516,94 @@ Number of resources
 
 ::: {.callout-note title="View studies" collapse="true"}
 
-@aboueljinane_reducing_2012
+#### @aboueljinane_reducing_2012
 
-* Similar mean response time
-* Similar distribution of response times
+**Verification:**
+
+* **Execution tracing:**
+    * Traced calls to check closest available ambulance responded.
+
+**Validation:**
+
+* **Conceptual model validation:**
+    * Checked conceptual model with specialists.
+* **Graphical and statistical comparison:**
+    * Compared to real system - similar mean response time and similar distribution of response times (nice figure, Figure 3, % calls reached by 10min, 15min, 20min, etc.).
+* **Face validation:**
+    * Checked travel times were realistic.
+
+#### @ingolfsson_simulation_2003
+
+**Verification:**
+
+* **Execution tracing:**
+    * Traced all events for 10 simulated hours
+    * Traced all movements for 3 ambulances for 48 hours
+    * Checked for apx. 30 calls that the closest available ambulance responded to them
+    * Checked that the count of the number of available units was incremented and decremented at the appropriate times
+
+**Validation:**
+
+* **Input data validation:**
+    * Checked that call arrival stream generated by model was statistically similar to historical call arrival data at each demand zone and for each hour of the week
+    * Checked that percentage of calls transported to each hospital was consistent with the data
+* **Face validation:**
+    * Checked that travel times were realistic.
+* **Graphical and statistical comparison with real data:**
+    * Compared response time statistics to real system (nice Figure 3, just like in @aboueljinane_reducing_2012, showing response time 5 6 7 8 9 10 minutes and % calls reached, compares real times from 2 months with simulated times from 6 months, and finds all within 1.2% of observed).
+    * Compared average overtime experienced in real system per week with model.
+
+#### @fonseca_discrete_2025
+
+**Validation:**
+
+* **Input data validation:**
+    * Checked simulated demand by hour and day looked correct.
+* **Face validation:**
+    * Visually inspected relationship between response time and ambulance availability, as "this should be expected to show the trade-off as a non-linear pattern with asymptotic behaviour towards each extreme" (see Figure 6).
+* **Graphical or statistical comparison with real data:**
+    * Checked mean and 90th percentile for response times looked sensible - their pattern (i.e., c1 < c2 < c3) and absolute levels (thought not trying to match). Also checked other emerging performance indicators (time to allocate, job cycle time (JCT), ambulance arrivals, handover, vehicle availability).
+
+#### @wu_using_2009
+
+**Validation:**
+
+* **Statistical comparison with real data:**
+    * Split data into two parts - Jan-Oct for model development and Nov-Dec for validation. T-test comparing response times between DES and real data.
+
+#### @wei_lam_reducing_2014
+
+**Validation:**
+
+* **Statistical comparison with real data:**
+    * Compared simulation with historical data for ambulance cycle times, response times, utilisation levels, and other relevant parameters. Appear to look at median, IQR and 90th percentile.
+    * Other criteria were also validated e.g., call arrival rates per district, daily average call volumes, percentage of conveyance for each PAC class, and conveyance times.
+
+#### @kergosien_generic_2015
+
+**Verification:**
+
+* **Execution tracing:**
+    * Trace sequence of events for some specific ambulances or demands to make sure implementation is correct.
+* **Assertion checking:**
+    * Implemented functions to check that entity and resource state changes followed valid successions, that ambulance routes were feasible in time and space, and that each demand was handled correctly (right day, plausible time, required transports actually followed by a hospital transport, etc.).
+
+**Validation:**
+
+* **Face validation or comparison with real data:**
+    * Report KPIs for "consistency analysis" against expected - unclear if this is referring to real data, or more about opinion via face validation.
+
+#### @pinto_generic_2015
+
+**Validation:**
+
+* **Comparison testing:**
+    * Compare response time and utilisation with their prior model. 
+* **Comparison with real data:**
+    * Mention but not reported.
+
+#### Studies that don't mention verification and validation
+
+* @gigante_study_2022
 
 :::
