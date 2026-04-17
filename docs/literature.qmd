@@ -40,11 +40,13 @@ NHPP incorporating call location:
 * @ingolfsson_simulation_2003 - by time of day, day of week and zone
 * @maxwell_ambulance_2009 - by time of day and zone
 * @berlin_mathematical_1974 - by node
+* @wang_discrete-event_2025 - live data from Baidu Heatmap giving information on number of people in each grid, extracted on a hourly basis, to get representative data for each hour from Monday to Sunday
 
 Trace-driven:
 
 * @henderson_ambulance_2005
 * @uyeno_practical_1984
+* @wang_discrete-event_2025 (designed to allow it, but no current access, so reports sampling, as above)
 
 :::
 
@@ -71,6 +73,7 @@ NHPP incorporating call location (as above):
 * @ingolfsson_simulation_2003
 * @maxwell_ambulance_2009
 * @berlin_mathematical_1974
+* @wang_discrete-event_2025
 
 Assign zones to generated calls:
 
@@ -120,6 +123,7 @@ No call category:
 * @maxwell_ambulance_2009 (USA)
 * @silva_emergency_2010 (Brazil)
 * @lee_simulation-based_2012 (Korea)
+* @wang_discrete-event_2025 (China)
 
 Include call category:
 
@@ -188,6 +192,7 @@ Some include busy crews, if will finish their job soon.
 * @maxwell_ambulance_2009
 * @lee_simulation-based_2012
 * @van_buuren_evaluating_2012
+* @wang_discrete-event_2025
 
 **Nearest available vehicle, conditioned on call priority:**
 
@@ -247,6 +252,10 @@ Or:
 
 f. Any of those three, with **correction factors** for traffic, time of day, etc.
 
+Or:
+
+g. Use live travel time data to find estimated travel time for each ambulance
+
 ::: {.callout-note title="View studies" collapse="true"}
 
 Several studies talk about the importance of travel time modelling...
@@ -284,6 +293,10 @@ Several studies talk about the importance of travel time modelling...
 **(e) Divide road into segments, calculate travel times for each, sum** (+ (f) correction factors for traffic, time of day, etc.)
 
 * @aboueljinane_reducing_2012 - Average travel time assigned to each section of road depending on type (motorway, main road, minor road, local street). For each hour of day, day of week, rescue type and priority, the travel time is calculated by diving the section length by the average speed observed in the GPS data. Travel time is sum of segments that form shortest path between origin and destination
+
+**(g) Use live travel time data**
+
+* @wang_discrete-event_2025 - simulation runs in real time, and fetches live travel data via an API
 
 **Unclear:**
 
@@ -333,6 +346,7 @@ e. **Resource** (time from ED arrival to handover emerging as ED modelled as ser
 | @kergosien_generic_2015 | Time at scene, discharge time at hospital, and call processing times | Gamma | - |
 | @wei_lam_reducing_2014 | Empirical | Dispatch time and time on scene | Patient emergency status and conveyance status |
 | @wei_lam_reducing_2014 | Empirical | Handover delay | Patient emergency status |
+| @wang_discrete-event_2025 | Exponential | Ambulance preparation delay, on-site delay, and unloading delay | - |
 
 **(e) Resource**
 
@@ -377,6 +391,7 @@ In @aboueljinane_review_2013, they discuss how it is common to select the closes
 * @van_buuren_evaluating_2012
 * @pinto_generic_2015 (closest that supplies the required care for the emergency)
 * @wei_lam_reducing_2014 (except paediatric or maternity which go to a specialty hospital)
+* @wang_discrete-event_2025 (based on live travel times)
 
 **(c) Sample from distribution**
 
@@ -456,6 +471,14 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 * @kergosien_generic_2015 - Assumes teams work each day on 8h shifts. Total 150-200 teams. Assigned teams and vehicles to time slots to respect standard working constraints (e.g., maximum shift length and lunch breaks). Number of paramedic teams on duty depends on time of day.
 * @wei_lam_reducing_2014 - 10 private ambulances with shifts Monday to Saturday 8am to 8pm.
 
+Don't mention shifts or explicitly don't include shifts:
+
+* @van_buuren_evaluating_2012
+* @maxwell_ambulance_2009
+* @berlin_mathematical_1974
+* @uyeno_practical_1984
+* @wang_discrete-event_2025
+
 :::
 
 <br>
@@ -475,6 +498,12 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 | @ingolfsson_simulation_2003 | Unclear | 6 months | Unclear |
 | @kergosien_generic_2015 | 1 day warm-up plus 1 day at end ("to remove the transient states corresponding to the first and last day of the horizon") | 5 days | 20 |
 | @pinto_generic_2015 | 15 days (Figure 8 shows they even reach steady state before then) | 30 days | 10 |
+| @henderson_ambulance_2005 | Unclear | Several months | Unclear |
+| @silva_emergency_2010 | Unclear | Unclear | Unclear |
+| @van_buuren_evaluating_2012 | Unclear | Unclear | Unclear |
+| @maxwell_ambulance_2009 | Unclear | 2 weeks | 25(?) |
+| @berlin_mathematical_1974 | Unclear | Unclear | Unclear |
+| @wang_discrete-event_2025 | "Initialized with data" | 1 week | 1 |
 
 :::
 
@@ -503,10 +532,18 @@ Number of resources
 
 * @fonseca_discrete_2025 increase the number of ambulances
 
+General
+
+* @uyeno_practical_1984 "Sensitivity analysis. Constraints and mean data values were varied slightly to determine if the model responded in the expected manner."
+
 Doesn't mention sensitivity analysis:
 
 * @kergosien_generic_2015
 * @pinto_generic_2015
+* @van_buuren_evaluating_2012
+* @maxwell_ambulance_2009
+* @berlin_mathematical_1974
+* @wang_discrete-event_2025
 
 :::
 
@@ -602,8 +639,72 @@ Doesn't mention sensitivity analysis:
 * **Comparison with real data:**
     * Mention but not reported.
 
+#### @henderson_ambulance_2005
+
+They say they won't describe in full, that the used usual methods from Law and Kelton (2000) Simulation Modeling and Analysis, but provide some examples-
+
+**Validation:**
+
+* **Animation visualisation:**
+    * Identified errors in database of real calls by watching simulated ambulance operations.
+    * Could also place calls at strategic locations and check that responses were as expected.
+    * Shortest paths were generated and displayed over the road network to verify the quality of chosen routes.
+* **Face validation**
+
+#### @silva_emergency_2010
+
+**Verification:**
+
+* **Bottom-up testing:** 
+    * Modular model where each part of model is implemented and run separately, and each module is analysted to check it behaves consistently with intended model logic.
+* **Special input testing:**
+    * Forced unlikely events and unusual dispatch situations (e.g., call arrives requiring advanced unit but closest unit to incident is basic) and checked decisions.
+
+**Validation:**
+
+* **Conceptual model validation**
+    * With system managers, discussed the conceptual model and simplifications
+    * With doctors in charge of the system, dicussed variables used to analyse system performance and scenarios to evaluate.
+
+#### @uyeno_practical_1984
+
+**Verification:**
+
+* **Bottom-up testing and special input testing:** 
+    * "Pieces of the model were run separately to monitor the behaviour of each piece. For example, the model was run without any paramedic ambulances. In their absence, utilisation of ordinary ambulances increased and response times to all categories of calls deteriorated as expected."
+* **Execution tracing:**
+    * Could trace individual calls or ambulances, and observe that e.g., ambulances never spent 5 hours on a call, and no calls vanished.
+
+**Validation:**
+
+* **Experimentation validation - sensitivity analysis**
+* **Conceptual model validation**
+    * Management personnel reviewed model logic.
+* **Comparison with real data**
+* **Face validation**
+    * Management personnel found all experimental results to be acceptable.
+
+#### @wang_discrete-event_2025
+
+**Verification:** Checked that "all events that occur in the EMS align with the expected assumptions and logic"
+
 #### Studies that don't mention verification and validation
 
 * @gigante_study_2022
+* @van_buuren_evaluating_2012
+* @maxwell_ambulance_2009
+* @berlin_mathematical_1974
 
 :::
+
+## Studies with open code or data
+
+@fonseca_discrete_2025 - R simmer - <https://github.com/nhsengland/AmbModelOpen>
+
+@ridler_simulation_2022 - Julia - <https://github.com/uoa-ems-research/JEMSS.jl>
+
+@frichi_dataset_2022 - dataset - <https://zenodo.org/records/6416058> - used in @frichi_ambulance_2025 and @frichi_assessing_2022
+
+Unpublished @pilbery_richardpilberydaa_des_2025 - Python SimPy - <https://github.com/RichardPilbery/DAA_DES>
+
+Unpublished @otles_eotlesems_2024 - Python SimPy - <https://github.com/eotles/EMS>
