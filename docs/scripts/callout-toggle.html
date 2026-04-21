@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const mountPoint = document.querySelector("#callout-toggle-here");
   if (!mountPoint) return;
 
+  const expandText = mountPoint.dataset.expandText || "Expand all callouts";
+  const collapseText = mountPoint.dataset.collapseText || "Collapse all callouts";
+
   let expanded = false;
 
   const btn = document.createElement("button");
@@ -11,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
   btn.id = "toggle-callouts";
   btn.className = "callout-toggle-btn";
   btn.setAttribute("aria-pressed", "false");
-  btn.textContent = "Expand all callouts";
+  btn.textContent = expandText;
 
   mountPoint.appendChild(btn);
 
@@ -41,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     expanded = !expanded;
-    btn.textContent = expanded ? "Collapse all callouts" : "Expand all callouts";
+    btn.textContent = expanded ? collapseText : expandText;
     btn.setAttribute("aria-pressed", String(expanded));
     btn.classList.toggle("is-expanded", expanded);
   });

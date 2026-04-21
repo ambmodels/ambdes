@@ -8,7 +8,11 @@ include-before-body: scripts/callout-toggle.html
 
 This page summarises how **published ambulance DES** represent key elements of the ambulance system. It builds on the excellent review by @aboueljinane_review_2013, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.
 
-<div id="callout-toggle-here"></div>
+<div
+  id="callout-toggle-here"
+  data-expand-text="View all studies"
+  data-collapse-text="Hide all studies">
+</div>
 
 <br>
 
