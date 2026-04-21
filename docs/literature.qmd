@@ -340,7 +340,7 @@ e. **Resource** (time from ED arrival to handover emerging as ED modelled as ser
 | @maxwell_ambulance_2009 | Preparation time | Initial location of vehicles (i.e., at base or on the road) |
 | @ingolfsson_simulation_2003 | On-site time | Call location, and whether transport to hospital is required |
 | @ingolfsson_simulation_2003 | Drop-off time | Hospital, and call priority |
-| @silva_emergency_2010 | Time betewen mterial replacements | Vehicle type |
+| @silva_emergency_2010 | Time between material replacements | Vehicle type |
 
 **(d) Sampled from a distribution**, can then vary by priority/day/etc.
 
@@ -470,6 +470,8 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 
 ## Shifts
 
+Vary between studies.
+
 ::: {.callout-note title="View studies" collapse="true"}
 
 * @gigante_study_2022 - Shifts are 12 hours, initially 7-7. To represent reduced resources during night shift, half the vehicles will be available.
@@ -491,6 +493,8 @@ Don't mention shifts or explicitly don't include shifts:
 <br>
 
 ## Initialisation bias, run length and replications
+
+Vary between studies.
 
 ::: {.callout-note title="View studies" collapse="true"}
 
@@ -557,6 +561,23 @@ Doesn't mention sensitivity analysis:
 <br>
 
 ## Verification and validation
+
+Verification:
+
+* Execution tracing (n=4)
+* Bottom-up testing (n=2)
+* Special input testing (n=2)
+* Assertion checking
+
+Validation:
+
+* Graphical and statistical comparison with real data (n=6)
+* Face validation (n=5)
+* Conceptual model validation (n=3)
+* Input data validation
+* Comparison testing
+* Animation visualisation
+* Sensitivity analysis
 
 ::: {.callout-note title="View studies" collapse="true"}
 
@@ -708,12 +729,15 @@ They say they won't describe in full, that the used usual methods from Law and K
 
 ## Studies with open code or data
 
-@fonseca_discrete_2025 - R simmer - <https://github.com/nhsengland/AmbModelOpen>
-
-@ridler_simulation_2022 - Julia - <https://github.com/uoa-ems-research/JEMSS.jl>
-
-@frichi_dataset_2022 - dataset - <https://zenodo.org/records/6416058> - used in @frichi_ambulance_2025 and @frichi_assessing_2022
-
-Unpublished @pilbery_richardpilberydaa_des_2025 - Python SimPy - <https://github.com/RichardPilbery/DAA_DES>
-
-Unpublished @otles_eotlesems_2024 - Python SimPy - <https://github.com/eotles/EMS>
+| Publication | Language & Package | Code | Data |
+| - | - | - | - |
+| @fonseca_discrete_2025 | R simmer | <https://github.com/nhsengland/AmbModelOpen> | - |
+| Unpublished | R simmer | @baird_bairdjambulance-simmer_2020 <https://github.com/bairdj/ambulance-simmer> | - |
+| Unpublished | Python SimPy | @pilbery_richardpilberydaa_des_2025 <https://github.com/RichardPilbery/DAA_DES> | - |
+| Unpublished | Python SimPy | @otles_eotlesems_2024 <https://github.com/eotles/EMS> | - |
+| @lam_low-cost_2019 | Python | <https://github.com/EMSTrack/EMS-Simulator> and other repositories in <https://github.com/EMSTrack> | - |
+| @allen_developing_2021 | Python SimPy | <https://github.com/MichaelAllen1966/qambo> | - |
+| Unpublished | Python SimPy | @parajuli_urmila-mambulance-gis-system_2021 <https://github.com/Urmila-m/Ambulance-GIS-System> | - |
+| @bertsimas_robust_2019 | Python | <https://github.com/civictechdc/ERDA> | <https://data.mendeley.com/datasets/hhbwyvcxvs/1> |
+| @ridler_simulation_2022 | Julia | <https://github.com/uoa-ems-research/JEMSS.jl> | - |
+| @frichi_dataset_2022 - used in @frichi_ambulance_2025 and @frichi_assessing_2022 | - | - | <https://zenodo.org/records/6416058> |
