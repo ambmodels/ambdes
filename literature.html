@@ -193,6 +193,58 @@ div.csl-indent {
     
 <!-- main -->
 <main class="content" id="quarto-document-content">
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const targetSelector = ".callout-collapse.collapse";
+  const mountPoint = document.querySelector("#callout-toggle-here");
+  if (!mountPoint) return;
+
+  const expandText = mountPoint.dataset.expandText || "Expand all callouts";
+  const collapseText = mountPoint.dataset.collapseText || "Collapse all callouts";
+
+  let expanded = false;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "toggle-callouts";
+  btn.className = "callout-toggle-btn";
+  btn.setAttribute("aria-pressed", "false");
+  btn.textContent = expandText;
+
+  mountPoint.appendChild(btn);
+
+  btn.addEventListener("click", function () {
+    const els = document.querySelectorAll(targetSelector);
+
+    els.forEach((el) => {
+      if (window.bootstrap && window.bootstrap.Collapse) {
+        const instance =
+          window.bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
+        expanded ? instance.hide() : instance.show();
+      } else {
+        el.classList.toggle("show", !expanded);
+      }
+    });
+
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach((trigger) => {
+      const controls =
+        trigger.getAttribute("data-bs-target") || trigger.getAttribute("href");
+      if (!controls) return;
+
+      const target = document.querySelector(controls);
+      if (target && target.matches(targetSelector)) {
+        trigger.setAttribute("aria-expanded", String(!expanded));
+        trigger.classList.toggle("collapsed", expanded);
+      }
+    });
+
+    expanded = !expanded;
+    btn.textContent = expanded ? collapseText : expandText;
+    btn.setAttribute("aria-pressed", String(expanded));
+    btn.classList.toggle("is-expanded", expanded);
+  });
+});
+</script>
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -215,6 +267,9 @@ div.csl-indent {
 
 <p><br></p>
 <p>This page summarises how <strong>published ambulance DES</strong> represent key elements of the ambulance system. It builds on the excellent review by <span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span>, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.</p>
+<div id="callout-toggle-here" data-expand-text="View all studies" data-collapse-text="Hide all studies">
+
+</div>
 <p><br></p>
 <section id="call-arrival-timing" class="level2">
 <h2 class="anchored" data-anchor-id="call-arrival-timing">Call arrival timing</h2>
@@ -757,7 +812,7 @@ div.csl-indent {
 </tr>
 <tr class="even">
 <td><span class="citation" data-cites="silva_emergency_2010">Silva and Pinto (<a href="#ref-silva_emergency_2010" role="doc-biblioref">2010</a>)</span></td>
-<td>Time betewen mterial replacements</td>
+<td>Time between material replacements</td>
 <td>Vehicle type</td>
 </tr>
 </tbody>
@@ -964,6 +1019,7 @@ div.csl-indent {
 </section>
 <section id="shifts" class="level2">
 <h2 class="anchored" data-anchor-id="shifts">Shifts</h2>
+<p>Vary between studies.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -998,6 +1054,7 @@ div.csl-indent {
 </section>
 <section id="initialisation-bias-run-length-and-replications" class="level2">
 <h2 class="anchored" data-anchor-id="initialisation-bias-run-length-and-replications">Initialisation bias, run length and replications</h2>
+<p>Vary between studies.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1171,6 +1228,23 @@ div.csl-indent {
 </section>
 <section id="verification-and-validation" class="level2">
 <h2 class="anchored" data-anchor-id="verification-and-validation">Verification and validation</h2>
+<p>Verification:</p>
+<ul>
+<li>Execution tracing (n=4)</li>
+<li>Bottom-up testing (n=2)</li>
+<li>Special input testing (n=2)</li>
+<li>Assertion checking</li>
+</ul>
+<p>Validation:</p>
+<ul>
+<li>Graphical and statistical comparison with real data (n=6)</li>
+<li>Face validation (n=5)</li>
+<li>Conceptual model validation (n=3)</li>
+<li>Input data validation</li>
+<li>Comparison testing</li>
+<li>Animation visualisation</li>
+<li>Sensitivity analysis</li>
+</ul>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -1391,14 +1465,82 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<p><br></p>
 </section>
 <section id="studies-with-open-code-or-data" class="level2">
 <h2 class="anchored" data-anchor-id="studies-with-open-code-or-data">Studies with open code or data</h2>
-<p><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span> - R simmer - <a href="https://github.com/nhsengland/AmbModelOpen" class="uri">https://github.com/nhsengland/AmbModelOpen</a></p>
-<p><span class="citation" data-cites="ridler_simulation_2022">Ridler et al. (<a href="#ref-ridler_simulation_2022" role="doc-biblioref">2022</a>)</span> - Julia - <a href="https://github.com/uoa-ems-research/JEMSS.jl" class="uri">https://github.com/uoa-ems-research/JEMSS.jl</a></p>
-<p><span class="citation" data-cites="frichi_dataset_2022">Frichi, Jawab, and Aboueljinane (<a href="#ref-frichi_dataset_2022" role="doc-biblioref">2022</a>)</span> - dataset - <a href="https://zenodo.org/records/6416058" class="uri">https://zenodo.org/records/6416058</a> - used in <span class="citation" data-cites="frichi_ambulance_2025">Frichi et al. (<a href="#ref-frichi_ambulance_2025" role="doc-biblioref">2025</a>)</span> and <span class="citation" data-cites="frichi_assessing_2022">Frichi, Jawab, Aboueljinane, Zerka, et al. (<a href="#ref-frichi_assessing_2022" role="doc-biblioref">2022</a>)</span></p>
-<p>Unpublished <span class="citation" data-cites="pilbery_richardpilberydaa_des_2025">Pilbery (<a href="#ref-pilbery_richardpilberydaa_des_2025" role="doc-biblioref">2025</a>)</span> - Python SimPy - <a href="https://github.com/RichardPilbery/DAA_DES" class="uri">https://github.com/RichardPilbery/DAA_DES</a></p>
-<p>Unpublished <span class="citation" data-cites="otles_eotlesems_2024">Otles (<a href="#ref-otles_eotlesems_2024" role="doc-biblioref">2024</a>)</span> - Python SimPy - <a href="https://github.com/eotles/EMS" class="uri">https://github.com/eotles/EMS</a></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Publication</th>
+<th>Language &amp; Package</th>
+<th>Code</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="citation" data-cites="fonseca_discrete_2025">Fonseca et al. (<a href="#ref-fonseca_discrete_2025" role="doc-biblioref">2025</a>)</span></td>
+<td>R simmer</td>
+<td><a href="https://github.com/nhsengland/AmbModelOpen" class="uri">https://github.com/nhsengland/AmbModelOpen</a></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Unpublished</td>
+<td>R simmer</td>
+<td><span class="citation" data-cites="baird_bairdjambulance-simmer_2020">Baird (<a href="#ref-baird_bairdjambulance-simmer_2020" role="doc-biblioref">2020</a>)</span> <a href="https://github.com/bairdj/ambulance-simmer" class="uri">https://github.com/bairdj/ambulance-simmer</a></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Unpublished</td>
+<td>Python SimPy</td>
+<td><span class="citation" data-cites="pilbery_richardpilberydaa_des_2025">Pilbery (<a href="#ref-pilbery_richardpilberydaa_des_2025" role="doc-biblioref">2025</a>)</span> <a href="https://github.com/RichardPilbery/DAA_DES" class="uri">https://github.com/RichardPilbery/DAA_DES</a></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>Unpublished</td>
+<td>Python SimPy</td>
+<td><span class="citation" data-cites="otles_eotlesems_2024">Otles (<a href="#ref-otles_eotlesems_2024" role="doc-biblioref">2024</a>)</span> <a href="https://github.com/eotles/EMS" class="uri">https://github.com/eotles/EMS</a></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="lam_low-cost_2019">Lam et al. (<a href="#ref-lam_low-cost_2019" role="doc-biblioref">2019</a>)</span></td>
+<td>Python</td>
+<td><a href="https://github.com/EMSTrack/EMS-Simulator" class="uri">https://github.com/EMSTrack/EMS-Simulator</a> and other repositories in <a href="https://github.com/EMSTrack" class="uri">https://github.com/EMSTrack</a></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="allen_developing_2021">Allen et al. (<a href="#ref-allen_developing_2021" role="doc-biblioref">2021</a>)</span></td>
+<td>Python SimPy</td>
+<td><a href="https://github.com/MichaelAllen1966/qambo" class="uri">https://github.com/MichaelAllen1966/qambo</a></td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Unpublished</td>
+<td>Python SimPy</td>
+<td><span class="citation" data-cites="parajuli_urmila-mambulance-gis-system_2021">Parajuli et al. (<a href="#ref-parajuli_urmila-mambulance-gis-system_2021" role="doc-biblioref">2021</a>)</span> <a href="https://github.com/Urmila-m/Ambulance-GIS-System" class="uri">https://github.com/Urmila-m/Ambulance-GIS-System</a></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="bertsimas_robust_2019">Bertsimas and Ng (<a href="#ref-bertsimas_robust_2019" role="doc-biblioref">2019</a>)</span></td>
+<td>Python</td>
+<td><a href="https://github.com/civictechdc/ERDA" class="uri">https://github.com/civictechdc/ERDA</a></td>
+<td><a href="https://data.mendeley.com/datasets/hhbwyvcxvs/1" class="uri">https://data.mendeley.com/datasets/hhbwyvcxvs/1</a></td>
+</tr>
+<tr class="odd">
+<td><span class="citation" data-cites="ridler_simulation_2022">Ridler et al. (<a href="#ref-ridler_simulation_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>Julia</td>
+<td><a href="https://github.com/uoa-ems-research/JEMSS.jl" class="uri">https://github.com/uoa-ems-research/JEMSS.jl</a></td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td><span class="citation" data-cites="frichi_dataset_2022">Frichi, Jawab, and Aboueljinane (<a href="#ref-frichi_dataset_2022" role="doc-biblioref">2022</a>)</span> - used in <span class="citation" data-cites="frichi_ambulance_2025">Frichi et al. (<a href="#ref-frichi_ambulance_2025" role="doc-biblioref">2025</a>)</span> and <span class="citation" data-cites="frichi_assessing_2022">Frichi, Jawab, Aboueljinane, Zerka, et al. (<a href="#ref-frichi_assessing_2022" role="doc-biblioref">2022</a>)</span></td>
+<td>-</td>
+<td>-</td>
+<td><a href="https://zenodo.org/records/6416058" class="uri">https://zenodo.org/records/6416058</a></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -1411,11 +1553,20 @@ Aboueljinane, Lina, Zied Jemai, and Evren Sahin. 2012. <span>“Reducing Ambulan
 <div id="ref-aboueljinane_review_2013" class="csl-entry" role="listitem">
 Aboueljinane, L., E. Sahin, and Z. Jemai. 2013. <span>“A Review on Simulation Models Applied to Emergency Medical Service Operations.”</span> <em>Computers &amp; Industrial Engineering</em> 66 (4): 734–50. <a href="https://doi.org/10.1016/j.cie.2013.09.017">https://doi.org/10.1016/j.cie.2013.09.017</a>.
 </div>
+<div id="ref-allen_developing_2021" class="csl-entry" role="listitem">
+Allen, Michael, Kerry Pearn, and Tom Monks. 2021. <em>Developing an <span>OpenAI</span> <span>Gym</span>-Compatible Framework and Simulation Environment for Testing <span>Deep</span> <span>Reinforcement</span> <span>Learning</span> Agents Solving the <span>Ambulance</span> <span>Location</span> <span>Problem</span></em>. arXiv. <a href="https://doi.org/10.48550/arXiv.2101.04434">https://doi.org/10.48550/arXiv.2101.04434</a>.
+</div>
 <div id="ref-aringhieri_integrated_2010" class="csl-entry" role="listitem">
 Aringhieri, Roberto. 2010. <span>“An Integrated <span>DE</span> and <span>AB</span> Simulation Model for <span>EMS</span> Management.”</span> <em>2010 <span>IEEE</span> <span>Workshop</span> on <span>Health</span> <span>Care</span> <span>Management</span> (<span>WHCM</span>)</em>, February, 1–6. <a href="https://doi.org/10.1109/WHCM.2010.5441260">https://doi.org/10.1109/WHCM.2010.5441260</a>.
 </div>
+<div id="ref-baird_bairdjambulance-simmer_2020" class="csl-entry" role="listitem">
+Baird, James. 2020. <em>Bairdj/Ambulance-Simmer</em>. <a href="https://github.com/bairdj/ambulance-simmer">https://github.com/bairdj/ambulance-simmer</a>.
+</div>
 <div id="ref-berlin_mathematical_1974" class="csl-entry" role="listitem">
 Berlin, Geoffrey N., and Jon C. Liebman. 1974. <span>“Mathematical Analysis of Emergency Ambulance Location.”</span> <em>Socio-Economic Planning Sciences</em> 8 (6): 323–28. <a href="https://doi.org/10.1016/0038-0121(74)90036-6">https://doi.org/10.1016/0038-0121(74)90036-6</a>.
+</div>
+<div id="ref-bertsimas_robust_2019" class="csl-entry" role="listitem">
+Bertsimas, Dimitris, and Yeesian Ng. 2019. <span>“Robust and Stochastic Formulations for Ambulance Deployment and Dispatch.”</span> <em>European Journal of Operational Research</em> 279 (2): 557–71. <a href="https://doi.org/10.1016/j.ejor.2019.05.011">https://doi.org/10.1016/j.ejor.2019.05.011</a>.
 </div>
 <div id="ref-van_buuren_evaluating_2012" class="csl-entry" role="listitem">
 Buuren, Martin van, Rob van der Mei, Karen Aardal, and Henk Post. 2012. <span>“Evaluating Dynamic Dispatch Strategies for Emergency Medical Services: <span>TIFAR</span> Simulation Tool.”</span> <em>Proceedings of the 2012 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1–12. <a href="https://doi.org/10.1109/WSC.2012.6465214">https://doi.org/10.1109/WSC.2012.6465214</a>.
@@ -1450,6 +1601,9 @@ Iskander, W. H. 1989. <span>“Simulation Modeling for Emergency Medical Service
 <div id="ref-kergosien_generic_2015" class="csl-entry" role="listitem">
 Kergosien, Y., V. Bélanger, P. Soriano, M. Gendreau, and A. Ruiz. 2015. <span>“A Generic and Flexible Simulation-Based Analysis Tool for <span>EMS</span> Management.”</span> <em>International Journal of Production Research</em> 53 (24): 7299–316. <a href="https://doi.org/10.1080/00207543.2015.1037405">https://doi.org/10.1080/00207543.2015.1037405</a>.
 </div>
+<div id="ref-lam_low-cost_2019" class="csl-entry" role="listitem">
+Lam, Timothy, Hans Yuan, and Maurício C. de Oliveira. 2019. <span>“Low-<span>Cost</span> <span>Open</span>-<span>Source</span> <span>Solution</span> to <span>Optimize</span> <span>Emergency</span> <span>Medical</span> <span>Services</span> in <span>Developing</span> <span>Communities</span> by <span>Tracking</span>, <span>Dispatching</span>, and <span>Simulating</span>.”</span> <em>2019 <span>IEEE</span> <span>Global</span> <span>Humanitarian</span> <span>Technology</span> <span>Conference</span> (<span>GHTC</span>)</em>, October, 1–8. <a href="https://doi.org/10.1109/GHTC46095.2019.9033058">https://doi.org/10.1109/GHTC46095.2019.9033058</a>.
+</div>
 <div id="ref-lee_simulation-based_2012" class="csl-entry" role="listitem">
 Lee, Taesik, Soo-Haeng Cho, Hoon Jang, and John G. Turner. 2012. <span>“A Simulation-Based Iterative Method for a Trauma Center — <span>Air</span> Ambulance Location Problem.”</span> <em>Proceedings of the 2012 <span>Winter</span> <span>Simulation</span> <span>Conference</span> (<span>WSC</span>)</em>, December, 1–12. <a href="https://doi.org/10.1109/WSC.2012.6465042">https://doi.org/10.1109/WSC.2012.6465042</a>.
 </div>
@@ -1458,6 +1612,9 @@ Maxwell, Matthew S., Shane G. Henderson, and Huseyin Topaloglu. 2009. <span>“A
 </div>
 <div id="ref-otles_eotlesems_2024" class="csl-entry" role="listitem">
 Otles, Erkin. 2024. <em>Eotles/<span>EMS</span></em>. <a href="https://github.com/eotles/EMS">https://github.com/eotles/EMS</a>.
+</div>
+<div id="ref-parajuli_urmila-mambulance-gis-system_2021" class="csl-entry" role="listitem">
+Parajuli, Paridhi, Pratima Sapkota, and Urmila Maharjan. 2021. <em>Urmila-m/<span>Ambulance</span>-<span>GIS</span>-<span>System</span></em>. <a href="https://github.com/Urmila-m/Ambulance-GIS-System">https://github.com/Urmila-m/Ambulance-GIS-System</a>.
 </div>
 <div id="ref-pilbery_richardpilberydaa_des_2025" class="csl-entry" role="listitem">
 Pilbery, Richard. 2025. <em><span>RichardPilbery</span>/<span>DAA</span>_DES</em>. <a href="https://github.com/RichardPilbery/DAA_DES">https://github.com/RichardPilbery/DAA_DES</a>.
