@@ -63,8 +63,12 @@ Will do all these.
 
 ::: {.box-hl}
 
-This **requires some thought** - compare to m/m/s queue possible for most basic model - maybe that's it
+This **requires some thought** as to whether there is anything we could compare against for even the most basic model.
 
 *Have put comparison to regression under comparison testing validation*
 
 :::
+
+## Execution tracing
+
+* [ ] Trace individual calls or ambulances.

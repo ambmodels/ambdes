@@ -63,10 +63,11 @@ This stage can serve as a benchmark against the current regression models. The D
 
 **To discuss:**
 
-* Just people conveyed to hospital, or include hear-and-treat and see-and-treat? As then, its either, just those parameters for see-and-convey, or just for whole thing
-    * If excluded, does it bias utilisation estimates? Or is that a reasonable simplification?
-* Any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is.
-* Likewise, for call categories by time period.
+* To answer this question, do we need to report by whether **conveyed or not?** In which case, need to incorporate here (rather than stage 3).
+* Relatedly, when consider conveyance, is it about:
+    * **Conveyed v.s. Non-conveyed** (hear-and-treat and see-and-treat), or
+    * **Conveyed v.s. Hear-and-treat v.s., See-and-treat**
+* Does ambulance service have any **existing analysis looking at trends in call arrivals**? Want to understand what the hour / day of week variation is. Likewise, for call categories by time period.
 
 :::
 
@@ -106,7 +107,7 @@ This will only be an approximation, and may potentially be quite bad. It ignores
 
 **To discuss:**
 
-* Is this actually a question of interest? Or is it really just stage 5? Maybe should remove this?
+* **Is this actually a question of interest?** Or is it really just stage 5? Maybe should remove this?
 
 :::
 
@@ -138,8 +139,8 @@ How do improvements in specific job-cycle components (e.g., scene time, handover
 
 **To discuss:**
 
-* Is conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times
 * Does this continue from stage 1 or 2? I guess it depends if stage 2 is any good or not?
+* Which job cycle times to model? Which to **aggregate**?
 
 :::
 
@@ -178,13 +179,13 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 
 **To discuss:**
 
-* Does this continue from stage 1, 2 or 3? Depends if needs county or job cycle information. Do they?
-* If these are all just iterations on stage 1, what is the priority order to work on them in?
-* Learn more about break policies and stuff... is this one stage or multiple.
-* Is it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn't something they mentioned
-* Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks
-* Outcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)
-* Cost... I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios
+* Does this question require understanding of **county** (stage 2) or **job cycle** (stage 3). If so, it builds on them. If not, it builds on stage 1.
+* Relatedly, if stages 2-4 are all just iterations on stage 1, **what is the priority order?**
+* **What are the current break policies?**
+* Is it relevant to know **proportion of crews going straight from one job to the next versus returning to station between jobs**? Here or elsewhere?
+* Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like **overtime** and **interruption of breaks**.
+* Outcomes and scenarios explored here - explore **involving paramedics**? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)
+* **Cost**... I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios
 
 :::
 
@@ -223,13 +224,15 @@ Brings with it possible changes to e.g., travel times (as can estimate now based
 
 There will be alot to figure here about how to do things, but can address at later stage.
 
-* E.g. Whether do times and catetgories and conveyance by area.
-* Where ambulances start from and where they go after release.
-* How we model travel times.
+* E.g. Whether do **times, catetgories and conveyance by area**.
+* Where ambulances **start from and where they go** after release.
+* How we model **travel times**.
 
 Other things to consider would be:
 
-* Do we want shifts in this?
+* What **size area** is required to answer this question?
+* Does this question require **shifts** in the model?
+    * If yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.
 * **Socioeconomic inequalities** - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas... deprivation.. rural urban... known baseline mean response time dispartieeis... then see change from scenarios. you could embed in model itself if wanted to do optimisation.
 
 :::
@@ -263,6 +266,8 @@ It requires stage 4 and stage 5 components and essentially merges those. Dependi
 **To discuss:**
 
 * Depends on stage 5, whether this is new or not.
+    * New if stage 5 is big areas.
+    * Not a stage if stage 5 already requires small areas.
 
 :::
 

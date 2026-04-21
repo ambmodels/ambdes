@@ -74,7 +74,9 @@ will do this
 
 ::: {.box-hl}
 
-can compare basic model to regression model. **requires some thought** re: any other possible comparisons. we know of existing models and code and/or existing data.
+Can compare basic model to regression model. **requires some thought** re: any other possible comparisons. we know of existing models and code and/or existing data.
+
+For example, could compare against <https://nhsengland.github.io/AmbModelOpen/> and/or <https://github.com/uoa-ems-research/JEMSS.jl>. Both open models. Or, could run with reported parameters of other models and compare. That's all alot of work though - depends if within capacity.
 
 :::
 

@@ -6,14 +6,6 @@ This page documents the best practice criteria we are aiming to adhere to across
 
 We include the raw Markdown checklists that you can copy and adapt for your own projects, along with links to the corresponding GitHub issues for this project where progress against each checklist is tracked.
 
-::: {.box-hl}
-
-**To discuss:**
-
-* Is there any others worth including?
-
-:::
-
 <br>
 
 ## STRESS-DES

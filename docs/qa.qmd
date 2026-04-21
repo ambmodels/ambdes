@@ -60,7 +60,7 @@ Given time-scales, scope and risk, I have assumed that not including an independ
 
 **To discuss:**
 
-* Thoughts on this plan?
+* Thoughts on this plan? Inter-related with the code review question, and what sort of review / assurance there is of code / decisions / etc.
 
 :::
 

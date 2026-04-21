@@ -85,11 +85,4 @@ Possible input formats:
 
 ## Version control
 
-* Use **conventional commits**
 * Use `dev` and `main`.
-
-::: {.box-hl}
-
-TBC whether do dev feature main and blocking rules etc.
-
-:::

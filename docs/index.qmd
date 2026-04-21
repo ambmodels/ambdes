@@ -15,3 +15,11 @@ This work is part of the [STARS project](https://pythonhealthdatascience.github.
 * Add names and organisations here yet?
 
 :::
+
+## Prerequisite knowledge for reusing this model
+
+To make effective use of this model, some background knowledge may be helpful. You can find lots of relevant material in the [DES RAP Book](https://pythonhealthdatascience.github.io/des_rap_book/). At a minimum, we suggest:
+
+* [**Discrete-event simulation**](https://pythonhealthdatascience.github.io/des_rap_book/pages/intros/des.html) - what DES is, how it represents systems, and why it is commonly used in healthcare modelling.
+* [**Initialisation bias and warm-up periods**](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/output_analysis/warmup.html) - why simulation models can produce biased early results, and how warm-up periods help address this.
+* [**Object-oriented programming (OOP)**](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/setup/code_structure.html) - useful background for understanding how the model code is structured.
