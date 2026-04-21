@@ -1,0 +1,49 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const targetSelector = ".callout-collapse.collapse";
+  const mountPoint = document.querySelector("#callout-toggle-here");
+  if (!mountPoint) return;
+
+  let expanded = false;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.id = "toggle-callouts";
+  btn.className = "callout-toggle-btn";
+  btn.setAttribute("aria-pressed", "false");
+  btn.textContent = "Expand all callouts";
+
+  mountPoint.appendChild(btn);
+
+  btn.addEventListener("click", function () {
+    const els = document.querySelectorAll(targetSelector);
+
+    els.forEach((el) => {
+      if (window.bootstrap && window.bootstrap.Collapse) {
+        const instance =
+          window.bootstrap.Collapse.getOrCreateInstance(el, { toggle: false });
+        expanded ? instance.hide() : instance.show();
+      } else {
+        el.classList.toggle("show", !expanded);
+      }
+    });
+
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach((trigger) => {
+      const controls =
+        trigger.getAttribute("data-bs-target") || trigger.getAttribute("href");
+      if (!controls) return;
+
+      const target = document.querySelector(controls);
+      if (target && target.matches(targetSelector)) {
+        trigger.setAttribute("aria-expanded", String(!expanded));
+        trigger.classList.toggle("collapsed", expanded);
+      }
+    });
+
+    expanded = !expanded;
+    btn.textContent = expanded ? "Collapse all callouts" : "Expand all callouts";
+    btn.setAttribute("aria-pressed", String(expanded));
+    btn.classList.toggle("is-expanded", expanded);
+  });
+});
+</script>

@@ -1,11 +1,14 @@
 ---
 title: Literature
 bibliography: references.bib
+include-before-body: scripts/callout-toggle.html
 ---
 
 <br>
 
 This page summarises how **published ambulance DES** represent key elements of the ambulance system. It builds on the excellent review by @aboueljinane_review_2013, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.
+
+<div id="callout-toggle-here"></div>
 
 <br>
 
@@ -696,6 +699,8 @@ They say they won't describe in full, that the used usual methods from Law and K
 * @berlin_mathematical_1974
 
 :::
+
+<br>
 
 ## Studies with open code or data
 
