@@ -35,3 +35,4 @@ format:
       - css/theme.scss
     css:
       - css/styles.css
+    lightbox: true

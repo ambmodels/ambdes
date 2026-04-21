@@ -51,7 +51,7 @@ Provide a **single-command mechanism** to run everything end to end.
 
 Will require some thought around how best to design modular components that can be **easily swapped or extended**. Some duplication will be inevitable, so the aim should be to minimise it with a clear and maintainable structure. Something like:
 
-![](images/proposed_model_structure.jpeg){.lightbox}
+![](images/proposed_model_structure.jpeg)
 
 Also, review whether current **scenario** approach could be improved, as can feel a little clunky.
 
