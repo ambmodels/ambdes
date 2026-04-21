@@ -44,6 +44,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -210,14 +213,15 @@ ul.task-list li input[type="checkbox"] {
 <div class="box-blue">
 <p>How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?</p>
 </div>
-<p>Additional possible questions (not from ambulance service):</p>
-<ul>
-<li>How do system-wide demand changes impact response times and utilisation?</li>
-</ul>
 </section>
 <section id="model-content-and-inputs" class="level3">
 <h3 class="anchored" data-anchor-id="model-content-and-inputs">Model content and inputs</h3>
-<p>We are doing by call category, so would expect to do arrivals and service times by that, not one whole</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage1.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Logic flow diagram"><img src="images/stage1.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
@@ -235,17 +239,17 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td>Arrivals</td>
 <td>Basic arrival process or NHPP based on observed patterns</td>
-<td>Mean inter-arrival time for whole system OR mean by period of time</td>
+<td>By call category, mean inter-arrival time for whole system OR mean by period of time</td>
 </tr>
 <tr class="even">
 <td>Call category</td>
 <td>Separate arrival times - part of arrival distribution or assigned after</td>
-<td>Arrival times above should also be by category OR have another distribution with probabilities to assign them</td>
+<td>If NHPP is used and we want to do call category by time period, it should be sampled as part of NHPP too. If don’t want call category probabilities to be by time period, then can just assign them using another probability distribution afterwards</td>
 </tr>
 <tr class="odd">
 <td>Resource</td>
 <td>Single pooled ambulance resource</td>
-<td>Numebr of ambulances for whole system</td>
+<td>Number of ambulances for whole system</td>
 </tr>
 <tr class="even">
 <td>Queue</td>
@@ -285,6 +289,7 @@ ul.task-list li input[type="checkbox"] {
 <li>If excluded, does it bias utilisation estimates? Or is that a reasonable simplification?</li>
 </ul></li>
 <li>Any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is.</li>
+<li>Likewise, for call categories by time period.</li>
 </ul>
 </div>
 <p><br></p>
@@ -301,6 +306,12 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="model-changes" class="level3">
 <h3 class="anchored" data-anchor-id="model-changes">Model changes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage2.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Logic flow diagram"><img src="images/stage2.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -327,10 +338,17 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+<p><em>This is equivalent to having one model instance with separate ambulance resources per county, as then you’d just be running each county in parallel to each other essentially, no interaction, so it’s simpler to just use the single area model and run it for each county.</em></p>
 </section>
 <section id="notes-1" class="level3">
 <h3 class="anchored" data-anchor-id="notes-1">Notes</h3>
 <p>This will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn’t really one separate service per county, and that resources operate across counties on shift.</p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Is this actually a question of interest? Or is it really just stage 5? Maybe should remove this?</li>
+</ul>
+</div>
 <p><br></p>
 </section>
 </section>
@@ -344,6 +362,12 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="model-changes-1" class="level3">
 <h3 class="anchored" data-anchor-id="model-changes-1">Model changes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage3.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Logic flow diagram"><img src="images/stage3.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -377,6 +401,7 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>To discuss:</strong></p>
 <ul>
 <li>Is conveyed v.s. non-conveyed already relevant at stage 1? I only put it here as it only got mentioned in relation to job cycle times</li>
+<li>Does this continue from stage 1 or 2? I guess it depends if stage 2 is any good or not?</li>
 </ul>
 </div>
 <p><br></p>
@@ -398,6 +423,12 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="model-changes-2" class="level3">
 <h3 class="anchored" data-anchor-id="model-changes-2">Model changes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage4.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Logic flow diagram"><img src="images/stage4.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -430,7 +461,8 @@ ul.task-list li input[type="checkbox"] {
 <div class="box-hl">
 <p><strong>To discuss:</strong></p>
 <ul>
-<li>Does stage 4 need job cycle times? Does stage 3 need shifts? Else, these are really two separate things, two separate evolutions on stage 2. unless this shifts needs job cycle times incorporated?</li>
+<li>Does this continue from stage 1, 2 or 3? Depends if needs county or job cycle information. Do they?</li>
+<li>If these are all just iterations on stage 1, what is the priority order to work on them in?</li>
 <li>Learn more about break policies and stuff… is this one stage or multiple.</li>
 <li>Is it relevant to know Proportion of crews going straight from one job to the next versus returning to station between jobs.? Here or elsewhere? It wasn’t something they mentioned</li>
 <li>Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks</li>
@@ -448,13 +480,16 @@ ul.task-list li input[type="checkbox"] {
 <div class="box-blue">
 <p>When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?</p>
 </div>
-<p>Additional possible questions (not from ambulance service):</p>
-<ul>
-<li><strong>Socioeconomic inequalities</strong> - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.</li>
-</ul>
 </section>
 <section id="model-changes-3" class="level3">
 <h3 class="anchored" data-anchor-id="model-changes-3">Model changes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage5.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Logic flow diagram"><img src="images/stage5.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
+<p>This builds on stage 3, as we have travel times to scene and to hospital, and then job cycle times at scene and at hospital.</p>
 <p>Introduce geographic modelling. Possible configurations:</p>
 <ul>
 <li>Counties as zones with local queues and spillover rules.</li>
@@ -462,6 +497,23 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>Resources become linked to area.</p>
 <p>Brings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)</p>
+</section>
+<section id="notes-4" class="level3">
+<h3 class="anchored" data-anchor-id="notes-4">Notes</h3>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<p>There will be alot to figure here about how to do things, but can address at later stage.</p>
+<ul>
+<li>E.g. Whether do times and catetgories and conveyance by area.</li>
+<li>Where ambulances start from and where they go after release.</li>
+<li>How we model travel times.</li>
+</ul>
+<p>Other things to consider would be:</p>
+<ul>
+<li>Do we want shifts in this?</li>
+<li><strong>Socioeconomic inequalities</strong> - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.</li>
+</ul>
+</div>
 <p><br></p>
 </section>
 </section>
@@ -476,7 +528,23 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="model-changes-4" class="level3">
 <h3 class="anchored" data-anchor-id="model-changes-4">Model changes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/stage6.drawio.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Logic flow diagram"><img src="images/stage6.drawio.png" class="img-fluid figure-img" alt="Logic flow diagram"></a></p>
+<figcaption>Logic flow diagram</figcaption>
+</figure>
+</div>
 <p>This requires representing individual stations explicitly. And linking resources to those.</p>
+<p>It requires stage 4 and stage 5 components and essentially merges those. Depending on how model a station and what incorporate in stage 5, may not be super different. Just requires <strong>sufficiently small areas</strong> to represent different stations.</p>
+</section>
+<section id="notes-5" class="level3">
+<h3 class="anchored" data-anchor-id="notes-5">Notes</h3>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Depends on stage 5, whether this is new or not.</li>
+</ul>
+</div>
 <p><br></p>
 </section>
 </section>
@@ -895,6 +963,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
