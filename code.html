@@ -43,7 +43,10 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1e10d9106ee83674043745959f1925f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -203,6 +206,12 @@ ul.task-list li input[type="checkbox"] {
 <li>Use <strong>sim-tools</strong> for distributions</li>
 <li>Use <strong>vidigi</strong> for animation</li>
 </ul>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>What is preferred for environment management? Would uv be ok?</li>
+</ul>
+</div>
 </section>
 <section id="open-and-private-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="open-and-private-workflow">Open and private workflow</h2>
@@ -212,6 +221,12 @@ ul.task-list li input[type="checkbox"] {
 <li>Use <strong>dummy data</strong> in the public repository for examples.</li>
 <li>Design the public package so it can be imported and run privately on local data. Ensure the public version reproduces all key analytical steps.</li>
 </ul>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>How does this sound? What is sensitivity of aggregate parameters?</li>
+</ul>
+</div>
 </section>
 <section id="documentation" class="level2">
 <h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
@@ -231,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
 <li><code>LICENSE</code></li>
 <li><code>CITATION.cff</code></li>
 </ul>
-<p>Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html</p>
+<p>Citation as per <a href="https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html" class="uri">https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html</a></p>
 </section>
 <section id="code-design" class="level2">
 <h2 class="anchored" data-anchor-id="code-design">Code design</h2>
@@ -241,8 +256,12 @@ ul.task-list li input[type="checkbox"] {
 <p>Provide a <strong>single-command mechanism</strong> to run everything end to end.</p>
 <div class="box-hl">
 <p>Will require some thought around how best to design modular components that can be <strong>easily swapped or extended</strong>. Some duplication will be inevitable, so the aim should be to minimise it with a clear and maintainable structure. Something like:</p>
-<p><img src="images/proposed_model_structure.jpeg" class="img-fluid" alt="Proposed model structure"><br>
-</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/proposed_model_structure.jpeg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Proposed model structure"><img src="images/proposed_model_structure.jpeg" class="img-fluid figure-img" alt="Proposed model structure"></a></p>
+<figcaption>Proposed model structure</figcaption>
+</figure>
+</div>
 <p>Also, review whether current <strong>scenario</strong> approach could be improved, as can feel a little clunky.</p>
 <p>Consider how could improve <strong>speed</strong>… monitor speed as build - identify what slows it down</p>
 </div>
@@ -687,6 +706,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
