@@ -10,12 +10,28 @@ title: Code structure / infrastructure plans
 * Use **sim-tools** for distributions
 * Use **vidigi** for animation
 
+::: {.box-hl}
+
+**To discuss:**
+
+* What is preferred for environment management? Would uv be ok?
+
+:::
+
 ## Open and private workflow
 
 * Structure the model code as a **public Python package**.
 * Make the model documentation **public**.
 * Use **dummy data** in the public repository for examples.
 * Design the public package so it can be imported and run privately on local data. Ensure the public version reproduces all key analytical steps.
+
+::: {.box-hl}
+
+**To discuss:**
+
+* How does this sound? What is sensitivity of aggregate parameters?
+
+:::
 
 ## Documentation
 
@@ -35,7 +51,7 @@ Also maintain the following repository documentation:
 * `LICENSE`
 * `CITATION.cff`
 
-Citation as per https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html
+Citation as per <https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/citation.html>
 
 ## Code design
 
@@ -51,7 +67,7 @@ Provide a **single-command mechanism** to run everything end to end.
 
 Will require some thought around how best to design modular components that can be **easily swapped or extended**. Some duplication will be inevitable, so the aim should be to minimise it with a clear and maintainable structure. Something like:
 
-![Proposed model structure](images/proposed_model_structure.jpeg)\
+![Proposed model structure](images/proposed_model_structure.jpeg)
 
 Also, review whether current **scenario** approach could be improved, as can feel a little clunky.
 
