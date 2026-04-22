@@ -1,316 +1,5 @@
 [
   {
-    "objectID": "conceptual.html",
-    "href": "conceptual.html",
-    "title": "Conceptual modelling",
-    "section": "",
-    "text": "The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:\nProgressing through the stages, we can evaluate whether the added detail improves the model’s validity for previous questions, or whether the simpler version remains sufficient.",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-1-whole-system-resourcing",
-    "href": "conceptual.html#stage-1-whole-system-resourcing",
-    "title": "Conceptual modelling",
-    "section": "Stage 1: Whole-system resourcing",
-    "text": "Stage 1: Whole-system resourcing\n\nKey question\n\nHow do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?\n\n\n\nModel content and inputs\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\n\nElement\nModel content\nInput\n\n\n\n\nArrivals\nBasic arrival process or NHPP based on observed patterns\nBy call category, mean inter-arrival time for whole system OR mean by period of time\n\n\nCall category\nSeparate arrival times - part of arrival distribution or assigned after\nIf NHPP is used and we want to do call category by time period, it should be sampled as part of NHPP too. If don’t want call category probabilities to be by time period, then can just assign them using another probability distribution afterwards\n\n\nResource\nSingle pooled ambulance resource\nNumber of ambulances for whole system\n\n\nQueue\nFirst come first serve or prioritisation rules with potential reneging/balking\nPriority rules could likely be informed by call guidelines\n\n\nService time\nSingle time (disatpch to resource available)\nMean time, by call category\n\n\n\nFor initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.\nFor uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.\nFor distributions used, will do input modelling.\nOutputs:\n\nPrimary: Category 2 mean response time\nSecondary: Resource utilisation\n\nGive results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)\n\n\nNotes\nThis stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:\n\nMultiple outcomes from the same run (regression just one per model).\nMore intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).\nExtendability (once core structure is in place, we can add more components in later stages).\n\n\nTo discuss:\n\nTo answer this question, do we need to report by whether conveyed or not? In which case, need to incorporate here (rather than stage 3).\nRelatedly, when consider conveyance, is it about:\n\nConveyed v.s. Non-conveyed (hear-and-treat and see-and-treat), or\nConveyed v.s. Hear-and-treat v.s., See-and-treat\n\nDoes ambulance service have any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is. Likewise, for call categories by time period.",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
-    "href": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
-    "title": "Conceptual modelling",
-    "section": "Stage 2: Resourcing by county (without interaction)",
-    "text": "Stage 2: Resourcing by county (without interaction)\n\nKey question\n\nIf total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?\n\nDone on county level as that lines up with organisational structure Although is coming up more in conversations about the hospital level as thats where they go\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nSame as stage 1\n\n\nInputs\nCounty-specific parameters for demand, resources and service times\n\n\nOutputs\nSame as stage 1\n\n\n\nThis is equivalent to having one model instance with separate ambulance resources per county, as then you’d just be running each county in parallel to each other essentially, no interaction, so it’s simpler to just use the single area model and run it for each county.\n\n\nNotes\nThis will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn’t really one separate service per county, and that resources operate across counties on shift.\n\nTo discuss:\n\nIs this actually a question of interest? Or is it really just stage 5? Maybe should remove this?",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-3-job-cycle-times",
-    "href": "conceptual.html#stage-3-job-cycle-times",
-    "title": "Conceptual modelling",
-    "section": "Stage 3: Job cycle times",
-    "text": "Stage 3: Job cycle times\n\nKey question\n\nHow do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?\n\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\n(1) Job cycle divided into individual time components (e.g., time on scene, handover time). (2) Separate cfycle times for conveyed v.s. non conveyed\n\n\nInputs\nCycle times and conveyed/nonconveyed breakdown of everything\n\n\nOutputs\nAlso now report by conveyed and non conveyed\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes this continue from stage 1 or 2? I guess it depends if stage 2 is any good or not?\nWhich job cycle times to model? Which to aggregate?",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-4-shifts",
-    "href": "conceptual.html#stage-4-shifts",
-    "title": "Conceptual modelling",
-    "section": "Stage 4: Shifts",
-    "text": "Stage 4: Shifts\n\nKey question\n\nCan alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?\n\nCurrent patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:\n\nMidday and midnight dips in resource numbers when many crews are on break at once.\nEffects of protected periods towards the end of shifts.\n\nThe focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nAdd representation of shifts (resource availability over time), including breaks and protected periods\n\n\nInputs\nCurrent and alternative rota schedules (for the whole area, not by station, proportions on different schedules)\n\n\nOutputs\nAdd a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips).\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes this question require understanding of county (stage 2) or job cycle (stage 3). If so, it builds on them. If not, it builds on stage 1.\nRelatedly, if stages 2-4 are all just iterations on stage 1, what is the priority order?\nWhat are the current break policies?\nIs it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?\nAlso, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks.\nOutcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)\nCost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
-    "href": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
-    "title": "Conceptual modelling",
-    "section": "Stage 5: Resourcing by county (with interaction)",
-    "text": "Stage 5: Resourcing by county (with interaction)\n\nKey question\n\nWhen vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?\n\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\nThis builds on stage 3, as we have travel times to scene and to hospital, and then job cycle times at scene and at hospital.\nIntroduce geographic modelling. Possible configurations:\n\nCounties as zones with local queues and spillover rules.\nBreaking down into smaller than county level\n\nResources become linked to area.\nBrings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)\n\n\nNotes\n\nTo discuss:\nThere will be alot to figure here about how to do things, but can address at later stage.\n\nE.g. Whether do times, catetgories and conveyance by area.\nWhere ambulances start from and where they go after release.\nHow we model travel times.\n\nOther things to consider would be:\n\nWhat size area is required to answer this question?\nDoes this question require shifts in the model?\n\nIf yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.\n\nSocioeconomic inequalities - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#stage-6-station-level-questions",
-    "href": "conceptual.html#stage-6-station-level-questions",
-    "title": "Conceptual modelling",
-    "section": "Stage 6: Station-level questions",
-    "text": "Stage 6: Station-level questions\n\nKey question\n\nWhat is the impact of adding/moving/removing individual station shifts?\n\nFor example, identifying stations with low utilisation, as candidates.\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\nThis requires representing individual stations explicitly. And linking resources to those.\nIt requires stage 4 and stage 5 components and essentially merges those. Depending on how model a station and what incorporate in stage 5, may not be super different. Just requires sufficiently small areas to represent different stations.\n\n\nNotes\n\nTo discuss:\n\nDepends on stage 5, whether this is new or not.\n\nNew if stage 5 is big areas.\nNot a stage if stage 5 already requires small areas.",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "conceptual.html#assumptions-and-simplifications",
-    "href": "conceptual.html#assumptions-and-simplifications",
-    "title": "Conceptual modelling",
-    "section": "Assumptions and simplifications",
-    "text": "Assumptions and simplifications\nTo reflect on and document. Things like:\n\nMultiple vehicles attending the same incident - not modelling that (should you?)\nIncluding/excluding see-and-treat and hear-and-treat\nOut of ambulance service patch\nNot modelling hospital capacity (AmbModelOpen did that)",
-    "crumbs": [
-      "GitHub",
-      "Conceptual modelling"
-    ]
-  },
-  {
-    "objectID": "checklists/stars_reproducibility.html",
-    "href": "checklists/stars_reproducibility.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: Heather, A., Monks, T., Harper, A., Mustafee, N., & Mayne, A. (2025). On the reproducibility of discrete-event simulation studies in health research: an empirical study using open models. Journal of Simulation, 1–25. https://doi.org/10.1080/17477778.2025.2552177"
-  },
-  {
-    "objectID": "checklists/stars_reproducibility.html#recommendations-to-support-reproducibility",
-    "href": "checklists/stars_reproducibility.html#recommendations-to-support-reproducibility",
-    "title": "Ambulance DES",
-    "section": "Recommendations to support reproducibility",
-    "text": "Recommendations to support reproducibility\nSet-up:\n\n⭐ Share code with an open licence\nLink publication to a specific version of the code\nList dependencies and versions\n\nRunning the model:\n\n⭐ Provide code for all scenarios and sensitivity analyses\n⭐ Ensure model parameters are correct\nControl randomness\n\nOutputs:\n\n⭐ Include code to generate the tables, figures and other reported results\n⭐ Include code to calculate all required model outputs"
-  },
-  {
-    "objectID": "checklists/stars_reproducibility.html#recommendations-to-support-troubleshooting-and-reuse",
-    "href": "checklists/stars_reproducibility.html#recommendations-to-support-troubleshooting-and-reuse",
-    "title": "Ambulance DES",
-    "section": "Recommendations to support troubleshooting and reuse",
-    "text": "Recommendations to support troubleshooting and reuse\nDesign:\n\nSeparate model code from applications\nAvoid hard-coded parameters\nMinimise code duplication\n\nClarity:\n\nComment sufficiently\nEnsure clarity and consistency in the model results tables\nInclude run instructions\nState run time and machine specifications\n\nFunctionality:\n\nAddress large file sizes\nAvoid excessive output files\nSave outputs to a file\nOptimise model run time"
-  },
-  {
-    "objectID": "checklists/stars_reuse.html",
-    "href": "checklists/stars_reuse.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: Monks, T., Harper, A., & Mustafee, N. (2025). Towards sharing tools and artefacts for reusable simulations in healthcare. Journal of Simulation, 19(6), 619–638. https://doi.org/10.1080/17477778.2024.2347882"
-  },
-  {
-    "objectID": "checklists/stars_reuse.html#essential-components",
-    "href": "checklists/stars_reuse.html#essential-components",
-    "title": "Ambulance DES",
-    "section": "Essential components",
-    "text": "Essential components\n\nOpen licence\nDependency management\nFOSS model\nMinimum documentation - minimal instructions (e.g. in README) that overview (a) what model does, (b) how to install and run model to obtain results, and (c) how to vary parameters to run new experiments\nORCID\nCitation information\nRemote code repository\nOpen science archive"
-  },
-  {
-    "objectID": "checklists/stars_reuse.html#optional-components",
-    "href": "checklists/stars_reuse.html#optional-components",
-    "title": "Ambulance DES",
-    "section": "Optional components",
-    "text": "Optional components\n\nEnhanced documentation - Open and high quality documentation on how the model is implemented and works (e.g. via notebooks and markdown files, brought together using software like Quarto and Jupyter Book). Suggested content includes:\n\nPlain english summary of project and model\nClarifying licence\nCitation instructions\nContribution instructions\nModel installation instructions\nStructured code walk through of model\nDocumentation of modelling cycle using TRACE\nAnnotated simulation reporting guidelines\nClear description of model validation including its intended purpose\n\nDocumentation hosting\nOnline coding environment\nModel interface\nWeb app hosting"
-  },
-  {
-    "objectID": "checklists/nhs_levels_of_rap.html",
-    "href": "checklists/nhs_levels_of_rap.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "The following framework is from the NHS RAP Community of Practice: NHS RAP Levels of RAP Framework.\nIt is © 2024 Crown Copyright (NHS England), shared under the terms of the Open Government 3.0 licence.\nThe specific version of the framework copied below is that from commit 2549256 (9th September 2024)."
-  },
-  {
-    "objectID": "checklists/nhs_levels_of_rap.html#baseline",
-    "href": "checklists/nhs_levels_of_rap.html#baseline",
-    "title": "Ambulance DES",
-    "section": "🥉 Baseline",
-    "text": "🥉 Baseline\nRAP fundamentals offering resilience against future change.\n\nData produced by code in an open-source language (e.g., Python, R).\nCode is version controlled (see Git basics and using Git collaboratively guides).\nRepository includes a README.md file (or equivalent) that clearly details steps a user must follow to reproduce the code (use NHS Open Source Policy section on Readmes as a guide).\nCode has been peer reviewed.\nCode is published in the open and linked to & from accompanying publication (if relevant).\n\n\n🥈 Silver\nImplementing best practice by following good analytical and software engineering standards.\nMeeting all of the above requirements, plus:\n\nOutputs are produced by code with minimal manual intervention.\nCode is well-documented including user guidance, explanation of code structure & methodology and docstrings for functions.\nCode is well-organised following standard directory format.\nReusable functions and/or classes are used where appropriate.\nCode adheres to agreed coding standards (e.g PEP8, style guide for Pyspark).\nPipeline includes a testing framework (unit tests, back tests).\nRepository includes dependency information (e.g. requirements.txt, PipFile, environment.yml).\nLogs are automatically recorded by the pipeline to ensure outputs are as expected.\nData is handled and output in a Tidy data format.\n\n\n\n🥇 Gold\nAnalysis as a product to further elevate your analytical work and enhance its reusability to the public.\nMeeting all of the above requirements, plus:\n\nCode is fully packaged.\nRepository automatically runs tests etc. via CI/CD or a different integration/deployment tool e.g. GitHub Actions.\nProcess runs based on event-based triggers (e.g., new data in database) or on a schedule.\nChanges to the RAP are clearly signposted. E.g. a changelog in the package, releases etc. (See gov.uk info on Semantic Versioning)."
-  },
-  {
-    "objectID": "checklists/vv.html",
-    "href": "checklists/vv.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/verification_validation.html from Heather, A., Monks, T., Mustafee, N., Harper, A., Alidoost, F., Challen, R., & Slater, T. (2025). DES RAP Book: Reproducible Discrete-Event Simulation in Python and R. https://github.com/pythonhealthdatascience/des_rap_book. https://doi.org/10.5281/zenodo.17094155."
-  },
-  {
-    "objectID": "checklists/vv.html#verification",
-    "href": "checklists/vv.html#verification",
-    "title": "Ambulance DES",
-    "section": "Verification",
-    "text": "Verification\nDesk checking\n\nSystematically check code.\nKeep documentation complete and up-to-date.\nMaintain an environment with all required packages.\nLint code.\nGet code review.\n\nDebugging\n\nWrite tests - they’ll help for spotting bugs.\nDuring model development, monitor the model using logs - they’ll help with spotting bugs.\nUse GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.\n\nAssertion checking\n\nAdd checks in the model which cause errors if something doesn’t look right.\nWrite tests which check that assertions hold true.\n\nSpecial input testing\n\nIf there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.\nWrite stress tests which simulate worst-case load and ensure model is robust under heavy demand.\nWrite tests with little or no activity/waits/service.\n\nBottom-up testing\n\nWrite unit tests for each individual component of the model.\nOnce individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.\n\nRegression testing\n\nWrite tests early.\nRun tests regularly (locally or automatically via. GitHub actions).\n\nMathematical proof of correctness\n\nFor parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas."
-  },
-  {
-    "objectID": "checklists/vv.html#validation",
-    "href": "checklists/vv.html#validation",
-    "title": "Ambulance DES",
-    "section": "Validation",
-    "text": "Validation\nConceptual model validation\n\nDocument and justify all modeling assumptions.\nReview the conceptual model with people familiar with the real system to assess completeness and accuracy.\n\nInput data validation\n\nCheck the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.\nEnsure you have performed appropriate input modelling steps when choosing your distributions.\n\nGraphical comparison\n\nCreate time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.\n\nStatistical comparison\n\nCollect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.\n\nTuring test\n\nCollect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.\n\nPredictive validation\n\nUse historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.\nConsider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.\nUse graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.\n\nAnimation visualisation\n\nCreate an animation to help with validation (as well as communication and reuse).\n\nComparison testing\n\nIf you have multiple models of the same system, compare them!\n\nFace validation\n\nPresent key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.\n\nExperimentation validation\n\nUse a warm-up period.\nUse statistical methods to determine sufficient run length and number of replications.\nPerform sensitivity analysis to test how changes in input parameters affect outputs.\n\nCross validation\n\nSearch for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Building an open reproducible DES model of ambulance operations.\nWork in progress!\nThis work is part of the STARS project, supported by the Medical Research Council [grant number MR/Z503915/1]."
-  },
-  {
-    "objectID": "index.html#prerequisite-knowledge-for-reusing-this-model",
-    "href": "index.html#prerequisite-knowledge-for-reusing-this-model",
-    "title": "Ambulance DES",
-    "section": "Prerequisite knowledge for reusing this model",
-    "text": "Prerequisite knowledge for reusing this model\nTo make effective use of this model, some background knowledge may be helpful. You can find lots of relevant material in the DES RAP Book. At a minimum, we suggest:\n\nDiscrete-event simulation - what DES is, how it represents systems, and why it is commonly used in healthcare modelling.\nInitialisation bias and warm-up periods - why simulation models can produce biased early results, and how warm-up periods help address this.\nObject-oriented programming (OOP) - useful background for understanding how the model code is structured."
-  },
-  {
-    "objectID": "verification.html",
-    "href": "verification.html",
-    "title": "Verification",
-    "section": "",
-    "text": "Verification is the process of checking that the simulation model correctly implements the intended conceptual model. It involves checking that the model’s logic, structure and parameters are implemented as planned and free from coding errors.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#desk-checking",
-    "href": "verification.html#desk-checking",
-    "title": "Verification",
-    "section": "Desk checking",
-    "text": "Desk checking\n\nSystematically check code.\nKeep documentation complete and up-to-date.\nMaintain an environment with all required packages.\nLint code.\nGet code review.\n\nWill do all these.\n\nCode review requires some thought. Who can / should / best to do it? Technical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#debugging",
-    "href": "verification.html#debugging",
-    "title": "Verification",
-    "section": "Debugging",
-    "text": "Debugging\n\nWrite tests - they’ll help for spotting bugs.\nDuring model development, monitor the model using logs - they’ll help with spotting bugs.\nUse GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.\n\nWill do all these.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#assertion-checking",
-    "href": "verification.html#assertion-checking",
-    "title": "Verification",
-    "section": "Assertion checking",
-    "text": "Assertion checking\n\nAdd checks in the model which cause errors if something doesn’t look right.\nWrite tests which check that assertions hold true.\n\nWill do all these.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#special-input-testing",
-    "href": "verification.html#special-input-testing",
-    "title": "Verification",
-    "section": "Special input testing",
-    "text": "Special input testing\n\nIf there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.\nWrite stress tests which simulate worst-case load and ensure model is robust under heavy demand.\nWrite tests with little or no activity/waits/service.\n\nWill do all these.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#bottom-up-testing",
-    "href": "verification.html#bottom-up-testing",
-    "title": "Verification",
-    "section": "Bottom-up testing",
-    "text": "Bottom-up testing\n\nWrite unit tests for each individual component of the model.\nOnce individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.\n\nWill do all these.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#regression-testing",
-    "href": "verification.html#regression-testing",
-    "title": "Verification",
-    "section": "Regression testing",
-    "text": "Regression testing\n\nWrite tests early.\nRun tests regularly (locally or automatically via. GitHub actions).\n\nWill do all these.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#mathematical-proof-of-correctness",
-    "href": "verification.html#mathematical-proof-of-correctness",
-    "title": "Verification",
-    "section": "Mathematical proof of correctness",
-    "text": "Mathematical proof of correctness\n\nFor parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.\n\n\nThis requires some thought as to whether there is anything we could compare against for even the most basic model.\nHave put comparison to regression under comparison testing validation",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "verification.html#execution-tracing",
-    "href": "verification.html#execution-tracing",
-    "title": "Verification",
-    "section": "Execution tracing",
-    "text": "Execution tracing\n\nTrace individual calls or ambulances.",
-    "crumbs": [
-      "GitHub",
-      "Verification"
-    ]
-  },
-  {
-    "objectID": "qa.html",
-    "href": "qa.html",
-    "title": "Quality assurance",
-    "section": "",
-    "text": "Quality assurance (QA) is the formal, systematic process of ensuring our analysis meets appropriate standards of quality and is suitable for its intended use. It means planning how we will check the work, carrying out those checks, and keeping clear evidence of what we did. This plan was created based on Quality assurance - DES RAP Book.",
-    "crumbs": [
-      "GitHub",
-      "Quality assurance"
-    ]
-  },
-  {
-    "objectID": "qa.html#quality-assurance-plan",
-    "href": "qa.html#quality-assurance-plan",
-    "title": "Quality assurance",
-    "section": "Quality assurance plan",
-    "text": "Quality assurance plan\n\nQuality assurance when scoping the project and designing the analysis\nWe are documenting what we want to do publicly within this Quarto site - e.g., Conceptual modelling page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.\nWe will plan and document how the analysis will work, and how it will be checked. This includes:\n\nOur design decisions and analytical approach - methods, data, software, assumptions - see Code structure/infrastructure plans page and Conceptual modelling page.\nDecide on our verification and validation strategy before writing code - see Verification page and Validation page.\n\n\n\n\nQuality assurance when performing the analysis\nWe will carry out verification and validation - which will include sensitivity analysis.\nWe will adhere to best practice for our code and workflows - see Criteria page.\nWe will create clear and comprehensive documentation including docstrings and comments, as well as several things that will be documented within this Quarto site:\n\nUser documentation explaining how to run and interpret the model\nTechnical documentation explaining the model structure and implementation\nAn ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.\n\nThis documentation will be reviewed by ?\n\nTo discuss:\n\nRelated to question about Code review on earlier page - review of documentation too.\n\n\n\n\n\nRoles\nQA roles, as per the GOV.UK AQuA book:\n\n\n\n\n\n\n\n\nRole\nResponsibilities\nWho\n\n\n\n\nCommissioner\nRequests the analysis, sets requirements, confirms the approach will meet their needs, accepts the final work as fit for purpose.\nAmbulance service partner\n\n\nAnalyst\nDesigns and carries out the analysis, performs self-assurance (including verification and validation), acts on assurer feedback, documents the work.\nAmy Heather\n\n\nAssurer\nReviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst.\nSupervisor and ambulance service partners\n\n\nApprover\nScrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off.\nSupervisor and ambulance service partners\n\n\n\nGiven time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.\n\nTo discuss:\n\nThoughts on this plan? Inter-related with the code review question, and what sort of review / assurance there is of code / decisions / etc.",
-    "crumbs": [
-      "GitHub",
-      "Quality assurance"
-    ]
-  },
-  {
-    "objectID": "qa.html#quality-assurance-log",
-    "href": "qa.html#quality-assurance-log",
-    "title": "Quality assurance",
-    "section": "Quality assurance log",
-    "text": "Quality assurance log\nWe are using GitHub projects as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit’s New Hospital Programme model QA project board.\nYou can view our QA log here: https://github.com/orgs/ambmodels/projects/1/views/1\n\n\n\nScreenshot of the QA log, as of 16th April 2026",
-    "crumbs": [
-      "GitHub",
-      "Quality assurance"
-    ]
-  },
-  {
     "objectID": "code.html",
     "href": "code.html",
     "title": "Code structure / infrastructure plans",
@@ -410,136 +99,319 @@
     ]
   },
   {
-    "objectID": "validation.html",
-    "href": "validation.html",
-    "title": "Validation",
+    "objectID": "qa.html",
+    "href": "qa.html",
+    "title": "Quality assurance",
     "section": "",
-    "text": "Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model’s inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.",
+    "text": "Quality assurance (QA) is the formal, systematic process of ensuring our analysis meets appropriate standards of quality and is suitable for its intended use. It means planning how we will check the work, carrying out those checks, and keeping clear evidence of what we did. This plan was created based on Quality assurance - DES RAP Book.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Quality assurance"
     ]
   },
   {
-    "objectID": "validation.html#conceptual-model-validation",
-    "href": "validation.html#conceptual-model-validation",
-    "title": "Validation",
-    "section": "Conceptual model validation",
-    "text": "Conceptual model validation\n\nDocument and justify all modeling assumptions.\nReview the conceptual model with people familiar with the real system to assess completeness and accuracy.\n\nWill do all these (review conceptual model is with ambulance team involved)",
+    "objectID": "qa.html#quality-assurance-plan",
+    "href": "qa.html#quality-assurance-plan",
+    "title": "Quality assurance",
+    "section": "Quality assurance plan",
+    "text": "Quality assurance plan\n\nQuality assurance when scoping the project and designing the analysis\nWe are documenting what we want to do publicly within this Quarto site - e.g., Conceptual modelling page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.\nWe will plan and document how the analysis will work, and how it will be checked. This includes:\n\nOur design decisions and analytical approach - methods, data, software, assumptions - see Code structure/infrastructure plans page and Conceptual modelling page.\nDecide on our verification and validation strategy before writing code - see Verification page and Validation page.\n\n\n\n\nQuality assurance when performing the analysis\nWe will carry out verification and validation - which will include sensitivity analysis.\nWe will adhere to best practice for our code and workflows - see Criteria page.\nWe will create clear and comprehensive documentation including docstrings and comments, as well as several things that will be documented within this Quarto site:\n\nUser documentation explaining how to run and interpret the model\nTechnical documentation explaining the model structure and implementation\nAn ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.\n\nThis documentation will be reviewed by ?\n\nTo discuss:\n\nRelated to question about Code review on earlier page - review of documentation too.\n\n\n\n\n\nRoles\nQA roles, as per the GOV.UK AQuA book:\n\n\n\n\n\n\n\n\nRole\nResponsibilities\nWho\n\n\n\n\nCommissioner\nRequests the analysis, sets requirements, confirms the approach will meet their needs, accepts the final work as fit for purpose.\nAmbulance service partner\n\n\nAnalyst\nDesigns and carries out the analysis, performs self-assurance (including verification and validation), acts on assurer feedback, documents the work.\nAmy Heather\n\n\nAssurer\nReviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst.\nSupervisor and ambulance service partners\n\n\nApprover\nScrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off.\nSupervisor and ambulance service partners\n\n\n\nGiven time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.\n\nTo discuss:\n\nThoughts on this plan? Inter-related with the code review question, and what sort of review / assurance there is of code / decisions / etc.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Quality assurance"
     ]
   },
   {
-    "objectID": "validation.html#input-data-validation",
-    "href": "validation.html#input-data-validation",
-    "title": "Validation",
-    "section": "Input data validation",
-    "text": "Input data validation\n\nCheck the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.\nEnsure you have performed appropriate input modelling steps when choosing your distributions.\n\nWill do input modelling.\n\nFirst point requires discussion with ambulance team.",
+    "objectID": "qa.html#quality-assurance-log",
+    "href": "qa.html#quality-assurance-log",
+    "title": "Quality assurance",
+    "section": "Quality assurance log",
+    "text": "Quality assurance log\nWe are using GitHub projects as a QA log - so it shows what the plans and issues were during development, who flagged them, who addressed them, and details on the issues and outcomes. This is inspired by The Strategy Unit’s New Hospital Programme model QA project board.\nYou can view our QA log here: https://github.com/orgs/ambmodels/projects/1/views/1\n\n\n\nScreenshot of the QA log, as of 16th April 2026",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Quality assurance"
     ]
   },
   {
-    "objectID": "validation.html#graphical-comparison",
-    "href": "validation.html#graphical-comparison",
-    "title": "Validation",
-    "section": "Graphical comparison",
-    "text": "Graphical comparison\n\nCreate time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.\n\nrequires some thought as to what we will plot and compare",
+    "objectID": "conceptual.html",
+    "href": "conceptual.html",
+    "title": "Conceptual modelling",
+    "section": "",
+    "text": "The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. Within each stage, we define:\nProgressing through the stages, we can evaluate whether the added detail improves the model’s validity for previous questions, or whether the simpler version remains sufficient.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#statistical-comparison",
-    "href": "validation.html#statistical-comparison",
-    "title": "Validation",
-    "section": "Statistical comparison",
-    "text": "Statistical comparison\n\nCollect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.\n\n\nRequires some thought as to what we compare",
+    "objectID": "conceptual.html#stage-1-whole-system-resourcing",
+    "href": "conceptual.html#stage-1-whole-system-resourcing",
+    "title": "Conceptual modelling",
+    "section": "Stage 1: Whole-system resourcing",
+    "text": "Stage 1: Whole-system resourcing\n\nKey question\n\nHow do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?\n\n\n\nModel content and inputs\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\n\nElement\nModel content\nInput\n\n\n\n\nArrivals\nBasic arrival process or NHPP based on observed patterns\nBy call category, mean inter-arrival time for whole system OR mean by period of time\n\n\nCall category\nSeparate arrival times - part of arrival distribution or assigned after\nIf NHPP is used and we want to do call category by time period, it should be sampled as part of NHPP too. If don’t want call category probabilities to be by time period, then can just assign them using another probability distribution afterwards\n\n\nResource\nSingle pooled ambulance resource\nNumber of ambulances for whole system\n\n\nQueue\nFirst come first serve or prioritisation rules with potential reneging/balking\nPriority rules could likely be informed by call guidelines\n\n\nService time\nSingle time (disatpch to resource available)\nMean time, by call category\n\n\n\nFor initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.\nFor uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.\nFor distributions used, will do input modelling.\nOutputs:\n\nPrimary: Category 2 mean response time\nSecondary: Resource utilisation\n\nGive results per run And overall across reps Can quantify uncertainty via 95% confidence interval (or could do prediction interval)\n\n\nNotes\nThis stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:\n\nMultiple outcomes from the same run (regression just one per model).\nMore intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).\nExtendability (once core structure is in place, we can add more components in later stages).\n\n\nTo discuss:\n\nTo answer this question, do we need to report by whether conveyed or not? In which case, need to incorporate here (rather than stage 3).\nRelatedly, when consider conveyance, is it about:\n\nConveyed v.s. Non-conveyed (hear-and-treat and see-and-treat), or\nConveyed v.s. Hear-and-treat v.s., See-and-treat\n\nDoes ambulance service have any existing analysis looking at trends in call arrivals? Want to understand what the hour / day of week variation is. Likewise, for call categories by time period.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#turing-test",
-    "href": "validation.html#turing-test",
-    "title": "Validation",
-    "section": "Turing test",
-    "text": "Turing test\n\nCollect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.\n\n\nRequires discussion as to whether we do this and how and who (ambulance team? or too involved?)",
+    "objectID": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
+    "href": "conceptual.html#stage-2-resourcing-by-county-without-interaction",
+    "title": "Conceptual modelling",
+    "section": "Stage 2: Resourcing by county (without interaction)",
+    "text": "Stage 2: Resourcing by county (without interaction)\n\nKey question\n\nIf total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?\n\nDone on county level as that lines up with organisational structure Although is coming up more in conversations about the hospital level as thats where they go\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nSame as stage 1\n\n\nInputs\nCounty-specific parameters for demand, resources and service times\n\n\nOutputs\nSame as stage 1\n\n\n\nThis is equivalent to having one model instance with separate ambulance resources per county, as then you’d just be running each county in parallel to each other essentially, no interaction, so it’s simpler to just use the single area model and run it for each county.\n\n\nNotes\nThis will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn’t really one separate service per county, and that resources operate across counties on shift.\n\nTo discuss:\n\nIs this actually a question of interest? Or is it really just stage 5? Maybe should remove this?",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#predictive-validation",
-    "href": "validation.html#predictive-validation",
-    "title": "Validation",
-    "section": "Predictive validation",
-    "text": "Predictive validation\n\nUse historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.\nConsider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.\nUse graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.\n\n\nRequires some thought as to what we do here",
+    "objectID": "conceptual.html#stage-3-job-cycle-times",
+    "href": "conceptual.html#stage-3-job-cycle-times",
+    "title": "Conceptual modelling",
+    "section": "Stage 3: Job cycle times",
+    "text": "Stage 3: Job cycle times\n\nKey question\n\nHow do improvements in specific job-cycle components (e.g., scene time, handover) affect response time and utilisation?\n\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\n(1) Job cycle divided into individual time components (e.g., time on scene, handover time). (2) Separate cfycle times for conveyed v.s. non conveyed\n\n\nInputs\nCycle times and conveyed/nonconveyed breakdown of everything\n\n\nOutputs\nAlso now report by conveyed and non conveyed\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes this continue from stage 1 or 2? I guess it depends if stage 2 is any good or not?\nWhich job cycle times to model? Which to aggregate?",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#animation-visualisation",
-    "href": "validation.html#animation-visualisation",
-    "title": "Validation",
-    "section": "Animation visualisation",
-    "text": "Animation visualisation\n\nCreate an animation to help with validation (as well as communication and reuse).\n\nwill do this",
+    "objectID": "conceptual.html#stage-4-shifts",
+    "href": "conceptual.html#stage-4-shifts",
+    "title": "Conceptual modelling",
+    "section": "Stage 4: Shifts",
+    "text": "Stage 4: Shifts\n\nKey question\n\nCan alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?\n\nCurrent patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:\n\nMidday and midnight dips in resource numbers when many crews are on break at once.\nEffects of protected periods towards the end of shifts.\n\nThe focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\n\n\n\n\n\n\n\nElement\nDescription\n\n\n\n\nContent\nAdd representation of shifts (resource availability over time), including breaks and protected periods\n\n\nInputs\nCurrent and alternative rota schedules (for the whole area, not by station, proportions on different schedules)\n\n\nOutputs\nAdd a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips).\n\n\n\n\n\nNotes\n\nTo discuss:\n\nDoes this question require understanding of county (stage 2) or job cycle (stage 3). If so, it builds on them. If not, it builds on stage 1.\nRelatedly, if stages 2-4 are all just iterations on stage 1, what is the priority order?\nWhat are the current break policies?\nIs it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?\nAlso, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like overtime and interruption of breaks.\nOutcomes and scenarios explored here - explore involving paramedics? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)\nCost… I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#comparison-testing",
-    "href": "validation.html#comparison-testing",
-    "title": "Validation",
-    "section": "Comparison testing",
-    "text": "Comparison testing\n\nIf you have multiple models of the same system, compare them!\n\n\nCan compare basic model to regression model. requires some thought re: any other possible comparisons. we know of existing models and code and/or existing data.\nFor example, could compare against https://nhsengland.github.io/AmbModelOpen/ and/or https://github.com/uoa-ems-research/JEMSS.jl. Both open models. Or, could run with reported parameters of other models and compare. That’s all alot of work though - depends if within capacity.",
+    "objectID": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
+    "href": "conceptual.html#stage-5-resourcing-by-county-with-interaction",
+    "title": "Conceptual modelling",
+    "section": "Stage 5: Resourcing by county (with interaction)",
+    "text": "Stage 5: Resourcing by county (with interaction)\n\nKey question\n\nWhen vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?\n\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\nThis builds on stage 3, as we have travel times to scene and to hospital, and then job cycle times at scene and at hospital.\nIntroduce geographic modelling. Possible configurations:\n\nCounties as zones with local queues and spillover rules.\nBreaking down into smaller than county level\n\nResources become linked to area.\nBrings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area)\n\n\nNotes\n\nTo discuss:\nThere will be alot to figure here about how to do things, but can address at later stage.\n\nE.g. Whether do times, catetgories and conveyance by area.\nWhere ambulances start from and where they go after release.\nHow we model travel times.\n\nOther things to consider would be:\n\nWhat size area is required to answer this question?\nDoes this question require shifts in the model?\n\nIf yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.\n\nSocioeconomic inequalities - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#face-validation",
-    "href": "validation.html#face-validation",
-    "title": "Validation",
-    "section": "Face validation",
-    "text": "Face validation\n\nPresent key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.\n\n\nrequires discussion as to whether do this",
+    "objectID": "conceptual.html#stage-6-station-level-questions",
+    "href": "conceptual.html#stage-6-station-level-questions",
+    "title": "Conceptual modelling",
+    "section": "Stage 6: Station-level questions",
+    "text": "Stage 6: Station-level questions\n\nKey question\n\nWhat is the impact of adding/moving/removing individual station shifts?\n\nFor example, identifying stations with low utilisation, as candidates.\n\n\nModel changes\n\n\n\nLogic flow diagram\n\n\nThis requires representing individual stations explicitly. And linking resources to those.\nIt requires stage 4 and stage 5 components and essentially merges those. Depending on how model a station and what incorporate in stage 5, may not be super different. Just requires sufficiently small areas to represent different stations.\n\n\nNotes\n\nTo discuss:\n\nDepends on stage 5, whether this is new or not.\n\nNew if stage 5 is big areas.\nNot a stage if stage 5 already requires small areas.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#experimentation-validation",
-    "href": "validation.html#experimentation-validation",
-    "title": "Validation",
-    "section": "Experimentation validation",
-    "text": "Experimentation validation\n\nUse a warm-up period.\nUse statistical methods to determine sufficient run length and number of replications.\nPerform sensitivity analysis to test how changes in input parameters affect outputs.\n\n\nWill do this - though sensitivity analysis requires discussion and research to identify what would be important to vary here",
+    "objectID": "conceptual.html#assumptions-and-simplifications",
+    "href": "conceptual.html#assumptions-and-simplifications",
+    "title": "Conceptual modelling",
+    "section": "Assumptions and simplifications",
+    "text": "Assumptions and simplifications\nTo reflect on and document. Things like:\n\nMultiple vehicles attending the same incident - not modelling that (should you?)\nIncluding/excluding see-and-treat and hear-and-treat\nOut of ambulance service patch\nNot modelling hospital capacity (AmbModelOpen did that)",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Conceptual modelling"
     ]
   },
   {
-    "objectID": "validation.html#cross-validation",
-    "href": "validation.html#cross-validation",
-    "title": "Validation",
-    "section": "Cross validation",
-    "text": "Cross validation\n\nSearch for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.\n\n\nwill need to build up research to do this - have done a bunch, but will require more",
+    "objectID": "verification.html",
+    "href": "verification.html",
+    "title": "Verification",
+    "section": "",
+    "text": "Verification is the process of checking that the simulation model correctly implements the intended conceptual model. It involves checking that the model’s logic, structure and parameters are implemented as planned and free from coding errors.",
     "crumbs": [
       "GitHub",
-      "Validation"
+      "Verification"
     ]
+  },
+  {
+    "objectID": "verification.html#things-i-can-definitely-do",
+    "href": "verification.html#things-i-can-definitely-do",
+    "title": "Verification",
+    "section": "Things I can definitely do",
+    "text": "Things I can definitely do\nDesk checking\n\nSystematically check code.\nKeep documentation complete and up-to-date.\nMaintain an environment with all required packages.\nLint code.\n\nDebugging\n\nWrite tests - they’ll help for spotting bugs.\nDuring model development, monitor the model using logs - they’ll help with spotting bugs.\nUse GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.\n\nAssertion checking\n\nAdd checks in the model which cause errors if something doesn’t look right.\nWrite tests which check that assertions hold true.\n\nSpecial input testing\n\nIf there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.\nWrite stress tests which simulate worst-case load and ensure model is robust under heavy demand.\nWrite tests with little or no activity/waits/service.\n\nBottom-up testing\n\nWrite unit tests for each individual component of the model.\nOnce individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.\n\nRegression testing\n\nWrite tests early.\nRun tests regularly (locally or automatically via. GitHub actions).\n\nExecution tracing\n\nTrace individual calls or ambulances.",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "verification.html#things-that-require-some-discussion",
+    "href": "verification.html#things-that-require-some-discussion",
+    "title": "Verification",
+    "section": "Things that require some discussion",
+    "text": "Things that require some discussion\nDesk checking\n\nGet code review.\n\n\nTo discuss:\n\nWho can / should / best to do it?\nTechnical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html\n\n\nMathematical proof of correctness\n\nFor parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.\n\n\nThis requires some thought as to whether there is anything we could compare against for even the most basic model. To discuss with Tom. Have put comparison to regression under comparison testing validation",
+    "crumbs": [
+      "GitHub",
+      "Verification"
+    ]
+  },
+  {
+    "objectID": "checklists/stars_reproducibility.html",
+    "href": "checklists/stars_reproducibility.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: Heather, A., Monks, T., Harper, A., Mustafee, N., & Mayne, A. (2025). On the reproducibility of discrete-event simulation studies in health research: an empirical study using open models. Journal of Simulation, 1–25. https://doi.org/10.1080/17477778.2025.2552177"
+  },
+  {
+    "objectID": "checklists/stars_reproducibility.html#recommendations-to-support-reproducibility",
+    "href": "checklists/stars_reproducibility.html#recommendations-to-support-reproducibility",
+    "title": "Ambulance DES",
+    "section": "Recommendations to support reproducibility",
+    "text": "Recommendations to support reproducibility\nSet-up:\n\n⭐ Share code with an open licence\nLink publication to a specific version of the code\nList dependencies and versions\n\nRunning the model:\n\n⭐ Provide code for all scenarios and sensitivity analyses\n⭐ Ensure model parameters are correct\nControl randomness\n\nOutputs:\n\n⭐ Include code to generate the tables, figures and other reported results\n⭐ Include code to calculate all required model outputs"
+  },
+  {
+    "objectID": "checklists/stars_reproducibility.html#recommendations-to-support-troubleshooting-and-reuse",
+    "href": "checklists/stars_reproducibility.html#recommendations-to-support-troubleshooting-and-reuse",
+    "title": "Ambulance DES",
+    "section": "Recommendations to support troubleshooting and reuse",
+    "text": "Recommendations to support troubleshooting and reuse\nDesign:\n\nSeparate model code from applications\nAvoid hard-coded parameters\nMinimise code duplication\n\nClarity:\n\nComment sufficiently\nEnsure clarity and consistency in the model results tables\nInclude run instructions\nState run time and machine specifications\n\nFunctionality:\n\nAddress large file sizes\nAvoid excessive output files\nSave outputs to a file\nOptimise model run time"
+  },
+  {
+    "objectID": "checklists/vv.html",
+    "href": "checklists/vv.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/verification_validation/verification_validation.html from Heather, A., Monks, T., Mustafee, N., Harper, A., Alidoost, F., Challen, R., & Slater, T. (2025). DES RAP Book: Reproducible Discrete-Event Simulation in Python and R. https://github.com/pythonhealthdatascience/des_rap_book. https://doi.org/10.5281/zenodo.17094155."
+  },
+  {
+    "objectID": "checklists/vv.html#verification",
+    "href": "checklists/vv.html#verification",
+    "title": "Ambulance DES",
+    "section": "Verification",
+    "text": "Verification\nDesk checking\n\nSystematically check code.\nKeep documentation complete and up-to-date.\nMaintain an environment with all required packages.\nLint code.\nGet code review.\n\nDebugging\n\nWrite tests - they’ll help for spotting bugs.\nDuring model development, monitor the model using logs - they’ll help with spotting bugs.\nUse GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.\n\nAssertion checking\n\nAdd checks in the model which cause errors if something doesn’t look right.\nWrite tests which check that assertions hold true.\n\nSpecial input testing\n\nIf there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.\nWrite stress tests which simulate worst-case load and ensure model is robust under heavy demand.\nWrite tests with little or no activity/waits/service.\n\nBottom-up testing\n\nWrite unit tests for each individual component of the model.\nOnce individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.\n\nRegression testing\n\nWrite tests early.\nRun tests regularly (locally or automatically via. GitHub actions).\n\nMathematical proof of correctness\n\nFor parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas."
+  },
+  {
+    "objectID": "checklists/vv.html#validation",
+    "href": "checklists/vv.html#validation",
+    "title": "Ambulance DES",
+    "section": "Validation",
+    "text": "Validation\nConceptual model validation\n\nDocument and justify all modeling assumptions.\nReview the conceptual model with people familiar with the real system to assess completeness and accuracy.\n\nInput data validation\n\nCheck the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.\nEnsure you have performed appropriate input modelling steps when choosing your distributions.\n\nGraphical comparison\n\nCreate time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.\n\nStatistical comparison\n\nCollect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.\n\nTuring test\n\nCollect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.\n\nPredictive validation\n\nUse historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.\nConsider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.\nUse graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.\n\nAnimation visualisation\n\nCreate an animation to help with validation (as well as communication and reuse).\n\nComparison testing\n\nIf you have multiple models of the same system, compare them!\n\nFace validation\n\nPresent key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.\n\nExperimentation validation\n\nUse a warm-up period.\nUse statistical methods to determine sufficient run length and number of replications.\nPerform sensitivity analysis to test how changes in input parameters affect outputs.\n\nCross validation\n\nSearch for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model."
+  },
+  {
+    "objectID": "checklists/pyopensci.html",
+    "href": "checklists/pyopensci.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: https://www.pyopensci.org/software-peer-review/appendices/templates.html\n\nDocumentation\nThe package includes all the following forms of documentation:\n\nA statement of need clearly stating problems the software is designed to solve and its target audience in the README file.\nInstallation instructions: for the development version of the package and any non-standard dependencies in README.\nShort quickstart tutorials demonstrating significant functionality that successfully runs locally.\nFunction Documentation: for all user-facing functions.\nExamples for all user-facing functions.\nCommunity guidelines including contribution guidelines in the README or CONTRIBUTING.\nMetadata including author(s), author e-mail(s), a URL, and any other relevant metadata, for example, in a pyproject.toml file or elsewhere.\n\nReadme file requirements The package meets the readme requirements below:\n\nPackage has a README.md file in the root directory.\n\nThe README should include, from top to bottom:\n\nThe package name\nBadges for:\n\nContinuous integration and test coverage,\nDocs building (if you have a documentation website),\nPython versions supported,\nCurrent package version (on PyPI / Conda).\n\n\nNOTE: If the README has many more badges, you might want to consider using a table for badges: see this example. Such a table should be wider than high. A badge for pyOpenSci peer review will be provided when the package is accepted.\n\nShort description of package goals.\nPackage installation instructions\nAny additional setup required to use the package (authentication tokens, etc.)\nDescriptive links to all vignettes. If the package is small, there may only be a need for one vignette which could be placed in the README.md file.\n\nBrief demonstration of package usage (as it makes sense - links to vignettes could also suffice here if package description is clear)\n\nLink to your documentation website.\nIf applicable, how the package compares to other similar packages and/or how it relates to other packages in the scientific ecosystem.\nCitation information\n\n\n\nUsability\nReviewers are encouraged to submit suggestions (or pull requests) that will improve the usability of the package as a whole. The package structure should follow the general community best practices. In general, please consider whether:\n\nPackage documentation is clear and easy to find and use.\nThe need for the package is clear\nAll functions have documentation and associated examples for use\nThe package is easy to install\n\n\n\nFunctionality\n\nInstallation: Installation succeeds as documented.\nFunctionality: Any functional claims of the software been confirmed.\nPerformance: Any performance claims of the software been confirmed.\nAutomated tests:\n\nAll tests pass on the reviewer’s local machine for the package version submitted by the author. Ideally this should be a tagged version making it easy for reviewers to install.\nTests cover essential functions of the package and a reasonable range of inputs and conditions.\n\nContinuous Integration: Has continuous integration setup (We suggest using Github actions but any CI platform is acceptable for review)\nPackaging guidelines: The package conforms to the pyOpenSci packaging guidelines. A few notable highlights to look at:\n\nPackage supports modern versions of Python and not End of life versions.\nCode format is standard throughout package and follows PEP 8 guidelines (CI tests for linting pass)"
+  },
+  {
+    "objectID": "checklists/hsma_model_readiness.html",
+    "href": "checklists/hsma_model_readiness.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: Model Readiness Checklist. Sammi Rosser & Amy Heather. HSMA - the little book of DES. https://des.hsma.co.uk/model_checklist.html"
+  },
+  {
+    "objectID": "checklists/hsma_model_readiness.html#bronze",
+    "href": "checklists/hsma_model_readiness.html#bronze",
+    "title": "Ambulance DES",
+    "section": "Bronze",
+    "text": "Bronze\n\nVisualisations\nCreating simple visualisations of a few key areas is one of the best ways to spot unexpected behaviour and quickly validate key parts of your model logic. They allow you to quickly verify whether something looks unusually high or low, or if patterns are intuitively ‘wrong’.\nVisualise the following:\n\nArrivals over time\n\nThis could be done as a dot/scatter plot with time on the x axis and each dot representing the arrival of an individual, with separate runs represented on the y axis, or as a heatmap\nThis helps to see if there are any unexpectedly large gaps between arrivals and if the general pace of arrivals over different time periods matches your understanding of the system\nYou could also do this recurrently at relevant timescale if recurrent patterns of arrivals - e.g if you are using time-dependent arrival generators to reflect patterns within a day, or across days/weeks/months. You could take an existing dotplot, filter it to a single run, and make the y axis instead reflect the day of week, for example.\n\nResource use over time\n\nThis can be done overall as a line plot with simulation or clock time on the x axis and number or percentage of resources in use over time\nYou could also do this recurrently at relevant timescale if recurrent patterns of resource use - for example, if resources are obstructed in the evenings or at weekends.\n\nDistributions of generated activity times AND generated inter-arrival times (one plot per activity or arrival generator).\n\nThis could be done with a histogram, box plot, swarm plot or violin plot\nThis helps to check that the distribution of generated times roughly matches the real-world pattern, as well as checking for any implausibly long or short times\n\nQueue lengths over time.\n\nThis can be done with a line plot with simulation or clock time on the x axis and queue length on the y axis\nThis is useful for checking whether queues do build up, and if so, if they are implausibly large or small in comparison to the real system\n\n\n\n\nCore Logic Checks\nWhen you are doing these checks, you are really just looking for something being ‘off’.\n\nWatch the journey of several individuals (via logs or animations).\n\nDo the journeys look ‘right’? Do entities follow the paths you’d expect?\n\nReview the code to check that time units have been used consistently throughout the code (e.g. time inputs don’t swap from minutes to hours at any point).\n\nThe following items can be robustly checked using event logs.\nHowever, you may be able to do some more basic checks with console logs.\n\nCheck that all described stages demonstrate at least some activity during a sufficiently long, representative run.\n\nFor example, in a model where patients arrive, all patients are triaged, then some patients are advised by a nurse while others are treated by a doctor, before all patients are discharged, you would want to confirm that entities are reaching each of these stages (e.g. through console logs), or that resources at each stage show at least some utilisation (e.g. via the plot you generate), helping you identify if there is an issue with logic that decides which pathway entities follow\n\nManually check that the number of entities entering the model equals the number of leaving the model plus the number still in the model.\n\nThis ensures no entities are “lost” in queues with no output no sink.\n\nManually check that entities are never in two places at once.\nManually check that resources are never simultaneously in use by two entities at once (or whatever variation is appropriate for your model).\nManually check that resources are not used at times where they should be obstructed/unavailable (e.g. during breaks, evenings, weekends).\n\n\n\nRobustness for decision-making\n\nNumber of runs set to a minimum of 30 (ideally more) for generating any metrics or other outputs that will be used for decision-making.\nWarm up length visually checked to be appropriate.\n\n\n\nReproducibility\n\nAdd a random seed to the model, then test it by running the model twice with the same seed, and visually check outputs to confirm that the results do not change.\n\n\n\nKey checks against the real system\n\nNumber of entities arriving in simulation verified against historical patterns (averages sensible, distributions sensible).\n\nIf relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.\n\nGenerated activity times visually verified (averages sensible, distribution sensible).\n\nIf relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.\n\nVisual check that there are no implausible activity lengths.\n\nIf necessary, apply a cap to generated activity times to resolve this.\n\nVisual check that there are no implausible inter-arrival times for entities\n\nIf necessary, apply a cap to generated inter-arrival times to resolve this.\n\nVisual check of KPI outputs against the historical baseline - do these look sensible and similar to historical data?\n\n\n\nProcess and Stakeholder Checks\n\nApprove the simulation process map with stakeholders.\nCheck the scenario outputs with stakeholders - do they feel reasonable?\n\nNote that stakeholder responses to outputs shouldn’t necessarily be taken as a definite right/wrong judgment on the model - but they may help to sense check or indicate areas for more attention.\n\n\n\n\nDocumentation\n\nWrite a readme that explains how to run the model, how to change parameters in the model, and gives a brief overview of the system being modelled.\nInclude sufficient comments in your work to help people understand non-obvious elements of the code.\nClearly document\n\ndata sources\nassumptions\ninputs\ndecisions - including any changes to the analytical plan or decisions made during analysis\n\nDocument the versions of packages you have used, ideally using a requirements.txt or environment.yml file."
+  },
+  {
+    "objectID": "checklists/hsma_model_readiness.html#silver",
+    "href": "checklists/hsma_model_readiness.html#silver",
+    "title": "Ambulance DES",
+    "section": "Silver",
+    "text": "Silver\n\nDocumentation\n\nAdd docstrings.\nComplete a formal model reporting checklist (e.g STRESS-DES).\n\n\n\nCode Review\n\nHave a code review undertaken by someone else (see the DES RAP book: peer review).\n\n\n\nAutomated Testing\nDefine formal automated tests:\n\nModel running successfully.\nVarying results are obtained when using different seeds and the same parameters.\nIdentical results are obtained when the same seed and parameters are used.\nNumber of entities entering the model equals the number of leaving the model plus the number still in the model. This ensures no entities are “lost” in queues with no output no sink.\nUtilisation never exceeds capacity (i.e. resources are never in use by multiple entities, unless allowed in your model).\nAll stages of the model show some activity (i.e. there are no ‘orphaned’ steps).\nSimple ‘expected behaviour’ when parameters are varied:\n\nLonger activity time = worse performance.\nMore arrivals = longer queues.\n\nWrite tests for behaviour under extreme conditions:\n\nHeavy demand.\nLittle to no demand.\n\n\n\n\nReusability\n\nAdd an Open Licence to your repository\n\n\n\nVersion Control\n\nUse version control for code (Git)\nMake the model available on a remote code hosting service (e.g. GitHub, BitBucket)\n\n\n\nModel Robustness\n\nUndertake sensitivity analysis (i.e. check how much changes in model input variables affect output performance measures, and consider whether results appear sensible/expected)"
+  },
+  {
+    "objectID": "checklists/hsma_model_readiness.html#gold",
+    "href": "checklists/hsma_model_readiness.html#gold",
+    "title": "Ambulance DES",
+    "section": "Gold",
+    "text": "Gold\n\nDocumentation\n\nCreate a documentation site and host this.\n\nConsider using a framework like mkdocs-material to automatically display the docstrings of your functions and classes in an easy-to-access manner\n\nSet up and maintain a changelog.\nUse GitHub Issues to track bugs and highlight remaining tasks.\nDocument your quality assurance process.\n\n\n\nReusability\n\nResearch artifact metadata (ORCID)\nOpen Science Archive\nOnline Coding Environment\n\n\n\nModel Efficiency\n\nParallelisation implemented.\n\n\n\nModel Communication and Validation\n\nCreate a web app interface for your model\nHost the web app interface for your model\nAnimated model output created (if appropriate).\n\nAnimations also have a role to play in model validation - inspecting the animation, including with non-technical stakeholders, can help identify subtle bugs.\n\n\n\n\nBest Practice around Variability and Model Setup\n\nFormal automated method implemented for determining warm-up period.\nFormal method used for determining appropriate replication count.\n\n\n\nAutomated Testing\n\nDefine formal automated tests for:\n\nComparison of base case outputs to historical data for key metrics.\nStatistical testing of generated distributions against real-world data (e.g. Kolgomorov-Smirnov Test)."
+  },
+  {
+    "objectID": "checklists/stressdes.html",
+    "href": "checklists/stressdes.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: Monks, T., Currie, C. S. M., Onggo, B. S., Robinson, S., Kunc, M., & Taylor, S. J. E. (2019). Strengthening the reporting of empirical simulation studies: Introducing the STRESS guidelines. Journal of Simulation, 13(1), 55–67. https://doi.org/10.1080/17477778.2018.1442155"
+  },
+  {
+    "objectID": "checklists/stressdes.html#objectives",
+    "href": "checklists/stressdes.html#objectives",
+    "title": "Ambulance DES",
+    "section": "Objectives",
+    "text": "Objectives\n\n1.1 Purpose of the modelExplain the background and objectives for the model\n1.2 Model outputsDefine all quantitative performance measures that are reported, using equations where necessary. Specify how and when they are calculated during the model run along with how any measures of error such as confidence intervals are calculated.\n1.3 Experimentation aimsIf the model has been used for experimentation, state the objectives that it was used to investigate.(A) Scenario based analysis – Provide a name and description for each scenario, providing a rationale for the choice of scenarios and ensure that item 2.3 (below) is completed.(B) Design of experiments – Provide details of the overall design of the experiments with reference to performance measures and their parameters (provide further details in data below).(C) Simulation Optimisation – (if appropriate) Provide full details of what is to be optimised, the parameters that were included and the algorithm(s) that was be used. Where possible provide a citation of the algorithm(s)."
+  },
+  {
+    "objectID": "checklists/stressdes.html#logic",
+    "href": "checklists/stressdes.html#logic",
+    "title": "Ambulance DES",
+    "section": "Logic",
+    "text": "Logic\n\n2.1 Base model overview diagramDescribe the base model using appropriate diagrams and description. This could include one or more process flow, activity cycle or equivalent diagrams sufficient to describe the model to readers. Avoid complicated diagrams in the main text. The goal is to describe the breadth and depth of the model with respect to the system being studied.\n2.2 Base model logicGive details of the base model logic. Give additional model logic details sufficient to communicate to the reader how the model works.\n2.3 Scenario logicGive details of the logical difference between the base case model and scenarios (if any). This could be incorporated as text or where differences are substantial could be incorporated in the same manner as 2.2.\n2.4 AlgorithmsProvide further detail on any algorithms in the model that (for example) mimic complex or manual processes in the real world (i.e. scheduling of arrivals/ appointments/ operations/ maintenance, operation of a conveyor system, machine breakdowns, etc.). Sufficient detail should be included (or referred to in other published work) for the algorithms to be reproducible. Pseudo-code may be used to describe an algorithm.\n2.5.1 Components - entitiesGive details of all entities within the simulation including a description of their role in the model and a description of all their attributes.\n2.5.2 Components - activitiesDescribe the activities that entities engage in within the model. Provide details of entity routing into and out of the activity.\n2.5.3 Components - resourcesList all the resources included within the model and which activities make use of them.\n2.5.4 Components - queuesGive details of the assumed queuing discipline used in the model (e.g. First in First Out, Last in First Out, prioritisation, etc.). Where one or more queues have a different discipline from the rest, provide a list of queues, indicating the queuing discipline used for each. If reneging, balking or jockeying occur, etc., provide details of the rules. Detail any delays or capacity constraints on the queues.\n2.5.5 Components - entry/exit pointsGive details of the model boundaries i.e. all arrival and exit points of entities. Detail the arrival mechanism (e.g. ‘thinning’ to mimic a non-homogenous Poisson process or balking)"
+  },
+  {
+    "objectID": "checklists/stressdes.html#data",
+    "href": "checklists/stressdes.html#data",
+    "title": "Ambulance DES",
+    "section": "Data",
+    "text": "Data\n\n3.1 Data sourcesList and detail all data sources. Sources may include:• Interviews with stakeholders,• Samples of routinely collected data,• Prospectively collected samples for the purpose of the simulation study,• Public domain data published in either academic or organisational literature. Provide, where possible, the link and DOI to the data or reference to published literature.All data source descriptions should include details of the sample size, sample date ranges and use within the study.\n3.2 Pre-processingProvide details of any data manipulation that has taken place before its use in the simulation, e.g. interpolation to account for missing data or the removal of outliers.\n3.3 Input parametersList all input variables in the model. Provide a description of their use and include parameter values. For stochastic inputs provide details of any continuous, discrete or empirical distributions used along with all associated parameters. Give details of all time dependent parameters and correlation.Clearly state:• Base case data• Data use in experimentation, where different from the base case.• Where optimisation or design of experiments has been used, state the range of values that parameters can take.• Where theoretical distributions are used, state how these were selected and prioritised above other candidate distributions.\n3.4 AssumptionsWhere data or knowledge of the real system is unavailable what assumptions are included in the model? This might include parameter values, distributions or routing logic within the model."
+  },
+  {
+    "objectID": "checklists/stressdes.html#experimentation",
+    "href": "checklists/stressdes.html#experimentation",
+    "title": "Ambulance DES",
+    "section": "Experimentation",
+    "text": "Experimentation\n\n4.1 InitialisationReport if the system modelled is terminating or non-terminating. State if a warm-up period has been used, its length and the analysis method used to select it. For terminating systems state the stopping condition.State what if any initial model conditions have been included, e.g., pre-loaded queues and activities. Report whether initialisation of these variables is deterministic or stochastic.\n4.2 Run lengthDetail the run length of the simulation model and time units.\n4.3 Estimation approachState the method used to account for the stochasticity: For example, two common methods are multiple replications or batch means. Where multiple replications have been used, state the number of replications and for batch means, indicate the batch length and whether the batch means procedure is standard, spaced or overlapping. For both procedures provide a justification for the methods used and the number of replications/size of batches."
+  },
+  {
+    "objectID": "checklists/stressdes.html#implementation",
+    "href": "checklists/stressdes.html#implementation",
+    "title": "Ambulance DES",
+    "section": "Implementation",
+    "text": "Implementation\n\n5.1 Software or programming languageState the operating system and version and build number.State the name, version and build number of commercial or open source DES software that the model is implemented in.State the name and version of general-purpose programming languages used (e.g. Python 3.5).Where frameworks and libraries have been used provide all details including version numbers.\n5.2 Random samplingState the algorithm used to generate random samples in the software/programming language used e.g. Mersenne Twister.If common random numbers are used, state how seeds (or random number streams) are distributed among sampling processes.\n5.3 Model executionState the event processing mechanism used e.g. three phase, event, activity, process interaction.Note that in some commercial software the event processing mechanism may not be published. In these cases authors should adhere to item 5.1 software recommendations.State all priority rules included if entities/activities compete for resources.If the model is parallel, distributed and/or use grid or cloud computing, etc., state and preferably reference the technology used. For parallel and distributed simulations the time management algorithms used. If the HLA is used then state the version of the standard, which run-time infrastructure (and version), and any supporting documents (FOMs, etc.)\n5.4 System specificationState the model run time and specification of hardware used. This is particularly important for large scale models that require substantial computing power. For parallel, distributed and/or use grid or cloud computing, etc. state the details of all systems used in the implementation (processors, network, etc.)"
+  },
+  {
+    "objectID": "checklists/stressdes.html#code-access",
+    "href": "checklists/stressdes.html#code-access",
+    "title": "Ambulance DES",
+    "section": "Code access",
+    "text": "Code access\n\n6.1 Computer model sharing statementDescribe how someone could obtain the model described in the paper, the simulation software and any other associated software (or hardware) needed to reproduce the results. Provide, where possible, the link and DOIs to these."
+  },
+  {
+    "objectID": "checklists/nhs_levels_of_rap.html",
+    "href": "checklists/nhs_levels_of_rap.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "The following framework is from the NHS RAP Community of Practice: NHS RAP Levels of RAP Framework.\nIt is © 2024 Crown Copyright (NHS England), shared under the terms of the Open Government 3.0 licence.\nThe specific version of the framework copied below is that from commit 2549256 (9th September 2024)."
+  },
+  {
+    "objectID": "checklists/nhs_levels_of_rap.html#baseline",
+    "href": "checklists/nhs_levels_of_rap.html#baseline",
+    "title": "Ambulance DES",
+    "section": "🥉 Baseline",
+    "text": "🥉 Baseline\nRAP fundamentals offering resilience against future change.\n\nData produced by code in an open-source language (e.g., Python, R).\nCode is version controlled (see Git basics and using Git collaboratively guides).\nRepository includes a README.md file (or equivalent) that clearly details steps a user must follow to reproduce the code (use NHS Open Source Policy section on Readmes as a guide).\nCode has been peer reviewed.\nCode is published in the open and linked to & from accompanying publication (if relevant).\n\n\n🥈 Silver\nImplementing best practice by following good analytical and software engineering standards.\nMeeting all of the above requirements, plus:\n\nOutputs are produced by code with minimal manual intervention.\nCode is well-documented including user guidance, explanation of code structure & methodology and docstrings for functions.\nCode is well-organised following standard directory format.\nReusable functions and/or classes are used where appropriate.\nCode adheres to agreed coding standards (e.g PEP8, style guide for Pyspark).\nPipeline includes a testing framework (unit tests, back tests).\nRepository includes dependency information (e.g. requirements.txt, PipFile, environment.yml).\nLogs are automatically recorded by the pipeline to ensure outputs are as expected.\nData is handled and output in a Tidy data format.\n\n\n\n🥇 Gold\nAnalysis as a product to further elevate your analytical work and enhance its reusability to the public.\nMeeting all of the above requirements, plus:\n\nCode is fully packaged.\nRepository automatically runs tests etc. via CI/CD or a different integration/deployment tool e.g. GitHub Actions.\nProcess runs based on event-based triggers (e.g., new data in database) or on a schedule.\nChanges to the RAP are clearly signposted. E.g. a changelog in the package, releases etc. (See gov.uk info on Semantic Versioning)."
+  },
+  {
+    "objectID": "checklists/stars_reuse.html",
+    "href": "checklists/stars_reuse.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Source: Monks, T., Harper, A., & Mustafee, N. (2025). Towards sharing tools and artefacts for reusable simulations in healthcare. Journal of Simulation, 19(6), 619–638. https://doi.org/10.1080/17477778.2024.2347882"
+  },
+  {
+    "objectID": "checklists/stars_reuse.html#essential-components",
+    "href": "checklists/stars_reuse.html#essential-components",
+    "title": "Ambulance DES",
+    "section": "Essential components",
+    "text": "Essential components\n\nOpen licence\nDependency management\nFOSS model\nMinimum documentation - minimal instructions (e.g. in README) that overview (a) what model does, (b) how to install and run model to obtain results, and (c) how to vary parameters to run new experiments\nORCID\nCitation information\nRemote code repository\nOpen science archive"
+  },
+  {
+    "objectID": "checklists/stars_reuse.html#optional-components",
+    "href": "checklists/stars_reuse.html#optional-components",
+    "title": "Ambulance DES",
+    "section": "Optional components",
+    "text": "Optional components\n\nEnhanced documentation - Open and high quality documentation on how the model is implemented and works (e.g. via notebooks and markdown files, brought together using software like Quarto and Jupyter Book). Suggested content includes:\n\nPlain english summary of project and model\nClarifying licence\nCitation instructions\nContribution instructions\nModel installation instructions\nStructured code walk through of model\nDocumentation of modelling cycle using TRACE\nAnnotated simulation reporting guidelines\nClear description of model validation including its intended purpose\n\nDocumentation hosting\nOnline coding environment\nModel interface\nWeb app hosting"
   },
   {
     "objectID": "literature.html",
@@ -696,90 +568,6 @@
     ]
   },
   {
-    "objectID": "checklists/pyopensci.html",
-    "href": "checklists/pyopensci.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: https://www.pyopensci.org/software-peer-review/appendices/templates.html\n\nDocumentation\nThe package includes all the following forms of documentation:\n\nA statement of need clearly stating problems the software is designed to solve and its target audience in the README file.\nInstallation instructions: for the development version of the package and any non-standard dependencies in README.\nShort quickstart tutorials demonstrating significant functionality that successfully runs locally.\nFunction Documentation: for all user-facing functions.\nExamples for all user-facing functions.\nCommunity guidelines including contribution guidelines in the README or CONTRIBUTING.\nMetadata including author(s), author e-mail(s), a URL, and any other relevant metadata, for example, in a pyproject.toml file or elsewhere.\n\nReadme file requirements The package meets the readme requirements below:\n\nPackage has a README.md file in the root directory.\n\nThe README should include, from top to bottom:\n\nThe package name\nBadges for:\n\nContinuous integration and test coverage,\nDocs building (if you have a documentation website),\nPython versions supported,\nCurrent package version (on PyPI / Conda).\n\n\nNOTE: If the README has many more badges, you might want to consider using a table for badges: see this example. Such a table should be wider than high. A badge for pyOpenSci peer review will be provided when the package is accepted.\n\nShort description of package goals.\nPackage installation instructions\nAny additional setup required to use the package (authentication tokens, etc.)\nDescriptive links to all vignettes. If the package is small, there may only be a need for one vignette which could be placed in the README.md file.\n\nBrief demonstration of package usage (as it makes sense - links to vignettes could also suffice here if package description is clear)\n\nLink to your documentation website.\nIf applicable, how the package compares to other similar packages and/or how it relates to other packages in the scientific ecosystem.\nCitation information\n\n\n\nUsability\nReviewers are encouraged to submit suggestions (or pull requests) that will improve the usability of the package as a whole. The package structure should follow the general community best practices. In general, please consider whether:\n\nPackage documentation is clear and easy to find and use.\nThe need for the package is clear\nAll functions have documentation and associated examples for use\nThe package is easy to install\n\n\n\nFunctionality\n\nInstallation: Installation succeeds as documented.\nFunctionality: Any functional claims of the software been confirmed.\nPerformance: Any performance claims of the software been confirmed.\nAutomated tests:\n\nAll tests pass on the reviewer’s local machine for the package version submitted by the author. Ideally this should be a tagged version making it easy for reviewers to install.\nTests cover essential functions of the package and a reasonable range of inputs and conditions.\n\nContinuous Integration: Has continuous integration setup (We suggest using Github actions but any CI platform is acceptable for review)\nPackaging guidelines: The package conforms to the pyOpenSci packaging guidelines. A few notable highlights to look at:\n\nPackage supports modern versions of Python and not End of life versions.\nCode format is standard throughout package and follows PEP 8 guidelines (CI tests for linting pass)"
-  },
-  {
-    "objectID": "checklists/hsma_model_readiness.html",
-    "href": "checklists/hsma_model_readiness.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: Model Readiness Checklist. Sammi Rosser & Amy Heather. HSMA - the little book of DES. https://des.hsma.co.uk/model_checklist.html"
-  },
-  {
-    "objectID": "checklists/hsma_model_readiness.html#bronze",
-    "href": "checklists/hsma_model_readiness.html#bronze",
-    "title": "Ambulance DES",
-    "section": "Bronze",
-    "text": "Bronze\n\nVisualisations\nCreating simple visualisations of a few key areas is one of the best ways to spot unexpected behaviour and quickly validate key parts of your model logic. They allow you to quickly verify whether something looks unusually high or low, or if patterns are intuitively ‘wrong’.\nVisualise the following:\n\nArrivals over time\n\nThis could be done as a dot/scatter plot with time on the x axis and each dot representing the arrival of an individual, with separate runs represented on the y axis, or as a heatmap\nThis helps to see if there are any unexpectedly large gaps between arrivals and if the general pace of arrivals over different time periods matches your understanding of the system\nYou could also do this recurrently at relevant timescale if recurrent patterns of arrivals - e.g if you are using time-dependent arrival generators to reflect patterns within a day, or across days/weeks/months. You could take an existing dotplot, filter it to a single run, and make the y axis instead reflect the day of week, for example.\n\nResource use over time\n\nThis can be done overall as a line plot with simulation or clock time on the x axis and number or percentage of resources in use over time\nYou could also do this recurrently at relevant timescale if recurrent patterns of resource use - for example, if resources are obstructed in the evenings or at weekends.\n\nDistributions of generated activity times AND generated inter-arrival times (one plot per activity or arrival generator).\n\nThis could be done with a histogram, box plot, swarm plot or violin plot\nThis helps to check that the distribution of generated times roughly matches the real-world pattern, as well as checking for any implausibly long or short times\n\nQueue lengths over time.\n\nThis can be done with a line plot with simulation or clock time on the x axis and queue length on the y axis\nThis is useful for checking whether queues do build up, and if so, if they are implausibly large or small in comparison to the real system\n\n\n\n\nCore Logic Checks\nWhen you are doing these checks, you are really just looking for something being ‘off’.\n\nWatch the journey of several individuals (via logs or animations).\n\nDo the journeys look ‘right’? Do entities follow the paths you’d expect?\n\nReview the code to check that time units have been used consistently throughout the code (e.g. time inputs don’t swap from minutes to hours at any point).\n\nThe following items can be robustly checked using event logs.\nHowever, you may be able to do some more basic checks with console logs.\n\nCheck that all described stages demonstrate at least some activity during a sufficiently long, representative run.\n\nFor example, in a model where patients arrive, all patients are triaged, then some patients are advised by a nurse while others are treated by a doctor, before all patients are discharged, you would want to confirm that entities are reaching each of these stages (e.g. through console logs), or that resources at each stage show at least some utilisation (e.g. via the plot you generate), helping you identify if there is an issue with logic that decides which pathway entities follow\n\nManually check that the number of entities entering the model equals the number of leaving the model plus the number still in the model.\n\nThis ensures no entities are “lost” in queues with no output no sink.\n\nManually check that entities are never in two places at once.\nManually check that resources are never simultaneously in use by two entities at once (or whatever variation is appropriate for your model).\nManually check that resources are not used at times where they should be obstructed/unavailable (e.g. during breaks, evenings, weekends).\n\n\n\nRobustness for decision-making\n\nNumber of runs set to a minimum of 30 (ideally more) for generating any metrics or other outputs that will be used for decision-making.\nWarm up length visually checked to be appropriate.\n\n\n\nReproducibility\n\nAdd a random seed to the model, then test it by running the model twice with the same seed, and visually check outputs to confirm that the results do not change.\n\n\n\nKey checks against the real system\n\nNumber of entities arriving in simulation verified against historical patterns (averages sensible, distributions sensible).\n\nIf relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.\n\nGenerated activity times visually verified (averages sensible, distribution sensible).\n\nIf relevant, this is also checked for entity subtypes/entities with different attributes where it is important that these patterns match the real system.\n\nVisual check that there are no implausible activity lengths.\n\nIf necessary, apply a cap to generated activity times to resolve this.\n\nVisual check that there are no implausible inter-arrival times for entities\n\nIf necessary, apply a cap to generated inter-arrival times to resolve this.\n\nVisual check of KPI outputs against the historical baseline - do these look sensible and similar to historical data?\n\n\n\nProcess and Stakeholder Checks\n\nApprove the simulation process map with stakeholders.\nCheck the scenario outputs with stakeholders - do they feel reasonable?\n\nNote that stakeholder responses to outputs shouldn’t necessarily be taken as a definite right/wrong judgment on the model - but they may help to sense check or indicate areas for more attention.\n\n\n\n\nDocumentation\n\nWrite a readme that explains how to run the model, how to change parameters in the model, and gives a brief overview of the system being modelled.\nInclude sufficient comments in your work to help people understand non-obvious elements of the code.\nClearly document\n\ndata sources\nassumptions\ninputs\ndecisions - including any changes to the analytical plan or decisions made during analysis\n\nDocument the versions of packages you have used, ideally using a requirements.txt or environment.yml file."
-  },
-  {
-    "objectID": "checklists/hsma_model_readiness.html#silver",
-    "href": "checklists/hsma_model_readiness.html#silver",
-    "title": "Ambulance DES",
-    "section": "Silver",
-    "text": "Silver\n\nDocumentation\n\nAdd docstrings.\nComplete a formal model reporting checklist (e.g STRESS-DES).\n\n\n\nCode Review\n\nHave a code review undertaken by someone else (see the DES RAP book: peer review).\n\n\n\nAutomated Testing\nDefine formal automated tests:\n\nModel running successfully.\nVarying results are obtained when using different seeds and the same parameters.\nIdentical results are obtained when the same seed and parameters are used.\nNumber of entities entering the model equals the number of leaving the model plus the number still in the model. This ensures no entities are “lost” in queues with no output no sink.\nUtilisation never exceeds capacity (i.e. resources are never in use by multiple entities, unless allowed in your model).\nAll stages of the model show some activity (i.e. there are no ‘orphaned’ steps).\nSimple ‘expected behaviour’ when parameters are varied:\n\nLonger activity time = worse performance.\nMore arrivals = longer queues.\n\nWrite tests for behaviour under extreme conditions:\n\nHeavy demand.\nLittle to no demand.\n\n\n\n\nReusability\n\nAdd an Open Licence to your repository\n\n\n\nVersion Control\n\nUse version control for code (Git)\nMake the model available on a remote code hosting service (e.g. GitHub, BitBucket)\n\n\n\nModel Robustness\n\nUndertake sensitivity analysis (i.e. check how much changes in model input variables affect output performance measures, and consider whether results appear sensible/expected)"
-  },
-  {
-    "objectID": "checklists/hsma_model_readiness.html#gold",
-    "href": "checklists/hsma_model_readiness.html#gold",
-    "title": "Ambulance DES",
-    "section": "Gold",
-    "text": "Gold\n\nDocumentation\n\nCreate a documentation site and host this.\n\nConsider using a framework like mkdocs-material to automatically display the docstrings of your functions and classes in an easy-to-access manner\n\nSet up and maintain a changelog.\nUse GitHub Issues to track bugs and highlight remaining tasks.\nDocument your quality assurance process.\n\n\n\nReusability\n\nResearch artifact metadata (ORCID)\nOpen Science Archive\nOnline Coding Environment\n\n\n\nModel Efficiency\n\nParallelisation implemented.\n\n\n\nModel Communication and Validation\n\nCreate a web app interface for your model\nHost the web app interface for your model\nAnimated model output created (if appropriate).\n\nAnimations also have a role to play in model validation - inspecting the animation, including with non-technical stakeholders, can help identify subtle bugs.\n\n\n\n\nBest Practice around Variability and Model Setup\n\nFormal automated method implemented for determining warm-up period.\nFormal method used for determining appropriate replication count.\n\n\n\nAutomated Testing\n\nDefine formal automated tests for:\n\nComparison of base case outputs to historical data for key metrics.\nStatistical testing of generated distributions against real-world data (e.g. Kolgomorov-Smirnov Test)."
-  },
-  {
-    "objectID": "checklists/stressdes.html",
-    "href": "checklists/stressdes.html",
-    "title": "Ambulance DES",
-    "section": "",
-    "text": "Source: Monks, T., Currie, C. S. M., Onggo, B. S., Robinson, S., Kunc, M., & Taylor, S. J. E. (2019). Strengthening the reporting of empirical simulation studies: Introducing the STRESS guidelines. Journal of Simulation, 13(1), 55–67. https://doi.org/10.1080/17477778.2018.1442155"
-  },
-  {
-    "objectID": "checklists/stressdes.html#objectives",
-    "href": "checklists/stressdes.html#objectives",
-    "title": "Ambulance DES",
-    "section": "Objectives",
-    "text": "Objectives\n\n1.1 Purpose of the modelExplain the background and objectives for the model\n1.2 Model outputsDefine all quantitative performance measures that are reported, using equations where necessary. Specify how and when they are calculated during the model run along with how any measures of error such as confidence intervals are calculated.\n1.3 Experimentation aimsIf the model has been used for experimentation, state the objectives that it was used to investigate.(A) Scenario based analysis – Provide a name and description for each scenario, providing a rationale for the choice of scenarios and ensure that item 2.3 (below) is completed.(B) Design of experiments – Provide details of the overall design of the experiments with reference to performance measures and their parameters (provide further details in data below).(C) Simulation Optimisation – (if appropriate) Provide full details of what is to be optimised, the parameters that were included and the algorithm(s) that was be used. Where possible provide a citation of the algorithm(s)."
-  },
-  {
-    "objectID": "checklists/stressdes.html#logic",
-    "href": "checklists/stressdes.html#logic",
-    "title": "Ambulance DES",
-    "section": "Logic",
-    "text": "Logic\n\n2.1 Base model overview diagramDescribe the base model using appropriate diagrams and description. This could include one or more process flow, activity cycle or equivalent diagrams sufficient to describe the model to readers. Avoid complicated diagrams in the main text. The goal is to describe the breadth and depth of the model with respect to the system being studied.\n2.2 Base model logicGive details of the base model logic. Give additional model logic details sufficient to communicate to the reader how the model works.\n2.3 Scenario logicGive details of the logical difference between the base case model and scenarios (if any). This could be incorporated as text or where differences are substantial could be incorporated in the same manner as 2.2.\n2.4 AlgorithmsProvide further detail on any algorithms in the model that (for example) mimic complex or manual processes in the real world (i.e. scheduling of arrivals/ appointments/ operations/ maintenance, operation of a conveyor system, machine breakdowns, etc.). Sufficient detail should be included (or referred to in other published work) for the algorithms to be reproducible. Pseudo-code may be used to describe an algorithm.\n2.5.1 Components - entitiesGive details of all entities within the simulation including a description of their role in the model and a description of all their attributes.\n2.5.2 Components - activitiesDescribe the activities that entities engage in within the model. Provide details of entity routing into and out of the activity.\n2.5.3 Components - resourcesList all the resources included within the model and which activities make use of them.\n2.5.4 Components - queuesGive details of the assumed queuing discipline used in the model (e.g. First in First Out, Last in First Out, prioritisation, etc.). Where one or more queues have a different discipline from the rest, provide a list of queues, indicating the queuing discipline used for each. If reneging, balking or jockeying occur, etc., provide details of the rules. Detail any delays or capacity constraints on the queues.\n2.5.5 Components - entry/exit pointsGive details of the model boundaries i.e. all arrival and exit points of entities. Detail the arrival mechanism (e.g. ‘thinning’ to mimic a non-homogenous Poisson process or balking)"
-  },
-  {
-    "objectID": "checklists/stressdes.html#data",
-    "href": "checklists/stressdes.html#data",
-    "title": "Ambulance DES",
-    "section": "Data",
-    "text": "Data\n\n3.1 Data sourcesList and detail all data sources. Sources may include:• Interviews with stakeholders,• Samples of routinely collected data,• Prospectively collected samples for the purpose of the simulation study,• Public domain data published in either academic or organisational literature. Provide, where possible, the link and DOI to the data or reference to published literature.All data source descriptions should include details of the sample size, sample date ranges and use within the study.\n3.2 Pre-processingProvide details of any data manipulation that has taken place before its use in the simulation, e.g. interpolation to account for missing data or the removal of outliers.\n3.3 Input parametersList all input variables in the model. Provide a description of their use and include parameter values. For stochastic inputs provide details of any continuous, discrete or empirical distributions used along with all associated parameters. Give details of all time dependent parameters and correlation.Clearly state:• Base case data• Data use in experimentation, where different from the base case.• Where optimisation or design of experiments has been used, state the range of values that parameters can take.• Where theoretical distributions are used, state how these were selected and prioritised above other candidate distributions.\n3.4 AssumptionsWhere data or knowledge of the real system is unavailable what assumptions are included in the model? This might include parameter values, distributions or routing logic within the model."
-  },
-  {
-    "objectID": "checklists/stressdes.html#experimentation",
-    "href": "checklists/stressdes.html#experimentation",
-    "title": "Ambulance DES",
-    "section": "Experimentation",
-    "text": "Experimentation\n\n4.1 InitialisationReport if the system modelled is terminating or non-terminating. State if a warm-up period has been used, its length and the analysis method used to select it. For terminating systems state the stopping condition.State what if any initial model conditions have been included, e.g., pre-loaded queues and activities. Report whether initialisation of these variables is deterministic or stochastic.\n4.2 Run lengthDetail the run length of the simulation model and time units.\n4.3 Estimation approachState the method used to account for the stochasticity: For example, two common methods are multiple replications or batch means. Where multiple replications have been used, state the number of replications and for batch means, indicate the batch length and whether the batch means procedure is standard, spaced or overlapping. For both procedures provide a justification for the methods used and the number of replications/size of batches."
-  },
-  {
-    "objectID": "checklists/stressdes.html#implementation",
-    "href": "checklists/stressdes.html#implementation",
-    "title": "Ambulance DES",
-    "section": "Implementation",
-    "text": "Implementation\n\n5.1 Software or programming languageState the operating system and version and build number.State the name, version and build number of commercial or open source DES software that the model is implemented in.State the name and version of general-purpose programming languages used (e.g. Python 3.5).Where frameworks and libraries have been used provide all details including version numbers.\n5.2 Random samplingState the algorithm used to generate random samples in the software/programming language used e.g. Mersenne Twister.If common random numbers are used, state how seeds (or random number streams) are distributed among sampling processes.\n5.3 Model executionState the event processing mechanism used e.g. three phase, event, activity, process interaction.Note that in some commercial software the event processing mechanism may not be published. In these cases authors should adhere to item 5.1 software recommendations.State all priority rules included if entities/activities compete for resources.If the model is parallel, distributed and/or use grid or cloud computing, etc., state and preferably reference the technology used. For parallel and distributed simulations the time management algorithms used. If the HLA is used then state the version of the standard, which run-time infrastructure (and version), and any supporting documents (FOMs, etc.)\n5.4 System specificationState the model run time and specification of hardware used. This is particularly important for large scale models that require substantial computing power. For parallel, distributed and/or use grid or cloud computing, etc. state the details of all systems used in the implementation (processors, network, etc.)"
-  },
-  {
-    "objectID": "checklists/stressdes.html#code-access",
-    "href": "checklists/stressdes.html#code-access",
-    "title": "Ambulance DES",
-    "section": "Code access",
-    "text": "Code access\n\n6.1 Computer model sharing statementDescribe how someone could obtain the model described in the paper, the simulation software and any other associated software (or hardware) needed to reproduce the results. Provide, where possible, the link and DOIs to these."
-  },
-  {
     "objectID": "criteria.html",
     "href": "criteria.html",
     "title": "Best practice criteria",
@@ -865,6 +653,64 @@
     "crumbs": [
       "GitHub",
       "Best practice criteria"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Ambulance DES",
+    "section": "",
+    "text": "Building an open reproducible DES model of ambulance operations.\nWork in progress!\nThis work is part of the STARS project, supported by the Medical Research Council [grant number MR/Z503915/1]."
+  },
+  {
+    "objectID": "index.html#prerequisite-knowledge-for-reusing-this-model",
+    "href": "index.html#prerequisite-knowledge-for-reusing-this-model",
+    "title": "Ambulance DES",
+    "section": "Prerequisite knowledge for reusing this model",
+    "text": "Prerequisite knowledge for reusing this model\nTo make effective use of this model, some background knowledge may be helpful. You can find lots of relevant material in the DES RAP Book. At a minimum, we suggest:\n\nDiscrete-event simulation - what DES is, how it represents systems, and why it is commonly used in healthcare modelling.\nInitialisation bias and warm-up periods - why simulation models can produce biased early results, and how warm-up periods help address this.\nObject-oriented programming (OOP) - useful background for understanding how the model code is structured."
+  },
+  {
+    "objectID": "validation.html",
+    "href": "validation.html",
+    "title": "Validation",
+    "section": "",
+    "text": "Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model’s inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#things-i-can-definitely-do",
+    "href": "validation.html#things-i-can-definitely-do",
+    "title": "Validation",
+    "section": "Things I can definitely do",
+    "text": "Things I can definitely do\nConceptual model validation\n\nDocument and justify all modeling assumptions.\nReview the conceptual model with people familiar with the real system to assess completeness and accuracy.\n\nAnimation visualisation\n\nCreate an animation to help with validation (as well as communication and reuse).\n\nCross validation\n\nSearch for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.\n\nExperimentation validation\n\nUse a warm-up period.\nUse statistical methods to determine sufficient run length and number of replications.\nPerform sensitivity analysis to test how changes in input parameters affect outputs.\n\n\nGood to discuss now or later what anticipate relevant to vary in sensitivity analysis.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#things-that-require-data-processing-from-ambulance-team",
+    "href": "validation.html#things-that-require-data-processing-from-ambulance-team",
+    "title": "Validation",
+    "section": "Things that require data / processing from ambulance team",
+    "text": "Things that require data / processing from ambulance team\nInput data validation\n\nCheck the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.\nEnsure you have performed appropriate input modelling steps when choosing your distributions.\n\nGraphical comparison\n\nCreate time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.\n\nStatistical comparison\n\nCollect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.\n\nPredictive validation\n\nUse historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.\nConsider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.\nUse graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.\n\n\nTo discuss:\n\nWhat would need to do these.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
+    ]
+  },
+  {
+    "objectID": "validation.html#other-things-we-could-consider-doing",
+    "href": "validation.html#other-things-we-could-consider-doing",
+    "title": "Validation",
+    "section": "Other things we could consider doing",
+    "text": "Other things we could consider doing\nFace validation\n\nPresent key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.\n\nTuring test\n\nCollect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.\n\nComparison testing\n\nIf you have multiple models of the same system, compare them!\n\nCan compare basic model to regression model. Requires some thought re: any other possible comparisons. we know of existing models and code and/or existing data. For example, could compare against https://nhsengland.github.io/AmbModelOpen/ and/or https://github.com/uoa-ems-research/JEMSS.jl. Both open models. Or, could run with reported parameters of other models and compare. That’s all alot of work though - depends if within capacity.\n\nTo discuss:\n\nWhether we consider doing these.",
+    "crumbs": [
+      "GitHub",
+      "Validation"
     ]
   }
 ]

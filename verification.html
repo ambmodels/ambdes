@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1e10d9106ee83674043745959f1925f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -195,77 +195,67 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Verification is the process of checking that the simulation model correctly implements the intended conceptual model. It involves checking that the model’s logic, structure and parameters are implemented as planned and free from coding errors.</p>
-<section id="desk-checking" class="level2">
-<h2 class="anchored" data-anchor-id="desk-checking">Desk checking</h2>
+<section id="things-i-can-definitely-do" class="level2">
+<h2 class="anchored" data-anchor-id="things-i-can-definitely-do">Things I can definitely do</h2>
+<p><strong>Desk checking</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Systematically check code.</label></li>
 <li><label><input type="checkbox">Keep documentation complete and up-to-date.</label></li>
 <li><label><input type="checkbox">Maintain an environment with all required packages.</label></li>
 <li><label><input type="checkbox">Lint code.</label></li>
-<li><label><input type="checkbox">Get code review.</label></li>
 </ul>
-<p>Will do all these.</p>
-<div class="box-hl">
-<p>Code review <strong>requires some thought</strong>. Who can / should / best to do it? Technical planning can base on https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html</p>
-</div>
-</section>
-<section id="debugging" class="level2">
-<h2 class="anchored" data-anchor-id="debugging">Debugging</h2>
+<p><strong>Debugging</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Write tests - they’ll help for spotting bugs.</label></li>
 <li><label><input type="checkbox">During model development, monitor the model using logs - they’ll help with spotting bugs.</label></li>
 <li><label><input type="checkbox">Use GitHub issues to record bugs as they arise, so they aren’t forgotten and are recorded for future reference.</label></li>
 </ul>
-<p>Will do all these.</p>
-</section>
-<section id="assertion-checking" class="level2">
-<h2 class="anchored" data-anchor-id="assertion-checking">Assertion checking</h2>
+<p><strong>Assertion checking</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Add checks in the model which cause errors if something doesn’t look right.</label></li>
 <li><label><input type="checkbox">Write tests which check that assertions hold true.</label></li>
 </ul>
-<p>Will do all these.</p>
-</section>
-<section id="special-input-testing" class="level2">
-<h2 class="anchored" data-anchor-id="special-input-testing">Special input testing</h2>
+<p><strong>Special input testing</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">If there are input variables with explicit limits, design boundary value tests to check the behaviour at, just inside, and just outside each boundary.</label></li>
 <li><label><input type="checkbox">Write stress tests which simulate worst-case load and ensure model is robust under heavy demand.</label></li>
 <li><label><input type="checkbox">Write tests with little or no activity/waits/service.</label></li>
 </ul>
-<p>Will do all these.</p>
-</section>
-<section id="bottom-up-testing" class="level2">
-<h2 class="anchored" data-anchor-id="bottom-up-testing">Bottom-up testing</h2>
+<p><strong>Bottom-up testing</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Write unit tests for each individual component of the model.</label></li>
 <li><label><input type="checkbox">Once individual parts work correctly, combine them and test how they interact - this can be via integration testing or functional testing.</label></li>
 </ul>
-<p>Will do all these.</p>
-</section>
-<section id="regression-testing" class="level2">
-<h2 class="anchored" data-anchor-id="regression-testing">Regression testing</h2>
+<p><strong>Regression testing</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Write tests early.</label></li>
 <li><label><input type="checkbox">Run tests regularly (locally or automatically via. GitHub actions).</label></li>
 </ul>
-<p>Will do all these.</p>
+<p><strong>Execution tracing</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Trace individual calls or ambulances.</label></li>
+</ul>
 </section>
-<section id="mathematical-proof-of-correctness" class="level2">
-<h2 class="anchored" data-anchor-id="mathematical-proof-of-correctness">Mathematical proof of correctness</h2>
+<section id="things-that-require-some-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="things-that-require-some-discussion">Things that require some discussion</h2>
+<p><strong>Desk checking</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Get code review.</label></li>
+</ul>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Who can / should / best to do it?</li>
+<li>Technical planning can base on <a href="https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html" class="uri">https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html</a></li>
+</ul>
+</div>
+<p><strong>Mathematical proof of correctness</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">For parts of the model where theoretical results exist (like an M/M/s queue), compare simulation outputs with results from mathematical formulas.</label></li>
 </ul>
 <div class="box-hl">
-<p>This <strong>requires some thought</strong> as to whether there is anything we could compare against for even the most basic model.</p>
-<p><em>Have put comparison to regression under comparison testing validation</em></p>
+<p>This <strong>requires some thought</strong> as to whether there is anything we could compare against for even the most basic model. To discuss with Tom. <em>Have put comparison to regression under comparison testing validation</em></p>
 </div>
-</section>
-<section id="execution-tracing" class="level2">
-<h2 class="anchored" data-anchor-id="execution-tracing">Execution tracing</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Trace individual calls or ambulances.</label></li>
-</ul>
 
 
 </section>

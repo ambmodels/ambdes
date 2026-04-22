@@ -43,7 +43,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b96bdf302c464d955e2119450bfab289.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1e10d9106ee83674043745959f1925f6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -195,105 +195,79 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Validation is the process of checking whether the simulation model is a sufficiently accurate representation of your real system. It involves comparing the model’s inputs, behaviour and results to the real system. The key question is whether any differences are small enough that the model can still reliably support the decisions or answer the questions it was designed for.</p>
-<section id="conceptual-model-validation" class="level2">
-<h2 class="anchored" data-anchor-id="conceptual-model-validation">Conceptual model validation</h2>
+<section id="things-i-can-definitely-do" class="level2">
+<h2 class="anchored" data-anchor-id="things-i-can-definitely-do">Things I can definitely do</h2>
+<p><strong>Conceptual model validation</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Document and justify all modeling assumptions.</label></li>
 <li><label><input type="checkbox">Review the conceptual model with people familiar with the real system to assess completeness and accuracy.</label></li>
 </ul>
-<p>Will do all these (review conceptual model is with ambulance team involved)</p>
-</section>
-<section id="input-data-validation" class="level2">
-<h2 class="anchored" data-anchor-id="input-data-validation">Input data validation</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Check the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.</label></li>
-<li><label><input type="checkbox">Ensure you have performed appropriate input modelling steps when choosing your distributions.</label></li>
-</ul>
-<p>Will do input modelling.</p>
-<div class="box-hl">
-<p><strong>First point requires discussion with ambulance team</strong>.</p>
-</div>
-</section>
-<section id="graphical-comparison" class="level2">
-<h2 class="anchored" data-anchor-id="graphical-comparison">Graphical comparison</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Create time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.</label></li>
-</ul>
-<p><strong>requires some thought</strong> as to what we will plot and compare</p>
-</section>
-<section id="statistical-comparison" class="level2">
-<h2 class="anchored" data-anchor-id="statistical-comparison">Statistical comparison</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Collect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.</label></li>
-</ul>
-<div class="box-hl">
-<p><strong>Requires some thought</strong> as to what we compare</p>
-</div>
-</section>
-<section id="turing-test" class="level2">
-<h2 class="anchored" data-anchor-id="turing-test">Turing test</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Collect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.</label></li>
-</ul>
-<div class="box-hl">
-<p><strong>Requires discussion</strong> as to whether we do this and how and who (ambulance team? or too involved?)</p>
-</div>
-</section>
-<section id="predictive-validation" class="level2">
-<h2 class="anchored" data-anchor-id="predictive-validation">Predictive validation</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Use historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.</label></li>
-<li><label><input type="checkbox">Consider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.</label></li>
-<li><label><input type="checkbox">Use graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.</label></li>
-</ul>
-<div class="box-hl">
-<p><strong>Requires some thought</strong> as to what we do here</p>
-</div>
-</section>
-<section id="animation-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="animation-visualisation">Animation visualisation</h2>
+<p><strong>Animation visualisation</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Create an animation to help with validation (as well as communication and reuse).</label></li>
 </ul>
-<p>will do this</p>
-</section>
-<section id="comparison-testing" class="level2">
-<h2 class="anchored" data-anchor-id="comparison-testing">Comparison testing</h2>
+<p><strong>Cross validation</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox">If you have multiple models of the same system, compare them!</label></li>
+<li><label><input type="checkbox">Search for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.</label></li>
 </ul>
-<div class="box-hl">
-<p>Can compare basic model to regression model. <strong>requires some thought</strong> re: any other possible comparisons. we know of existing models and code and/or existing data.</p>
-<p>For example, could compare against <a href="https://nhsengland.github.io/AmbModelOpen/" class="uri">https://nhsengland.github.io/AmbModelOpen/</a> and/or <a href="https://github.com/uoa-ems-research/JEMSS.jl" class="uri">https://github.com/uoa-ems-research/JEMSS.jl</a>. Both open models. Or, could run with reported parameters of other models and compare. That’s all alot of work though - depends if within capacity.</p>
-</div>
-</section>
-<section id="face-validation" class="level2">
-<h2 class="anchored" data-anchor-id="face-validation">Face validation</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Present key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.</label></li>
-</ul>
-<div class="box-hl">
-<p><strong>requires discussion</strong> as to whether do this</p>
-</div>
-</section>
-<section id="experimentation-validation" class="level2">
-<h2 class="anchored" data-anchor-id="experimentation-validation">Experimentation validation</h2>
+<p><strong>Experimentation validation</strong></p>
 <ul class="task-list">
 <li><label><input type="checkbox">Use a warm-up period.</label></li>
 <li><label><input type="checkbox">Use statistical methods to determine sufficient run length and number of replications.</label></li>
 <li><label><input type="checkbox">Perform sensitivity analysis to test how changes in input parameters affect outputs.</label></li>
 </ul>
 <div class="box-hl">
-<p>Will do this - though sensitivity analysis requires <strong>discussion and research</strong> to identify what would be important to vary here</p>
+<p>Good to discuss now <strong>or later</strong> what anticipate relevant to vary in sensitivity analysis.</p>
 </div>
 </section>
-<section id="cross-validation" class="level2">
-<h2 class="anchored" data-anchor-id="cross-validation">Cross validation</h2>
+<section id="things-that-require-data-processing-from-ambulance-team" class="level2">
+<h2 class="anchored" data-anchor-id="things-that-require-data-processing-from-ambulance-team">Things that require data / processing from ambulance team</h2>
+<p><strong>Input data validation</strong></p>
 <ul class="task-list">
-<li><label><input type="checkbox">Search for similar simulation studies and compare the key assumptions, methods and results. Discuss discrepancies and explain reasons for different findings or approaches. Use insights from other studies to improve or validate your own model.</label></li>
+<li><label><input type="checkbox">Check the datasets used - screen for outliers, determine if they are correct, and if the reason for them occurring should be incorporated into the simulation.</label></li>
+<li><label><input type="checkbox">Ensure you have performed appropriate input modelling steps when choosing your distributions.</label></li>
+</ul>
+<p><strong>Graphical comparison</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Create time-series plots and distributions of key results (e.g., daily patient arrivals, resource utilisation, waiting times) for both the model and the actual system, and compare the graphs to assess whether patterns and trends are similar.</label></li>
+</ul>
+<p><strong>Statistical comparison</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Collect real system data on key performance measures (e.g., wait times, lengths of stay, throughput) and compare with model outputs statistically using appropriate tests.</label></li>
+</ul>
+<p><strong>Predictive validation</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Use historical arrival data, staffing schedules, treatment times, or other inputs from a specific time period to drive your simulation. Compare the simulation’s predictions for that period (e.g., waiting times, bed occupancy) against the real outcomes for the same period.</label></li>
+<li><label><input type="checkbox">Consider varying the periods you validate on—year-by-year, season-by-season, or even for particular policy changes or events—to detect strengths or weaknesses in the model across different scenarios.</label></li>
+<li><label><input type="checkbox">Use graphical comparisons (e.g., time series plots) or statistical measures (e.g., goodness-of-fit, mean errors, confidence intervals) to assess how closely the model matches reality - see below.</label></li>
 </ul>
 <div class="box-hl">
-<p><strong>will need to build up research</strong> to do this - have done a bunch, but will require more</p>
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>What would need to do these.</li>
+</ul>
+</div>
+</section>
+<section id="other-things-we-could-consider-doing" class="level2">
+<h2 class="anchored" data-anchor-id="other-things-we-could-consider-doing">Other things we could consider doing</h2>
+<p><strong>Face validation</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Present key simulation outputs and model behaviour to people such as: project team members; intended users of the model (e.g., healthcare analysts, managers); people familiar with the real system (e.g., clinicians, frontline staff, patient representatives). Ask for their subjective feedback on whether the model and results “look right”. Discuss specific areas, such as whether performance measures (e.g., patient flow, wait times) match expectations under similar conditions.</label></li>
+</ul>
+<p><strong>Turing test</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Collect matching sets of model output and real system, remove identifying labels, and present them to a panel of experts. Record whether experts can distinguish simulation outputs from real data. Use their feedback on distinguishing features to further improve the simulation.</label></li>
+</ul>
+<p><strong>Comparison testing</strong></p>
+<ul class="task-list">
+<li><label><input type="checkbox">If you have multiple models of the same system, compare them!</label></li>
+</ul>
+<p><em>Can compare basic model to regression model. Requires some thought re: any other possible comparisons. we know of existing models and code and/or existing data. For example, could compare against <a href="https://nhsengland.github.io/AmbModelOpen/" class="uri">https://nhsengland.github.io/AmbModelOpen/</a> and/or <a href="https://github.com/uoa-ems-research/JEMSS.jl" class="uri">https://github.com/uoa-ems-research/JEMSS.jl</a>. Both open models. Or, could run with reported parameters of other models and compare. That’s all alot of work though - depends if within capacity.</em></p>
+<div class="box-hl">
+<p><strong>To discuss:</strong></p>
+<ul>
+<li>Whether we consider doing these.</li>
+</ul>
 </div>
 
 
