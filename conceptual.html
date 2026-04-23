@@ -23,7 +23,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -78,7 +97,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -174,7 +193,51 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#stage-1-whole-system-resourcing" id="toc-stage-1-whole-system-resourcing" class="nav-link active" data-scroll-target="#stage-1-whole-system-resourcing">Stage 1: Whole-system resourcing</a>
+  <ul class="collapse">
+  <li><a href="#key-question" id="toc-key-question" class="nav-link" data-scroll-target="#key-question">Key question</a></li>
+  <li><a href="#model-content-and-inputs" id="toc-model-content-and-inputs" class="nav-link" data-scroll-target="#model-content-and-inputs">Model content and inputs</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
+  </ul></li>
+  <li><a href="#stage-2-resourcing-by-county-without-interaction" id="toc-stage-2-resourcing-by-county-without-interaction" class="nav-link" data-scroll-target="#stage-2-resourcing-by-county-without-interaction">Stage 2: Resourcing by county (without interaction)</a>
+  <ul class="collapse">
+  <li><a href="#key-question-1" id="toc-key-question-1" class="nav-link" data-scroll-target="#key-question-1">Key question</a></li>
+  <li><a href="#model-changes" id="toc-model-changes" class="nav-link" data-scroll-target="#model-changes">Model changes</a></li>
+  <li><a href="#notes-1" id="toc-notes-1" class="nav-link" data-scroll-target="#notes-1">Notes</a></li>
+  </ul></li>
+  <li><a href="#stage-3-job-cycle-times" id="toc-stage-3-job-cycle-times" class="nav-link" data-scroll-target="#stage-3-job-cycle-times">Stage 3: Job cycle times</a>
+  <ul class="collapse">
+  <li><a href="#key-question-2" id="toc-key-question-2" class="nav-link" data-scroll-target="#key-question-2">Key question</a></li>
+  <li><a href="#model-changes-1" id="toc-model-changes-1" class="nav-link" data-scroll-target="#model-changes-1">Model changes</a></li>
+  <li><a href="#notes-2" id="toc-notes-2" class="nav-link" data-scroll-target="#notes-2">Notes</a></li>
+  </ul></li>
+  <li><a href="#stage-4-shifts" id="toc-stage-4-shifts" class="nav-link" data-scroll-target="#stage-4-shifts">Stage 4: Shifts</a>
+  <ul class="collapse">
+  <li><a href="#key-question-3" id="toc-key-question-3" class="nav-link" data-scroll-target="#key-question-3">Key question</a></li>
+  <li><a href="#model-changes-2" id="toc-model-changes-2" class="nav-link" data-scroll-target="#model-changes-2">Model changes</a></li>
+  <li><a href="#notes-3" id="toc-notes-3" class="nav-link" data-scroll-target="#notes-3">Notes</a></li>
+  </ul></li>
+  <li><a href="#stage-5-resourcing-by-county-or-smaller-with-interaction" id="toc-stage-5-resourcing-by-county-or-smaller-with-interaction" class="nav-link" data-scroll-target="#stage-5-resourcing-by-county-or-smaller-with-interaction">Stage 5: Resourcing by county or smaller (with interaction)</a>
+  <ul class="collapse">
+  <li><a href="#key-question-4" id="toc-key-question-4" class="nav-link" data-scroll-target="#key-question-4">Key question</a></li>
+  <li><a href="#model-changes-3" id="toc-model-changes-3" class="nav-link" data-scroll-target="#model-changes-3">Model changes</a></li>
+  <li><a href="#notes-4" id="toc-notes-4" class="nav-link" data-scroll-target="#notes-4">Notes</a></li>
+  </ul></li>
+  <li><a href="#stage-6-station-level-questions" id="toc-stage-6-station-level-questions" class="nav-link" data-scroll-target="#stage-6-station-level-questions">Stage 6: Station-level questions</a>
+  <ul class="collapse">
+  <li><a href="#key-question-5" id="toc-key-question-5" class="nav-link" data-scroll-target="#key-question-5">Key question</a></li>
+  <li><a href="#model-changes-4" id="toc-model-changes-4" class="nav-link" data-scroll-target="#model-changes-4">Model changes</a></li>
+  <li><a href="#notes-5" id="toc-notes-5" class="nav-link" data-scroll-target="#notes-5">Notes</a></li>
+  </ul></li>
+  <li><a href="#assumptions-and-simplifications" id="toc-assumptions-and-simplifications" class="nav-link" data-scroll-target="#assumptions-and-simplifications">Assumptions and simplifications</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -474,8 +537,8 @@ ul.task-list li input[type="checkbox"] {
 <p><br></p>
 </section>
 </section>
-<section id="stage-5-resourcing-by-county-with-interaction" class="level2">
-<h2 class="anchored" data-anchor-id="stage-5-resourcing-by-county-with-interaction">Stage 5: Resourcing by county (with interaction)</h2>
+<section id="stage-5-resourcing-by-county-or-smaller-with-interaction" class="level2">
+<h2 class="anchored" data-anchor-id="stage-5-resourcing-by-county-or-smaller-with-interaction">Stage 5: Resourcing by county or smaller (with interaction)</h2>
 <section id="key-question-4" class="level3">
 <h3 class="anchored" data-anchor-id="key-question-4">Key question</h3>
 <div class="box-blue">
@@ -516,8 +579,118 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>If yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.</li>
 </ul></li>
-<li><strong>Socioeconomic inequalities</strong> - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas… deprivation.. rural urban… known baseline mean response time dispartieeis… then see change from scenarios. you could embed in model itself if wanted to do optimisation.</li>
+<li><strong>Socioeconomic inequalities</strong>…</li>
 </ul>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Socioeconomic inequalities">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Socioeconomic inequalities
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Either with stage 5 (though may be too broad) or 6.</p>
+<p>Could explore outcome of not just reducing overall response time, but about gaps in response time between more and less deprived? Although, in this case, sometimes it’s about rurality rather than socioeconomic - with actually better response times for lower SES.</p>
+<p><br></p>
+<p><strong>Literature:</strong></p>
+<p><br></p>
+<p><strong><span class="citation" data-cites="demir_using_2024">Demir et al. (<a href="#ref-demir_using_2024" role="doc-biblioref">2024</a>)</span></strong> - <strong>SimulEQUALITY framework</strong> - DES of NHS hospital - “patients’ characteristics and their healthcare system interactions can vary according to their SES, leading to differences in resource utilisation, such as LoS, between individuals who are deprived and more affluent” - they create a model following this structural hierachy:</p>
+<ul>
+<li>Level 1 - percentage of patients for outpatient care, inpatient admission, and ED</li>
+<li>Level 2 - assign specific department or specialty based on how patient entered</li>
+<li>Level 3 - assigned SES using IMD</li>
+<li>Level 4 - assigned distributions (param + type), variables, attributes, etc. based on SES</li>
+</ul>
+<p>Result example is that they find paediatric inpatient admissions are highest for children in second most economically disadvantaged group. Forecast increased demain, compounding this. It could diminish care quality, leading to adverse health outcomes, especially for disadvantaged. So, they explore scenarios for reducing backlog of patients. They also attach costs.</p>
+<p><br></p>
+<p><strong><span class="citation" data-cites="madia_socioeconomic_2025">Madia et al. (<a href="#ref-madia_socioeconomic_2025" role="doc-biblioref">2025</a>)</span></strong> - analyses inequalities in access to emergency care (at Addenbrookes in Cambridgeshire).</p>
+<ul>
+<li>Referral source - not IMD - drives ED performance outcomes (length of stay, 4-hour breach, unplanned returns). Once you account for how patient entered the system, deprivation-level differences largely disappear</li>
+<li>Ambulance:
+<ul>
+<li>Patients from most deprived areas are more likely to arrive by ambulance (even after adjusting for demographic, clinical and contextual variables).</li>
+<li>Ambulance utilisation highest in middle-deprivation areas.</li>
+<li>Ambulance referrals had longest ED stays and highest probability of 4-hour breaches.</li>
+</ul></li>
+<li>Non-medical referrals (mainly police/forensic) higher for deprived areas.</li>
+<li>GP referral higher in non-deprived.</li>
+</ul>
+<p>Reflections:</p>
+<ul>
+<li>Deprivation gradients in our area may look different.</li>
+<li>By modelling ambulance calls across geographic areas, we are implicitly modelling inequality, as deprivation shapes who ends up in the ambulance pathway, so <strong>if our areas vary by IMD, our arrival rates are already an inequality signal</strong>.</li>
+<li>You could ask questions related to inequality such as:
+<ul>
+<li>What is NHS 111 uptake increased in deprived areas? i.e., Reduced ambulance arrival rates for lower acuity cases in high deprivation areas.</li>
+<li>What if GP access improved in deprived areas? i.e., Shift some demand out of ambulance pathway.</li>
+</ul></li>
+<li>The <strong>ED waits observed in our model are an inequality outcome indicator</strong>.</li>
+</ul>
+<p>We could <strong>tag arrivals by deprivation band (based on their area) - meaning we could report equity breakdowns (e.g., response time by IMD)</strong>.</p>
+<p><br></p>
+<p><a href="https://aace.org.uk/reducing-health-inequalities/" class="uri">https://aace.org.uk/reducing-health-inequalities/</a></p>
+<p><a href="https://aace.org.uk/wp-content/uploads/2026/01/Health-inequalities-implementation-toolkit-FINAL-v3-31-Dec-2025.pdf">Implementation toolkit</a>: Data insight, evidence and evaluation.</p>
+<ul>
+<li>Ambulance services and systems use ambulance data to better understand population health and health inequalities.</li>
+<li>Ambulance services work to improve the evidence-base that supports and informs the role of the ambulance sector in reducing health inequalities.</li>
+<li>Ambulance services work in collaboration witht heir local systems to better understand the needs of their communities through improved engagement, insight and patient experience.</li>
+</ul>
+<p>Examples in practice:</p>
+<ul>
+<li>Routinely use population health data to better understand the needs of vulnerable population groups</li>
+<li>Establish direct access to analysts trained in public health who routinely influence service design/delivery</li>
+<li>Regularly undertake health inequalities research, implement changes based on the results</li>
+<li>Regularly review data on equity of access, experience and outcomes and use to influence decision making</li>
+</ul>
+<p><a href="https://aace.org.uk/wp-content/uploads/2023/06/AACE-NHSE-RHI-WHAT-WE-KNOW-JUNE-2023-F2.pdf">What we know</a></p>
+<p>Yorkshire Ambulance Service NHS Trust (as of June 2023) were undertaking a scoping review looking at what ambulance services understand about health inequalities in patients who have any of the characteristics described in the Core20PLUS5 approach for adults. Preliminrary themes:</p>
+<p>Copied from report:</p>
+<p>Ambulance access and usage:</p>
+<ul>
+<li>Women, CYP and those of Latino ethnicity less likely to call 911</li>
+<li>Higher rate of EMS calls in deprived areas and with high BAME population</li>
+<li>Ethnic minorities less likely to travel to hospital by ambulance</li>
+<li>Areas without ambulance provision over-represented by indigenous people</li>
+<li>Higher incidence of chest pain, children with traumatic injurices and stabbings in males in most deprived areas</li>
+<li>Higher incidence of out of hospital cardiac arrest for increasing age, sex ratio, diabetes prevalance, deprivation and ethnic concentration</li>
+<li>Higher risk of injury by road traffic collision in regional areas</li>
+<li>Emergency operations centre staff took longer to recognise cardiac arrest with limited English proficient callers</li>
+</ul>
+<p>Ambulance times:</p>
+<ul>
+<li>Longer response times for areas of high deprivation and rurality (though other studies found shorter response times for those of BAME origin)</li>
+<li>Longer on scene time with increased age and for females</li>
+</ul>
+<p>Ambulance assessment and treatment:</p>
+<ul>
+<li>Disparities in analgesia administration based on age and ethnicity</li>
+<li>Automated Externel Defibrilators more likely to be present in less deprived areas</li>
+<li>Black individuals less likely to receive defibriliation or CPR</li>
+<li>Less likely to give aspirin, GTN, perform ECG and gain intravenous access in women compared to men</li>
+</ul>
+<p>Outcomes:</p>
+<ul>
+<li>Survival from OOHCA decreases with age in females, whereas younger men have relatively lower survival compared to older men until age 65</li>
+<li>Lower likelihood of transport to specialist receiving facility with increased age and ethnic minority and female</li>
+<li>Different hospital desination depending on racial group</li>
+<li>Odds of surviving OOHCA lower in rural areas</li>
+<li>Males in OOHCA without return of spontaneous circulation more likely tobe transported to hospital than females</li>
+<li>Higher levels of deprivation associated with lower acuity patients transported to emergency department</li>
+<li>Lower levels of stroke recognition amongst Hispanic patients</li>
+</ul>
+<p><br></p>
+<p><span class="citation" data-cites="portz_rising_2013">Portz et al. (<a href="#ref-portz_rising_2013" role="doc-biblioref">2013</a>)</span></p>
+<p><br></p>
+<p><span class="citation" data-cites="turner_socioeconomic_2022">Turner et al. (<a href="#ref-turner_socioeconomic_2022" role="doc-biblioref">2022</a>)</span></p>
+<p><br></p>
+<p><span class="citation" data-cites="leeds_institute_for_data_analytics_assessing_2025">Leeds Institute for Data Analytics (<a href="#ref-leeds_institute_for_data_analytics_assessing_2025" role="doc-biblioref">2025</a>)</span></p>
+</div>
+</div>
 </div>
 <p><br></p>
 </section>
@@ -568,9 +741,26 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-demir_using_2024" class="csl-entry" role="listitem">
+Demir, Eren, Usame Yakutcan, and Stephen Page. 2024. <span>“Using Simulation Modelling to Transform Hospital Planning and Management to Address Health Inequalities.”</span> <em>Social Science &amp; Medicine</em> 347 (April): 116786. <a href="https://doi.org/10.1016/j.socscimed.2024.116786">https://doi.org/10.1016/j.socscimed.2024.116786</a>.
+</div>
+<div id="ref-leeds_institute_for_data_analytics_assessing_2025" class="csl-entry" role="listitem">
+Leeds Institute for Data Analytics. 2025. <span>“Assessing <span>Patient</span> <span>Safety</span> <span>Inequities</span> in <span>Ambulance</span> <span>Non</span>-<span>Conveyance</span>.”</span> In <em>Leeds Institute for Data Analytics</em>. <a href="https://lida.leeds.ac.uk/research-projects/assessing-patient-safety-inequities-in-ambulance-non-conveyance/">https://lida.leeds.ac.uk/research-projects/assessing-patient-safety-inequities-in-ambulance-non-conveyance/</a>.
+</div>
+<div id="ref-madia_socioeconomic_2025" class="csl-entry" role="listitem">
+Madia, Joan, Adrian A Boyle, James Ray, et al. 2025. <span>“Socioeconomic Inequality and Access to Emergency Care: Understanding the Pathways to the Emergency Department in the <span>UK</span>.”</span> <em>BMJ Open</em> 15 (12): e108770. <a href="https://doi.org/10.1136/bmjopen-2025-108770">https://doi.org/10.1136/bmjopen-2025-108770</a>.
+</div>
+<div id="ref-portz_rising_2013" class="csl-entry" role="listitem">
+Portz, Karl, Robert Newell, and Uduak Archibong. 2013. <span>“Rising <span>Ambulance</span> <span>Life</span>-<span>Threatening</span> <span>Call</span> <span>Demand</span> in <span>High</span> and <span>Low</span> <span>Socioeconomic</span> <span>Areas</span>.”</span> <em>Journal of Psychological Issues in Organizational Culture</em> 3 (S1): 306–20. <a href="https://doi.org/10.1002/jpoc.21095">https://doi.org/10.1002/jpoc.21095</a>.
+</div>
+<div id="ref-turner_socioeconomic_2022" class="csl-entry" role="listitem">
+Turner, Alex J, Igor Francetic, Ruth Watkinson, Stephanie Gillibrand, and Matt Sutton. 2022. <span>“Socioeconomic Inequality in Access to Timely and Appropriate Care in Emergency Departments.”</span> <em>Journal of Health Economics</em> 85 (September): 102668. <a href="https://doi.org/10.1016/j.jhealeco.2022.102668">https://doi.org/10.1016/j.jhealeco.2022.102668</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
