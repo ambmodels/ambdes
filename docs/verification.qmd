@@ -12,6 +12,10 @@ Verification is the process of checking that the simulation model correctly impl
 * [ ] Keep documentation complete and up-to-date.
 * [ ] Maintain an environment with all required packages.
 * [ ] Lint code.
+* [ ] Get code review 
+    * Primarily using LLM - will provide code and prompt to review and identify any potential issues and improvements - we can then manually review
+    * Also, can explore other more occassional/one-off review from colleagues to check over (e.g., tests, docs, generally).
+    * <https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html>
 
 **Debugging**
 
@@ -45,19 +49,6 @@ Verification is the process of checking that the simulation model correctly impl
 * [ ] Trace individual calls or ambulances.
 
 ## Things that require some discussion
-
-**Desk checking**
-
-* [ ] Get code review.
-
-::: {.box-hl}
-
-**To discuss:**
-
-* Who can / should / best to do it?
-* Technical planning can base on <https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/sharing/peer_review.html>
-
-:::
 
 **Mathematical proof of correctness**
 

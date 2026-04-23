@@ -31,15 +31,7 @@ We will create clear and comprehensive documentation including docstrings and co
 * Technical documentation explaining the model structure and implementation
 * An ongoing record of data sources, assumptions, inputs, and decisions - including any changes to the analytical plan or decisions made during analysis.
 
-This documentation will be reviewed by **?**
-
-::: {.box-hl}
-
-**To discuss:**
-
-* Related to question about [Code review](code.qmd) on earlier page - review of documentation too.
-
-:::
+Finally, this documentation will be reviewed by students who are not part of the project team. This helps ensure that everything is clear, accessible, and easy to follow for new users - especially as the students will be beginner Python users and new to DES.
 
 <br>
 
@@ -54,15 +46,7 @@ QA roles, as per the [GOV.UK AQuA book](https://www.gov.uk/guidance/the-aqua-boo
 | **Assurer** | Reviews the analyst’s assurance work, performs additional verification and validation checks, reports issues, confirms the work is appropriately scoped, executed, validated, verified, and documented. Must be independent from the analyst. | **Supervisor and ambulance service partners** |
 | **Approver** | Scrutinises the work of analyst and assurer, confirms appropriate assurance has occurred, provides formal sign-off. | **Supervisor and ambulance service partners** |
 
-Given time-scales, scope and risk, I have assumed that not including an independent assurer for this work is appropriate.
-
-::: {.box-hl}
-
-**To discuss:**
-
-* Thoughts on this plan? Inter-related with the code review question, and what sort of review / assurance there is of code / decisions / etc.
-
-:::
+Given time-scales, scope and risk, we have assumed that not including an independent assurer for this work is appropriate.
 
 <br>
 
