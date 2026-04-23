@@ -1,5 +1,6 @@
 ---
 title: Conceptual modelling
+bibliography: references.bib
 ---
 
 <br>
@@ -191,7 +192,7 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 
 <br>
 
-## Stage 5: Resourcing by county (with interaction)
+## Stage 5: Resourcing by county or smaller (with interaction)
 
 ### Key question
 
@@ -233,7 +234,122 @@ Other things to consider would be:
 * What **size area** is required to answer this question?
 * Does this question require **shifts** in the model?
     * If yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.
-* **Socioeconomic inequalities** - either with stage 5 (though may be too broad) or 6 - we know inequalities exist - we could use the model to ask, which changes reduce the worst gaps in response times, not just average. it ties in with AACE and NHSE about reducing inequalities not just hitting targets. so outcome is not just overall reduce cat 2, but about gap in cat 2 response between more and less deprived. sometimes inequality is about rural rather than socioeconomic. Change is basically, in analysis of model results, can label areas... deprivation.. rural urban... known baseline mean response time dispartieeis... then see change from scenarios. you could embed in model itself if wanted to do optimisation.
+* **Socioeconomic inequalities**...
+
+:::
+
+::: {.callout-note title="Socioeconomic inequalities" collapse="true"} 
+
+Either with stage 5 (though may be too broad) or 6.
+
+Could explore outcome of not just reducing overall response time, but about gaps in response time between more and less deprived? Although, in this case, sometimes it's about rurality rather than socioeconomic - with actually better response times for lower SES.
+
+<br>
+
+**Literature:**
+
+<br>
+
+**@demir_using_2024** - **SimulEQUALITY framework** - DES of NHS hospital - "patients' characteristics and their healthcare system interactions can vary according to their SES, leading to differences in resource utilisation, such as LoS, between individuals who are deprived and more affluent" - they create a model following this structural hierachy:
+
+* Level 1 - percentage of patients for outpatient care, inpatient admission, and ED
+* Level 2 - assign specific department or specialty based on how patient entered
+* Level 3 - assigned SES using IMD
+* Level 4 - assigned distributions (param + type), variables, attributes, etc. based on SES
+
+Result example is that they find paediatric inpatient admissions are highest for children in second most economically disadvantaged group. Forecast increased demain, compounding this. It could diminish care quality, leading to adverse health outcomes, especially for disadvantaged. So, they explore scenarios for reducing backlog of patients. They also attach costs.
+
+<br>
+
+**@madia_socioeconomic_2025** - analyses inequalities in access to emergency care (at Addenbrookes in Cambridgeshire).
+
+* Referral source - not IMD - drives ED performance outcomes (length of stay, 4-hour breach, unplanned returns). Once you account for how patient entered the system, deprivation-level differences largely disappear
+* Ambulance:
+    * Patients from most deprived areas are more likely to arrive by ambulance (even after adjusting for demographic, clinical and contextual variables).
+    * Ambulance utilisation highest in middle-deprivation areas.
+    * Ambulance referrals had longest ED stays and highest probability of 4-hour breaches.
+* Non-medical referrals (mainly police/forensic) higher for deprived areas.
+* GP referral higher in non-deprived.
+
+Reflections:
+
+* Deprivation gradients in our area may look different.
+* By modelling ambulance calls across geographic areas, we are implicitly modelling inequality, as deprivation shapes who ends up in the ambulance pathway, so **if our areas vary by IMD, our arrival rates are already an inequality signal**.
+* You could ask questions related to inequality such as:
+    * What is NHS 111 uptake increased in deprived areas? i.e., Reduced ambulance arrival rates for lower acuity cases in high deprivation areas.
+    * What if GP access improved in deprived areas? i.e., Shift some demand out of ambulance pathway.
+* The **ED waits observed in our model are an inequality outcome indicator**.
+
+We could **tag arrivals by deprivation band (based on their area) - meaning we could report equity breakdowns (e.g., response time by IMD)**.
+
+<br>
+
+<https://aace.org.uk/reducing-health-inequalities/>
+
+[Implementation toolkit](https://aace.org.uk/wp-content/uploads/2026/01/Health-inequalities-implementation-toolkit-FINAL-v3-31-Dec-2025.pdf): Data insight, evidence and evaluation.
+
+* Ambulance services and systems use ambulance data to better understand population health and health inequalities.
+* Ambulance services work to improve the evidence-base that supports and informs the role of the ambulance sector in reducing health inequalities.
+* Ambulance services work in collaboration witht heir local systems to better understand the needs of their communities through improved engagement, insight and patient experience.
+
+Examples in practice:
+
+* Routinely use population health data to better understand the needs of vulnerable population groups
+* Establish direct access to analysts trained in public health who routinely influence service design/delivery
+* Regularly undertake health inequalities research, implement changes based on the results
+* Regularly review data on equity of access, experience and outcomes and use to influence decision making
+
+[What we know](https://aace.org.uk/wp-content/uploads/2023/06/AACE-NHSE-RHI-WHAT-WE-KNOW-JUNE-2023-F2.pdf)
+
+Yorkshire Ambulance Service NHS Trust (as of June 2023) were undertaking a scoping review looking at what ambulance services understand about health inequalities in patients who have any of the characteristics described in the Core20PLUS5 approach for adults. Preliminrary themes:
+
+Copied from report:
+
+Ambulance access and usage:
+
+* Women, CYP and those of Latino ethnicity less likely to call 911
+* Higher rate of EMS calls in deprived areas and with high BAME population
+* Ethnic minorities less likely to travel to hospital by ambulance
+* Areas without ambulance provision over-represented by indigenous people
+* Higher incidence of chest pain, children with traumatic injurices and stabbings in males in most deprived areas
+* Higher incidence of out of hospital cardiac arrest for increasing age, sex ratio, diabetes prevalance, deprivation and ethnic concentration
+* Higher risk of injury by road traffic collision in regional areas
+* Emergency operations centre staff took longer to recognise cardiac arrest with limited English proficient callers
+
+Ambulance times:
+
+* Longer response times for areas of high deprivation and rurality (though other studies found shorter response times for those of BAME origin)
+* Longer on scene time with increased age and for females
+
+Ambulance assessment and treatment:
+
+* Disparities in analgesia administration based on age and ethnicity
+* Automated Externel Defibrilators more likely to be present in less deprived areas
+* Black individuals less likely to receive defibriliation or CPR
+* Less likely to give aspirin, GTN, perform ECG and gain intravenous access in women compared to men
+
+Outcomes:
+
+* Survival from OOHCA decreases with age in females, whereas younger men have relatively lower survival compared to older men until age 65
+* Lower likelihood of transport to specialist receiving facility with increased age and ethnic minority and female
+* Different hospital desination depending on racial group
+* Odds of surviving OOHCA lower in rural areas
+* Males in OOHCA without return of spontaneous circulation more likely tobe transported to hospital than females
+* Higher levels of deprivation associated with lower acuity patients transported to emergency department
+* Lower levels of stroke recognition amongst Hispanic patients
+
+
+<br>
+
+@portz_rising_2013
+
+<br>
+
+@turner_socioeconomic_2022
+
+<br>
+
+@leeds_institute_for_data_analytics_assessing_2025
 
 :::
 
