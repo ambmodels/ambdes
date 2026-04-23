@@ -36,3 +36,4 @@ format:
     css:
       - css/styles.css
     lightbox: true
+    toc: true
