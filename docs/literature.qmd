@@ -739,5 +739,8 @@ They say they won't describe in full, that the used usual methods from Law and K
 | @allen_developing_2021 | Python SimPy | <https://github.com/MichaelAllen1966/qambo> | - |
 | Unpublished | Python SimPy | @parajuli_urmila-mambulance-gis-system_2021 <https://github.com/Urmila-m/Ambulance-GIS-System> | - |
 | @bertsimas_robust_2019 | Python | <https://github.com/civictechdc/ERDA> | <https://data.mendeley.com/datasets/hhbwyvcxvs/1> |
+| Unpublished | Python | <https://github.com/NanneD/ELASPY> | - |
+| Unpublished | Python | <https://github.com/chenders/AirMedSim> | - |
 | @ridler_simulation_2022 | Julia | <https://github.com/uoa-ems-research/JEMSS.jl> | - |
 | @frichi_dataset_2022 - used in @frichi_ambulance_2025 and @frichi_assessing_2022 | - | - | <https://zenodo.org/records/6416058> |
+| @schjolberg_comparing_2023 | Java | <https://github.com/Magssch/gecco-2023-ambulance-allocation> | - |
