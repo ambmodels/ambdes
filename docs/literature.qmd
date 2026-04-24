@@ -311,6 +311,16 @@ Several studies talk about the importance of travel time modelling...
 
 :::
 
+::: {.callout-note title="View Python options for travel time modelling" collapse="true"}
+
+Ambulance service currently using **igraph** for travel time modelling - described as being like **networkx** but quicker. They have a graph model based on ordnance survey open roads. And that there was some ordnance survey research that gave average travel times for different road types. And they do shortest paths analysis. Working with 500m square grids. It's quite an optimistic model allowing you wrong way down roads and things, but they figured, it maybe helps reflect how blue light they'll get places quicker.
+
+On HSMA, Sammi taught `openrouteservice` via `routingpy`, but wasn't sure if that was the best option these days.
+
+Sammi had a first go with `r5py` and was quite impressed. It doesn't do traffic aware routing. But it can work with public transport data (though that's less relevance for us).
+
+:::
+
 <br>
 
 ## Processing times

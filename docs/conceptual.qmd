@@ -21,9 +21,24 @@ Progressing through the stages, we can evaluate whether the added detail improve
 
 ::: {.box-blue}
 
-How do changes in total vehicle hours affect Category 2 mean response time and resource utilisation?
+How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?
 
 :::
+
+This stage can serve as a benchmark against the current regression models. With that model, they change three things:
+
+* **Vehicle hours**
+* **Number of incidents per day**
+* **Handover delays**
+
+**Not broken down by conveyance or not** - that's only used when looking at job cycle times. For this question, just want the overall category 2 mean response time.
+
+They're normally interested in category 2 mean response time for a given day of the week (e.g., a Monday), or a given week or year. They don't look **within the day** at response times by time of day. In which case, arguably not relevant to include time of day in NHPP. Their typical profile is:
+
+* Higher activity at weekend.
+* Longer handover delays on Mondays (as they've built up over weekend).
+
+Therefore, we agreed it best to use **NHPP by day of week**.
 
 ### Model content and inputs
 
@@ -31,17 +46,26 @@ How do changes in total vehicle hours affect Category 2 mean response time and r
 
 | Element | Model content | Input |
 | - | -- | -- |
-| Arrivals | Basic arrival process or NHPP based on observed patterns | By call category, mean inter-arrival time for whole system OR mean by period of time |
-| Call category | Separate arrival times - part of arrival distribution or assigned after | If NHPP is used and we want to do call category by time period, it should be sampled as part of NHPP too. If don't want call category probabilities to be by time period, then can just assign them using another probability distribution afterwards |
+| Arrivals | NHPP | Mean inter-arrival time by day of week (also also maybe by response category) |
+| Response category | Separate arrival times - part of arrival distribution or assigned after | If NHPP is used and we want to do response category by time period, it should be sampled as part of NHPP too. If don't want response category probabilities to be by time period, then can just assign them using another probability distribution afterwards |
 | Resource | Single pooled ambulance resource | Number of ambulances for whole system |
 | Queue | First come first serve or prioritisation rules with potential reneging/balking | Priority rules could likely be informed by call guidelines |
-| Service time | Single time (disatpch to resource available) | Mean time, by call category |
+| Service time | (a) Mobilisation time + Time to scene + (b) On scene time + Travel to hospital + (c) Handover queueing + Wrap up  | Mean time, by response category |
+
+Can't just have one service time, as need to be able to:
+
+* Calculate **response time** output
+* Input varying **handover delay**
+
+With ambition of starting simple, will try with FIFO queue first.
 
 For initilalisation bias, use warm-up (as initial conditions can be complicated to find). Determine appropriate length of warm-up programmatically.
 
+Anticipate maybe a **one year** run time.
+
 For uncertainty, use replications (as more intuitive than long run). Determine number of replications programmatically.
 
-For distributions used, will do input modelling.
+For distributions used, will do input modelling using `distfit`, and grouped empirical distributions if not fit (group into bins and interpolate between those bins).
 
 **Outputs:**
 
@@ -54,7 +78,7 @@ Can quantify uncertainty via 95% confidence interval (or could do prediction int
 
 ### Notes
 
-This stage can serve as a benchmark against the current regression models. The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
+The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
 * Multiple outcomes from the same run (regression just one per model).
 * More intuitive system representation (can "see" how resourcing assumptions translate into waits and utilisation).
@@ -64,17 +88,16 @@ This stage can serve as a benchmark against the current regression models. The D
 
 **To discuss:**
 
-* To answer this question, do we need to report by whether **conveyed or not?** In which case, need to incorporate here (rather than stage 3).
-* Relatedly, when consider conveyance, is it about:
-    * **Conveyed v.s. Non-conveyed** (hear-and-treat and see-and-treat), or
-    * **Conveyed v.s. Hear-and-treat v.s., See-and-treat**
-* Does ambulance service have any **existing analysis looking at trends in call arrivals**? Want to understand what the hour / day of week variation is. Likewise, for call categories by time period.
+* We agreed it's important to model change in activity by day of week - but is it also important for response category? Does that show a profile by day of week, or is it similar across days?
+* Whether to aggregate job cycle times.
+* How does regression model include see-and-treat and conveyed? Understand it doesn't include hear-and-treat
+* Tom: Methodology sampling.
 
 :::
 
 <br>
 
-## Stage 2: Resourcing by county (without interaction)
+## Stage 2: Resourcing by county (separate models)
 
 ### Key question
 
@@ -84,8 +107,7 @@ If total vehicle hours change in a specific county, how do Category 2 response t
 
 :::
 
-Done on county level as that lines up with organisational structure
-Although is coming up more in conversations about the hospital level as thats where they go
+Historically demand planning was on a trust-level, but in recent years have been asked to do it on a county-level.
 
 ### Model changes
 
@@ -101,16 +123,7 @@ Although is coming up more in conversations about the hospital level as thats wh
 
 ### Notes
 
-This will only be an approximation, and may potentially be quite bad. It ignores how counties ineract - we know there isn't really one separate service per county, and that resources operate across counties on shift.
-
-
-::: {.box-hl}
-
-**To discuss:**
-
-* **Is this actually a question of interest?** Or is it really just stage 5? Maybe should remove this?
-
-:::
+Although the model doesn't capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
 
 <br>
 
@@ -124,26 +137,21 @@ How do improvements in specific job-cycle components (e.g., scene time, handover
 
 :::
 
+Would want to run this one on **trust-level** and **by county**.
+
+Sometimes, each county is given a different target.
+
+This year, it's a blanket target, to improve job cycle by X minutes.
+
 ### Model changes
 
 ![Logic flow diagram](images/stage3.drawio.png)
 
 | Element | Description |
 | - | --- |
-| Content | (1) Job cycle divided into individual time components (e.g., time on scene, handover time). (2) Separate cfycle times for conveyed v.s. non conveyed |
+| Content | (1) Whether job cycle needs dividing depends on how broke it down in stage 1 already? When discussed, their times were (a) mobilisation time (b) time to scene (c) on scene time (d) if conveyed, travel to hospital (e) handover queueing (f) wrap up. (2) Separate times for conveyed v.s. non conveyed |
 | Inputs | Cycle times and conveyed/nonconveyed breakdown of everything |
 | Outputs | Also now report by conveyed and non conveyed |
-
-### Notes
-
-::: {.box-hl}
-
-**To discuss:**
-
-* Does this continue from stage 1 or 2? I guess it depends if stage 2 is any good or not?
-* Which job cycle times to model? Which to **aggregate**?
-
-:::
 
 <br>
 
@@ -157,12 +165,18 @@ Can alternative shift patterns (start times, staggering, breaks) smooth resource
 
 :::
 
-Current patterns is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:
+Current pattern is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:
 
 * Midday and midnight dips in resource numbers when many crews are on break at once.
 * Effects of protected periods towards the end of shifts.
 
-The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation.
+The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation. They want to look into:
+
+* Rota review (stagger shifts)
+* Meal break policy
+* Restricted send policy
+
+For shifts, would want to run on **trust-level** first and then **by county**.
 
 ### Model changes
 
@@ -174,19 +188,26 @@ The focus here is on whether alternative rota patterns smooth the resource avail
 | Inputs | Current and alternative rota schedules (for the whole area, not by station, proportions on different schedules) |
 | Outputs | Add a new output: resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). |
 
+May also be other new outputs that are relevant like:
+
+* Overtime
+* Interruption of breaks
+
 ### Notes
+
+When evaluating shift scenarioes, will work with **Ambulance Operations Managers** (visit in-person) (often ex-paramedics).
+
+Will not explore cost, as not something their team get asked to report on.
 
 ::: {.box-hl}
 
 **To discuss:**
 
-* Does this question require understanding of **county** (stage 2) or **job cycle** (stage 3). If so, it builds on them. If not, it builds on stage 1.
-* Relatedly, if stages 2-4 are all just iterations on stage 1, **what is the priority order?**
-* **What are the current break policies?**
-* Is it relevant to know **proportion of crews going straight from one job to the next versus returning to station between jobs**? Here or elsewhere?
-* Also, is it relevant here (or elsewhere) to think about other outcomes relevant to wellbeing or finances like **overtime** and **interruption of breaks**.
-* Outcomes and scenarios explored here - explore **involving paramedics**? As there is a big wellbeing aspect to this. Like PPI, but specifically involving paramedics, as it would impact them if decisions made. Do they already do that for decisions? (e.g., chatting with Luke, frequently stuck on overtime due to late cat1, and always never return to base always straight to next job)
-* **Cost**... I think this is maybe stage where starts to be relevant? You could attach simple cost estimates (e.g. staff and vehicle costs) to each resourcing or shift scenario + overtime etc. Purpose would be to understand cost implications of options that improve performance. Maybe its relevant to stage 1 and 2 as well though - high level estimate of operating cost under different scenarios
+* What are the current break policies?
+* Is it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?
+    * They can be cleared at hospital
+    * Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
+    * Will also depends on whether close to break window or end of shift.
 
 :::
 
