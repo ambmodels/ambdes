@@ -15,7 +15,102 @@ Progressing through the stages, we can evaluate whether the added detail improve
 
 <br>
 
-## Stage 1: Whole-system resourcing
+## Stage 1: Whole-system resourcing using public data
+
+### Key question
+
+::: {.box-blue}
+
+How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?
+
+:::
+
+### Public data
+
+::: {.callout-note title="View open public data source" collapse="true"}
+
+### Ambulance Quality Indicators Data
+
+<https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/>
+
+Relevant data from **AmbSYS**, overall or monthly, by **ICB**:
+
+* **Count** of category 1, 1T (i.e., C1 ex. non-conveyance), 2, 3 and 4 incidents.
+* Mean, 90th centile and total **response time** for category 1, 1T, 2, 3 and 4 incidents.
+* **Count** of all incidents, face-to-face, convey to ED, convey to non-ED, face-to-face with no conveyance, heart-and-treat, see-and-treat
+* Total **number of calls answered**.
+* Total, mean, median, 90th centile, 95th centile and 99th centile for **call answer times**.
+* Handover times - **count and proportion** over 15, 30, 60 minutes.
+* Handover time - total, **mean, 90th centile**, total over 30.
+* **Resources** (mean + total allocated, mean + total arriving) by category 1, 1T, 2, 3 and 4 incidents.
+
+Less relevant:
+
+* Metrics for C5 clinical assessment and clinical validation
+* Time to identify C1 and how identified
+* Time until CPR started
+* Healthcare professional and inter-facility transfer
+* Section 136
+* Proportion of incidents responded to by each ambulance service in each county.
+
+### Handover data
+
+<https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/ambulance-management-information/>
+
+Relevant data from **handover times** day, overall or monthly, reported by **NHS trust** (i.e., by hospital):
+
+* Handover times - **count and proportion** over 15, 30, 60 minutes.
+* Handover time - total, **mean**, total over 30.
+
+Overall or broken down by **ED v.s., non-ED**.
+
+Can get daily from: <https://www.england.nhs.uk/statistics/statistical-work-areas/uec-sitrep/urgent-and-emergency-care-daily-situation-reports-2025-26/>.
+
+### Annual reports and accounts
+
+<https://www.swast.nhs.uk/download/swasft-annual-report-and-accounts-202425pdf.pdf?ver=2868&doc=docm93jijm4n2818.pdf>
+
+Additional information:
+
+* Average resource hours per week
+* Weekly number of ambulance incidents
+* Mean call answer time
+
+<https://www.swast.nhs.uk/download/icpr-march-26pdf.pdf?ver=3923&doc=docm93jijm4n3573.pdf>
+
+* Resource hours per week
+* Sickness
+* Conveying resource hours per day (and % lost to handover delays).
+
+### What's not in open data
+
+For stage 1:
+
+* Day-of-week arrival rates.
+* Vehicle hours (just has resource numbers).
+* Job cycle time sub-components.
+
+:::
+
+### Model content and inputs
+
+| Element | Model content | Input |
+| - | -- | -- |
+| Arrivals | HPP | Mean inter-arrival time (converted from total incident count / month length) |
+| Response category | Probabilities | % each category |
+| Resource | Single pooled ambulance resource | Estimate from monthly resource data |
+| Queue | FIFO | - |
+| Service time | (a) Mobilisation time + Time to scene + (b) On scene time + Travel to hospital + (c) Handover queueing + Wrap up  | Data can provide mean response time and mean handover time. For on-scene time/travel to hospital/wrap-up, would need a proxy |
+
+Outputs:
+
+* Response time by category
+
+You could estimate parameters - e.g., use historical data months, estimate service times - then run scenarios and observe simulation response times and handover times.
+
+<br>
+
+## Stage 2: Whole-system resourcing (daily)
 
 ### Key question
 
@@ -88,7 +183,7 @@ The DES version should broadly agree with regression estimates, while offering r
 
 **To discuss:**
 
-* We agreed it's important to model change in activity by day of week - but is it also important for response category? Does that show a profile by day of week, or is it similar across days?
+* We agreed it's important to model change in activity by day of week - but is it also important for response category? Does that show a profile by day of week, or is it similar across days? 
 * Whether to aggregate job cycle times.
 * How does regression model include see-and-treat and conveyed? Understand it doesn't include hear-and-treat
 * Tom: Methodology sampling.
@@ -97,7 +192,7 @@ The DES version should broadly agree with regression estimates, while offering r
 
 <br>
 
-## Stage 2: Resourcing by county (separate models)
+## Stage 3: Resourcing by county (separate models)
 
 ### Key question
 
@@ -127,7 +222,7 @@ Although the model doesn't capture interactions between counties (e.g., where pa
 
 <br>
 
-## Stage 3: Job cycle times
+## Stage 4: Job cycle times
 
 ### Key question
 
@@ -155,7 +250,7 @@ This year, it's a blanket target, to improve job cycle by X minutes.
 
 <br>
 
-## Stage 4: Shifts
+## Stage 5: Shifts
 
 ### Key question
 
@@ -213,7 +308,7 @@ Will not explore cost, as not something their team get asked to report on.
 
 <br>
 
-## Stage 5: Resourcing by county or smaller (with interaction)
+## Stage 6: Resourcing by county or smaller (with interaction)
 
 ### Key question
 
@@ -376,7 +471,7 @@ Outcomes:
 
 <br>
 
-## Stage 6: Station-level questions
+## Stage 7: Station-level questions
 
 ### Key question
 
