@@ -768,6 +768,24 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="View Python options for travel time modelling">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>View Python options for travel time modelling
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Ambulance service currently using <strong>igraph</strong> for travel time modelling - described as being like <strong>networkx</strong> but quicker. They have a graph model based on ordnance survey open roads. And that there was some ordnance survey research that gave average travel times for different road types. And they do shortest paths analysis. Working with 500m square grids. It’s quite an optimistic model allowing you wrong way down roads and things, but they figured, it maybe helps reflect how blue light they’ll get places quicker.</p>
+<p>On HSMA, Sammi taught <code>openrouteservice</code> via <code>routingpy</code>, but wasn’t sure if that was the best option these days.</p>
+<p>Sammi had a first go with <code>r5py</code> and was quite impressed. It doesn’t do traffic aware routing. But it can work with public transport data (though that’s less relevance for us).</p>
+</div>
+</div>
+</div>
 <p><br></p>
 </section>
 <section id="processing-times" class="level2">
@@ -781,7 +799,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </ol>
 <p><em>Note: More aggregation means less scope to explore scenarios where change specific times</em></p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -790,7 +808,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><strong>(a) Include in travel times</strong></p>
 <ul>
@@ -935,7 +953,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </ul>
 <p><span class="citation" data-cites="aboueljinane_review_2013">Aboueljinane et al. (<a href="#ref-aboueljinane_review_2013" role="doc-biblioref">2013</a>)</span> note that hospital selection is more critical in certain scenarios like mass casualty incidents.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -944,7 +962,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><strong>(a) Not relevant</strong></p>
 <ul>
@@ -996,7 +1014,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </ul>
 <p>Less relevant: dispatching rules (policy change), destination hospital (mass casualty)</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1005,7 +1023,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><strong>How that changes with varying demand</strong></p>
 <p><strong>How many crew (add or remove), how divide crew between bases, and where bases are</strong></p>
@@ -1041,7 +1059,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <h2 class="anchored" data-anchor-id="shifts">Shifts</h2>
 <p>Vary between studies.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1050,7 +1068,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul>
 <li><span class="citation" data-cites="gigante_study_2022">Gigante and Azevedo (<a href="#ref-gigante_study_2022" role="doc-biblioref">2022</a>)</span> - Shifts are 12 hours, initially 7-7. To represent reduced resources during night shift, half the vehicles will be available.</li>
@@ -1076,7 +1094,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <h2 class="anchored" data-anchor-id="initialisation-bias-run-length-and-replications">Initialisation bias, run length and replications</h2>
 <p>Vary between studies.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1085,7 +1103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <table class="caption-top table">
 <thead>
@@ -1202,7 +1220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <li>Number of resources</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1211,7 +1229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Demand</p>
 <ul>
@@ -1266,7 +1284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <li>Sensitivity analysis</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled" title="View studies">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -1275,7 +1293,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <section id="aboueljinane_reducing_2012" class="level4">
 <h4 class="anchored" data-anchor-id="aboueljinane_reducing_2012"><span class="citation" data-cites="aboueljinane_reducing_2012">Aboueljinane et al. (<a href="#ref-aboueljinane_reducing_2012" role="doc-biblioref">2012</a>)</span></h4>
