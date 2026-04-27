@@ -2,3 +2,26 @@
 name = "ambdes"
 version = "0.1.0"
 description = "Ambulance discrete event simulation"
+
+[tool.ruff]
+line-length=79
+format.quote-style="double"
+lint.select = [
+    "E",    # Style errors from pycodestyle, e.g. spacing and layout issues in code.
+    "W",    # Style warnings from pycodestyle, for less severe style problems.
+    "D",    # Docstring checks, e.g. whether modules, classes, and functions are documented clearly and consistently.
+    "F",    # Pyflakes checks for likely mistakes, e.g. unused imports or undefined names.
+    "B",    # Bugbear rules for suspicious patterns that are often bugs or poor practice.
+    "A",    # Warn when you shadow Python built-ins, e.g. naming a variable `list` or `id`.
+    "SIM",  # Suggest simpler ways to write code when logic is more complicated than needed.
+    "ICN",  # Encourage standard import aliases, e.g. `import pandas as pd`.
+    "Q",    # Quote-style checks, to keep string quoting consistent.
+    "I",    # Import sorting rules, so imports stay grouped and ordered consistently.
+    "ERA",  # Detect commented-out code that should usually be deleted rather than kept in comments.
+    "UP",   # Suggest modern Python syntax when an older pattern can be safely upgraded.
+    "N",    # Naming rules, e.g. function_names, ClassNames, and CONSTANT_NAMES.
+]
+lint.ignore = [
+    "D203",  # Incompatible with D211
+    "D213",  # Incomptaible with D212
+]

@@ -1,15 +1,31 @@
-from sim_tools.distributions import Exponential
+"""Simulation model."""
+
 import numpy as np
 import simpy
-from .patient import Patient
+from sim_tools.distributions import Exponential
+
 from .logging import Logger
+from .patient import Patient
 
 
 class Model:
+    """Discrete-event simulation model for generating patient calls.
+
+    The model creates one call-generation process per patient category and
+    records generated patients during a single simulation run.
     """
-    """
+
     def __init__(self, run_number, config):
-        """
+        """Initialise the simulation model.
+
+        Parameters
+        ----------
+        run_number : int
+            Simulation run identifier used to initialise random seeds.
+        config : object
+            Configuration object containing model parameters, including
+            `mean_iat_min` and `run_length`.
+
         """
         self.run_number = run_number
         self.config = config
@@ -30,14 +46,29 @@ class Model:
 
         # Initialise call inter-arrival distributions
         self.call_dists = {}
-        for i, (category, mean_iat_min) in enumerate(self.config.mean_iat_min.items()):
+        for i, (category, mean_iat_min) in enumerate(
+            self.config.mean_iat_min.items()
+        ):
             self.call_dists[category] = Exponential(
                 mean=mean_iat_min,
                 random_seed=seeds[i]
             )
 
     def generate_patients(self, dist, category):
-        """
+        """Generate patients for a given category indefinitely.
+
+        Parameters
+        ----------
+        dist : Exponential
+            Inter-arrival time distribution for the patient category.
+        category : int
+            Response category number.
+
+        Yields
+        ------
+        simpy.events.Timeout
+            Timeout event until the next patient arrival.
+
         """
         while True:
             # Sample and pass time to next call
@@ -59,6 +90,12 @@ class Model:
             )
 
     def run(self):
+        """Run the simulation model.
+
+        Starts one patient-generation process for each category and runs the
+        simulation until the configured run length.
+
+        """
         # Set up processes to generate patients of each category
         for category, dist in self.call_dists.items():
             self.env.process(

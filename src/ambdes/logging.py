@@ -1,13 +1,14 @@
+"""Logging."""
+
 import logging
 import os
+
 from rich.console import Console
 from rich.logging import RichHandler
-import time
 
 
 class Logger:
-    """
-    Provides log of events as the simulation runs.
+    """Provides log of events as the simulation runs.
 
     Attributes
     ----------
@@ -17,9 +18,17 @@ class Logger:
         Whether to save log to a file.
     file_path : str
         Path to save log to file.
+
     """
+
     def __init__(self, config):
-        """
+        """Initialise the logger.
+
+        Parameters
+        ----------
+        config : SimConfig
+            Simulation configuration containing logging options and file path.
+
         """
         self.config = config
 
@@ -34,13 +43,13 @@ class Logger:
             self._configure_logging()
 
     def _validate_log_path(self):
-        """
-        Validate the log file path.
+        """Validate the log file path.
 
         Raises
         ------
         ValueError
             If log path is invalid.
+
         """
         directory = os.path.dirname(self.config.log_file_path)
         if directory and not os.path.exists(directory):
@@ -49,13 +58,12 @@ class Logger:
             )
         if not str(self.config.log_file_path).endswith(".log"):
             raise ValueError(
-                f"The log file path '{self.config.log_file_path}' must end with '.log'."
+                f"The log file path '{self.config.log_file_path}' must " +
+                 "end with '.log'."
             )
 
     def _configure_logging(self):
-        """
-        Configure the logger.
-        """
+        """Configure the logger."""
         # Ensure any existing handlers are removed to avoid duplication
         for handler in self.logger.handlers[:]:
             self.logger.removeHandler(handler)
@@ -65,7 +73,9 @@ class Logger:
         if self.config.log_to_file:
             # In write mode, meaning will overwrite existing log of same name
             # (append mode 'a' would add to the end of the log)
-            handlers.append(logging.FileHandler(self.config.log_file_path, mode="w"))
+            handlers.append(
+                logging.FileHandler(self.config.log_file_path, mode="w")
+            )
         if self.config.log_to_console:
             # Configure RichHandler without INFO/ERROR labels, times or paths
             # to log message. Set up console with jupyter-specific behaviour
@@ -90,8 +100,7 @@ class Logger:
             handler.setFormatter(formatter)
 
     def log(self, msg, sim_time=None):
-        """
-        Log a message if logging is enabled.
+        """Log a message if logging is enabled.
 
         Parameters
         ----------
@@ -99,6 +108,7 @@ class Logger:
             Message to log.
         sim_time : float or None, optional
             Current simulation time. If provided, prints before message.
+
         """
         if self.config.log_to_console or self.config.log_to_file:
             if sim_time is not None:

@@ -75,6 +75,55 @@ Consider how could improve **speed**... monitor speed as build - identify what s
 
 :::
 
+```{.python}
+@dataclass
+class SimConfig:
+    warm_up_duration: int
+    results_collection_duration: int
+    n_replications: int
+
+
+@dataclass(frozen=True, kw_only=True)
+class ModelStructure:
+    geography: Literal["none", "county", "lsoa"]
+    arrivals: Literal["overall", "daily"]
+
+
+from dataclasses import dataclass
+from typing import TypeAlias
+
+import pandas as pd
+
+
+@dataclass(frozen=True)
+class CategoryArrivals:
+    """Arrivals by response category."""
+
+    data: pd.DataFrame
+
+
+@dataclass(frozen=True)
+class DailyCategoryArrivals:
+    """Arrivals by response category and day of week."""
+
+    data: pd.DataFrame
+
+
+@dataclass(frozen=True)
+class CountyDailyCategoryArrivals:
+    """Arrivals by response category, day of week and county."""
+
+    data: pd.DataFrame
+
+
+# These can all be referred to as "Arrivals" type
+Arrivals: TypeAlias = (
+    CategoryArrivals
+    | DailyCategoryArrivals
+    | CountyDailyCategoryArrivals
+)
+```
+
 ## Inputs
 
 Possible input formats:

@@ -1,10 +1,12 @@
-import pandas as pd
+"""Extract data from AmbSYS."""
+
 from calendar import monthrange
+
+import pandas as pd
 
 
 def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
-    """
-    Extract AmbSYS timing metrics for a given organisation, month and year.
+    """Extract AmbSYS timing metrics for a given organisation, month and year.
 
     Parameters
     ----------
@@ -23,6 +25,7 @@ def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
         Nested dictionary containing mean inter-arrival times for C1-C4 calls,
         mean response times for C1-C4 calls, and mean handover time, all
         expressed in minutes.
+
     """
     # Extract series for given organisation, year and month
     df = pd.read_csv(csv_path)
