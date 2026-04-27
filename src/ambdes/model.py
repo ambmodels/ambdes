@@ -18,7 +18,7 @@ class Model:
         self.env = simpy.Environment()
 
         # Set up logger
-        self.logger = Logger(verbose=self.config.verbose)
+        self.logger = Logger(config=self.config)
         self.logger.log(f"Initialising model for run {self.run_number}")
 
         # Create a random seed sequence based on the run number

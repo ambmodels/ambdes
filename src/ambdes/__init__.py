@@ -7,11 +7,13 @@ __version__ = "0.1.0"
 
 from .ambsys import ambsys
 from .config import SimConfig
+from .logging import Logger
 from .model import Model
 from .patient import Patient
 
 __all__ = [
     "ambsys",
+    "Logger",
     "Model",
     "Patient",
     "SimConfig"
