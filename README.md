@@ -4,6 +4,13 @@ Discrete-event simulation of the ambulance system
 
 View documentation: <https://ambmodels.github.io/ambdes/>
 
+Environment:
+
+```
+conda env create --file environment.yaml
+conda activate ambdes
+```
+
 To render documentation locally:
 
 ```
