@@ -6,11 +6,13 @@ __version__ = "0.1.0"
 # rather than `from ambdes.model import Model`.
 
 from .ambsys import ambsys
+from .config import SimConfig
 from .model import Model
 from .patient import Patient
 
 __all__ = [
     "ambsys",
     "Model",
-    "Patient"
+    "Patient",
+    "SimConfig"
 ]
