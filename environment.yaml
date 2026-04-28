@@ -3,10 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - ipykernel=7.2.0
+  - nbclient=0.10.4
   - nbformat=5.10.4
   - pip=26.0.1
   - pytest=9.0.3
   - python=3.13.13
+  - pyyaml=6.0.3
   - ruff=0.15.11
   - sim-tools=1.0.4
   - simpy=4.1.1
