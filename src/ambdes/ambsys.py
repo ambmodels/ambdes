@@ -5,7 +5,7 @@ from calendar import monthrange
 import pandas as pd
 
 
-def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
+def ambsys(csv_path, org_code, month, year):
     """Extract AmbSYS timing metrics for a given organisation, month and year.
 
     Parameters
@@ -14,10 +14,10 @@ def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
         Path to the AmbSYS CSV file.
     org_code : str
         Organisation code used to filter the dataset.
-    month : int
-        Month of interest as an integer from 1 to 12.
-    year : int
-        Year of interest.
+    month : int | str
+        Month of interest (provided as number between 1 and 12).
+    year : int | str
+        Year of interest (e.g., 2025).
 
     Returns
     -------
@@ -27,6 +27,10 @@ def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
         expressed in minutes.
 
     """
+    # Convert year and month to int, if not already
+    year = int(year)
+    month = int(month)
+
     # Extract series for given organisation, year and month
     df = pd.read_csv(csv_path)
     month_df = df.loc[
@@ -34,6 +38,12 @@ def ambsys(csv_path: str, org_code: str, month: int, year: int) -> dict:
         & (df["Year"] == year)
         & (df["Month"] == month)
     ].squeeze()
+
+    if month_df.empty:
+        raise ValueError(
+            f"No AmbSYS data found for org_code={org_code}, "
+            f"year={year}, month={month}."
+        )
 
     # Find minutes in given month
     _, days_in_month = monthrange(year, month)
