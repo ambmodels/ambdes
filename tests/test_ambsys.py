@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from ambdes import ambsys
+from ambdes import ambsys, SimConfig, Model
 
 
 @pytest.fixture
@@ -74,3 +74,39 @@ def test_missing_from_ambsys(ambsys_csv_path, org_code, year, month):
             year=year,
             month=month,
         )
+
+
+@pytest.mark.integration
+def test_values_through_workflow(ambsys_csv_path):
+    """End-to-end check that mean IAT correct from CSV -> config -> model."""
+    # Extract metrics from CSV
+    amb_data = ambsys(
+        csv_path=str(ambsys_csv_path),
+        org_code="ORG1",
+        year=2025,
+        month=1,
+    )
+
+    # Check ambsys mean_iat_min
+    # 31 days in Jan 2025 = 44640 minutes
+    expected_mean_iat = {
+        1: 44640 / 100,  # 446.4
+        2: 44640 / 200,  # 223.2
+        3: 44640 / 300,  # 148.8
+        4: 44640 / 400,  # 111.6
+    }
+    assert amb_data["mean_iat_min"].keys() == expected_mean_iat.keys()
+    for cat, expected in expected_mean_iat.items():
+        assert amb_data["mean_iat_min"][cat] == pytest.approx(expected)
+
+    # Build SimConfig and check it carries values through unchanged
+    config = SimConfig(ambsys_data=amb_data, run_length=100)
+    assert config.mean_iat_min.keys() == expected_mean_iat.keys()
+    for cat, expected in expected_mean_iat.items():
+        assert config.mean_iat_min[cat] == pytest.approx(expected)
+
+    # Build Model and check each distribution has the right mean
+    model = Model(run_number=1, config=config)
+    assert set(model.call_dists.keys()) == set(expected_mean_iat.keys())
+    for cat, dist in model.call_dists.items():
+        assert dist.mean == pytest.approx(expected_mean_iat[cat])
