@@ -101,7 +101,7 @@ class Logger:
         for handler in handlers:
             handler.setFormatter(formatter)
 
-    def log(self, msg, sim_time=None):
+    def log(self, msg, patient=None, sim_time=None):
         """Log a message if logging is enabled.
 
         Parameters
@@ -113,6 +113,8 @@ class Logger:
 
         """
         if self.config.log_to_console or self.config.log_to_file:
+            if patient is not None:
+                msg = f"Patient {patient.id} (C{patient.category}) {msg}"
             if sim_time is not None:
                 self.logger.info("%0.3f: %s", sim_time, msg)
             else:

@@ -33,6 +33,11 @@ class Model:
         # Create SimPy environment
         self.env = simpy.Environment()
 
+        # Set up ambulance resource
+        self.ambulance = simpy.Resource(
+            self.env, capacity=self.config.n_ambulances
+        )
+
         # Set up logger
         self.logger = Logger(config=self.config)
         self.logger.log(f"Initialising model for run {self.run_number}")
@@ -82,9 +87,41 @@ class Model:
             )
             self.patients.append(patient)
 
-            # Print call time
+            # Log call time
             self.logger.log(
-                msg=f"Patient {patient.id} (C{patient.category}) calls",
+                msg="calls",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+    
+            # Start process of requesting an ambulance
+            self.env.process(self.request_ambulance(patient))
+
+    def request_ambulance(self, patient):
+        """Simulate ambulance response.
+
+        Parameters
+        ----------
+        patient : Patient
+            Patient requesting ambulance transport.
+        """
+        # Request an ambulance (and queue if none available)
+        with self.ambulance.request() as req:
+            yield req
+
+            # Record when patient was assigned as ambulance
+            self.logger.log(
+                msg="assigned an ambulance",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            yield self.env.timeout(10)
+
+            # Log when ambulance is released
+            self.logger.log(
+                msg="ambulance now free",
+                patient=patient,
                 sim_time=self.env.now,
             )
 
@@ -102,3 +139,9 @@ class Model:
             )
         # Run simulation
         self.env.run(until=self.config.run_length)
+
+        # Log end of simulation
+        self.logger.log(
+            msg=f"Simulation run {self.run_number} ends",
+            sim_time=self.env.now,
+        )
