@@ -119,23 +119,45 @@ class Model:
                 sim_time=self.env.now,
             )
 
-            # Sample response time
+            # Response time
             response_time = self.dists["response_time"][
                 patient.category
             ].sample()
             yield self.env.timeout(response_time)
-
-            # Log when ambulance arrives
             self.logger.log(
                 msg="ambulance arrives",
                 patient=patient,
                 sim_time=self.env.now,
             )
 
-            # Temporary: represents remaining time on job
-            yield self.env.timeout(10)
+            # On-scene time
+            yield self.env.timeout(self.config.on_scene_time)
             self.logger.log(
-                msg="ambulance now free",
+                msg="completed on-scene care; departing for hospital",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Travel time to hospital
+            yield self.env.timeout(self.config.travel_time_to_hospital)
+            self.logger.log(
+                msg="arrived at hospital",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Handover time
+            yield self.env.timeout(self.config.mean_handover_time_min)
+            self.logger.log(
+                msg="handover completed",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Wrap up time
+            yield self.env.timeout(self.config.wrap_up_time)
+            self.logger.log(
+                msg="wrap-up completed; ambulance available",
                 patient=patient,
                 sim_time=self.env.now,
             )

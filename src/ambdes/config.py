@@ -13,6 +13,9 @@ class SimConfig:
         self,
         ambsys_data,
         resource_hours_per_week,
+        on_scene_time=10,
+        travel_time_to_hospital=10,
+        wrap_up_time=5,
         run_length=100,
         log_to_console=False,
         log_to_file=False,
@@ -28,6 +31,13 @@ class SimConfig:
             `mean_handover_time_min`.
         resource_hours_per_week : int
             Ambulance resource hours per week.
+        on_scene_time : float
+            Fixed time in minutes spent on scene before transport.
+        travel_time_to_hospital : float
+            Fixed travel time in minutes from scene to hospital.
+        wrap_up_time : float
+            Fixed time in minutes for post-handover wrap-up before the
+            ambulance becomes available again.
         run_length : float, default=100
             Duration of the simulation run.
         log_to_console : bool, default=False
@@ -73,6 +83,10 @@ class SimConfig:
         self.n_ambulances = round(resource_hours_per_week / 168)
 
         self.mean_handover_time_min = ambsys_data["mean_handover_time_min"]
+
+        self.on_scene_time = on_scene_time
+        self.travel_time_to_hospital = travel_time_to_hospital
+        self.wrap_up_time = wrap_up_time
         self.run_length = run_length
         self.log_to_console = log_to_console
         self.log_to_file = log_to_file
