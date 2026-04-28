@@ -1,11 +1,18 @@
-"""Tests for ambsys."""
+"""Tests for ambsys module."""
 
+import math
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
+from scipy.stats import lognorm
 
-from ambdes import ambsys, SimConfig, Model
+from ambdes import Model, SimConfig, ambsys, lognormal_sd_from_mean_p90
+
+# -----------------------------------------------------------------------------
+# ambsys unit tests
+# -----------------------------------------------------------------------------
 
 
 @pytest.fixture
@@ -22,9 +29,13 @@ def ambsys_csv_path(tmp_path) -> Path:
                 "A11": 300,
                 "A12": 400,
                 "A25": 600,
+                "A26": 650,
                 "A31": 700,
+                "A32": 750,
                 "A34": 800,
+                "A35": 850,
                 "A37": 900,
+                "A38": 950,
                 "A142": 120,
             }
         ]
@@ -76,6 +87,43 @@ def test_missing_from_ambsys(ambsys_csv_path, org_code, year, month):
         )
 
 
+# -----------------------------------------------------------------------------
+# lognormal_sd_from_mean_p90 tests
+# -----------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "mean, sd",
+    [
+        (10, 3),
+        (20, 5),
+        (5, 2),
+    ],
+)
+def test_known_param(mean, sd):
+    """Test returned sd is correct, when have known mean+sd+90th percentile."""
+    # Find lognormal distribution mean (mu) and sd (sigma) - formula from
+    # sim-tools.distributions.Lognormal.normal_moments_from_lognormal
+    m = mean
+    v = sd**2
+    phi = math.sqrt(v + m**2)
+    mu = math.log(m**2 / phi)
+    sigma = math.sqrt(math.log(phi**2 / m**2))
+
+    # Find 90th percentile for this lognormal distribution
+    scale = np.exp(mu)
+    p90 = lognorm.ppf(0.9, s=sigma, scale=scale)
+
+    # Estimate SD from mean and 90th percentile and check it's consistent
+    sd_estimate = lognormal_sd_from_mean_p90(mean=mean, p90=p90)
+    assert sd == pytest.approx(sd_estimate)
+
+
+# -----------------------------------------------------------------------------
+# integration tests
+# -----------------------------------------------------------------------------
+
+
 @pytest.mark.integration
 def test_values_through_workflow(ambsys_csv_path):
     """End-to-end check that mean IAT correct from CSV -> config -> model."""
@@ -100,7 +148,9 @@ def test_values_through_workflow(ambsys_csv_path):
         assert amb_data["mean_iat_min"][cat] == pytest.approx(expected)
 
     # Build SimConfig and check it carries values through unchanged
-    config = SimConfig(ambsys_data=amb_data, run_length=100)
+    config = SimConfig(
+        ambsys_data=amb_data, resource_hours_per_week=50000, run_length=100
+    )
     assert config.mean_iat_min.keys() == expected_mean_iat.keys()
     for cat, expected in expected_mean_iat.items():
         assert config.mean_iat_min[cat] == pytest.approx(expected)
