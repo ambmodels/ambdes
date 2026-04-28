@@ -173,6 +173,8 @@ Can quantify uncertainty via 95% confidence interval (or could do prediction int
 
 ### Notes
 
+See Tom's [NSPP notebook](https://github.com/pythonhealthdatascience/intro-open-sim/blob/main/content/16_time_dependent_arrivals.ipynb).
+
 The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
 * Multiple outcomes from the same run (regression just one per model).
