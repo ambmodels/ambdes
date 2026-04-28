@@ -58,8 +58,8 @@ class Logger:
             )
         if not str(self.config.log_file_path).endswith(".log"):
             raise ValueError(
-                f"The log file path '{self.config.log_file_path}' must " +
-                 "end with '.log'."
+                f"The log file path '{self.config.log_file_path}' must "
+                + "end with '.log'."
             )
 
     def _configure_logging(self):
@@ -83,8 +83,10 @@ class Logger:
             console = Console()
             console.is_jupyter = False
             rich_handler = RichHandler(
-                console=console, show_time=False,
-                show_level=False, show_path=False
+                console=console,
+                show_time=False,
+                show_level=False,
+                show_path=False,
             )
             handlers.append(rich_handler)
 

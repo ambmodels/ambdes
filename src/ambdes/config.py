@@ -15,7 +15,7 @@ class SimConfig:
         run_length=100,
         log_to_console=False,
         log_to_file=False,
-        log_file_path=None
+        log_file_path=None,
     ):
         """Initialise simulation configuration.
 
@@ -45,4 +45,3 @@ class SimConfig:
         self.log_to_console = log_to_console
         self.log_to_file = log_to_file
         self.log_file_path = log_file_path
-

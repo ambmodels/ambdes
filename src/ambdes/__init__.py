@@ -11,10 +11,4 @@ from .logging import Logger
 from .model import Model
 from .patient import Patient
 
-__all__ = [
-    "ambsys",
-    "Logger",
-    "Model",
-    "Patient",
-    "SimConfig"
-]
+__all__ = ["ambsys", "Logger", "Model", "Patient", "SimConfig"]

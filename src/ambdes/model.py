@@ -50,8 +50,7 @@ class Model:
             self.config.mean_iat_min.items()
         ):
             self.call_dists[category] = Exponential(
-                mean=mean_iat_min,
-                random_seed=seeds[i]
+                mean=mean_iat_min, random_seed=seeds[i]
             )
 
     def generate_patients(self, dist, category):
@@ -77,16 +76,16 @@ class Model:
 
             # Create a new patient
             patient = Patient(
-                id=len(self.patients)+1,
+                id=len(self.patients) + 1,
                 category=category,
-                call_time=self.env.now
+                call_time=self.env.now,
             )
             self.patients.append(patient)
 
             # Print call time
             self.logger.log(
                 msg=f"Patient {patient.id} (C{patient.category}) calls",
-                sim_time=self.env.now
+                sim_time=self.env.now,
             )
 
     def run(self):
@@ -99,10 +98,7 @@ class Model:
         # Set up processes to generate patients of each category
         for category, dist in self.call_dists.items():
             self.env.process(
-                self.generate_patients(
-                    dist=dist,
-                    category=category
-                )
+                self.generate_patients(dist=dist, category=category)
             )
         # Run simulation
         self.env.run(until=self.config.run_length)
