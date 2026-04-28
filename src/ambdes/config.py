@@ -41,9 +41,29 @@ class SimConfig:
         if log_file_path is None:
             log_file_path = f"{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
 
-        self.mean_iat_min = ambsys_data["mean_iat_min"]
-        self.mean_response_time_min = ambsys_data["mean_response_time_min"]
-        self.mean_handover_time_min = ambsys_data["mean_handover_time_min"]
+        # Set up parameters for distributions in required format for
+        # sim-tools DistributionsRegistry
+        self.dist_config = {
+            **{
+                f"call_{category}": {
+                    "class_name": "Exponential",
+                    "params": {"mean": mean_iat},
+                }
+                for category, mean_iat in ambsys_data["mean_iat_min"].items()
+            },
+            **{
+                f"response_time_{category}": {
+                    "class_name": "Lognormal",
+                    "params": {
+                        "mean": (
+                            ambsys_data["mean_response_time_min"][category]
+                        ),
+                        "stdev": ambsys_data["sd_response_time_min"][category],
+                    },
+                }
+                for category in ambsys_data["mean_response_time_min"]
+            },
+        }
 
         # Convert total weekly ambulance-hours into an equivalent constant
         # fleet size, assuming a fixed 24/7 resource pool with no shift
@@ -52,6 +72,7 @@ class SimConfig:
         # ambulances as resource_hours_per_week / 168.
         self.n_ambulances = round(resource_hours_per_week / 168)
 
+        self.mean_handover_time_min = ambsys_data["mean_handover_time_min"]
         self.run_length = run_length
         self.log_to_console = log_to_console
         self.log_to_file = log_to_file

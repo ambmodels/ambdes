@@ -1,8 +1,7 @@
 """Simulation model."""
 
-import numpy as np
 import simpy
-from sim_tools.distributions import Exponential
+from sim_tools.distributions import DistributionRegistry
 
 from .logging import Logger
 from .patient import Patient
@@ -42,31 +41,34 @@ class Model:
         self.logger = Logger(config=self.config)
         self.logger.log(f"Initialising model for run {self.run_number}")
 
-        # Create a random seed sequence based on the run number
-        ss = np.random.SeedSequence(self.run_number)
-        seeds = ss.spawn(4)
-
         # Set up attribute to store results
         self.patients = []
 
-        # Initialise call inter-arrival distributions
-        self.call_dists = {}
-        for i, (category, mean_iat_min) in enumerate(
-            self.config.mean_iat_min.items()
-        ):
-            self.call_dists[category] = Exponential(
-                mean=mean_iat_min, random_seed=seeds[i]
-            )
+        # Initialise distributions, with random seed based on run number
+        flat_dists = DistributionRegistry.create_batch(
+            self.config.dist_config,
+            main_seed=self.run_number,
+            sort=True,
+        )
+
+        # Restructure so can call e.g., self.dists["call"]["C1"]
+        self.dists = {
+            "call": {},
+            "response_time": {},
+        }
+        for name, dist in flat_dists.items():
+            group, category = name.rsplit("_", 1)
+            self.dists[group][category] = dist
 
     def generate_patients(self, dist, category):
         """Generate patients for a given category indefinitely.
 
         Parameters
         ----------
-        dist : Exponential
+        dist : Distribution
             Inter-arrival time distribution for the patient category.
-        category : int
-            Response category number.
+        category : str
+            Response category label, e.g., "C1".
 
         Yields
         ------
@@ -93,7 +95,7 @@ class Model:
                 patient=patient,
                 sim_time=self.env.now,
             )
-    
+
             # Start process of requesting an ambulance
             self.env.process(self.request_ambulance(patient))
 
@@ -104,6 +106,7 @@ class Model:
         ----------
         patient : Patient
             Patient requesting ambulance transport.
+
         """
         # Request an ambulance (and queue if none available)
         with self.ambulance.request() as req:
@@ -116,9 +119,21 @@ class Model:
                 sim_time=self.env.now,
             )
 
-            yield self.env.timeout(10)
+            # Sample response time
+            response_time = self.dists["response_time"][
+                patient.category
+            ].sample()
+            yield self.env.timeout(response_time)
 
-            # Log when ambulance is released
+            # Log when ambulance arrives
+            self.logger.log(
+                msg="ambulance arrives",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Temporary: represents remaining time on job
+            yield self.env.timeout(10)
             self.logger.log(
                 msg="ambulance now free",
                 patient=patient,
@@ -133,7 +148,7 @@ class Model:
 
         """
         # Set up processes to generate patients of each category
-        for category, dist in self.call_dists.items():
+        for category, dist in self.dists["call"].items():
             self.env.process(
                 self.generate_patients(dist=dist, category=category)
             )

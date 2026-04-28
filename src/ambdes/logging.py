@@ -108,13 +108,15 @@ class Logger:
         ----------
         msg : str
             Message to log.
+        patient : Patient
+            Patient whom the log message is about.
         sim_time : float or None, optional
             Current simulation time. If provided, prints before message.
 
         """
         if self.config.log_to_console or self.config.log_to_file:
             if patient is not None:
-                msg = f"Patient {patient.id} (C{patient.category}) {msg}"
+                msg = f"Patient {patient.id} ({patient.category}) {msg}"
             if sim_time is not None:
                 self.logger.info("%0.3f: %s", sim_time, msg)
             else:

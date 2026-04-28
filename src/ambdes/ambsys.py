@@ -55,21 +55,21 @@ def ambsys(csv_path, org_code, month, year):
 
     # Calulate mean inter-arrival times by dividing minutes in month by
     # incident count
-    count_codes = {1: "A8", 2: "A10", 3: "A11", 4: "A12",}
+    count_codes = {"C1": "A8", "C2": "A10", "C3": "A11", "C4": "A12"}
     result["mean_iat_min"] = {
         category: min_in_month / int(month_df[code])
         for category, code in count_codes.items()
     }
 
     # Convert mean response times from seconds to minutes
-    response_mean_codes = {1: "A25", 2: "A31", 3: "A34", 4: "A37"}
+    response_mean_codes = {"C1": "A25", "C2": "A31", "C3": "A34", "C4": "A37"}
     result["mean_response_time_min"] = {
         category: float(month_df[code]) / 60
         for category, code in response_mean_codes.items()
     }
 
     # Convert 90th centile response times from seconds to minutes
-    response_p90_codes = {1: "A26", 2: "A32", 3: "A35", 4: "A38"}
+    response_p90_codes = {"C1": "A26", "C2": "A32", "C3": "A35", "C4": "A38"}
     result["p90_response_time_min"] = {
         category: float(month_df[code]) / 60
         for category, code in response_p90_codes.items()
@@ -92,8 +92,8 @@ def ambsys(csv_path, org_code, month, year):
 def lognormal_sd_from_mean_p90(mean: float, p90: float) -> float:
     """Approximate SD on the original scale for a lognormal distribution.
 
-    Given the mean and 90th percentile, estimates the standard deviation
-    of a lognormal variable on the original (un-logged) scale.
+    Given the mean and 90th percentile, estimates a reasonable standard
+    deviation of a lognormal variable on the original (un-logged) scale.
 
     Parameters
     ----------
@@ -108,6 +108,11 @@ def lognormal_sd_from_mean_p90(mean: float, p90: float) -> float:
         Standard deviation (on the original scale).
 
     """
+    # Mean and 90th percentile must be positive
+    if mean <= 0 or p90 <= 0:
+        raise ValueError(
+            f"mean and p90 must be positive; got mean={mean}, p90={p90}."
+        )
     # For a right-skewed distribution like a lognormal, higher percentiles
     # should be larger than the mean. If p90 <= mean, something is wrong
     # with the inputs (or the data is not lognormal-like).
@@ -135,7 +140,7 @@ def lognormal_sd_from_mean_p90(mean: float, p90: float) -> float:
     # this mean and this p90 at the same time.
     # In other words: the inputs are mathematically inconsistent with a
     # lognormal model.
-    disc = z90**2 + 2 * math.log(mean / p90)
+    disc = z90**2 - 2 * math.log(mean / p90)
     if disc < 0:
         raise ValueError(
             "Mean and p90 are inconsistent with any lognormal distribution; "

@@ -11,13 +11,13 @@ class Patient:
     ----------
     id: int
         Unique identifier for the patient.
-    category: int
-        Ambulance response category (C1 to C4).
+    category: str
+        Ambulance response category ("C1", "C2", "C3" or "C4").
     call_time: float
         Time at which patient called 999.
 
     """
 
     id: int
-    category: int
+    category: str
     call_time: float
