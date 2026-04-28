@@ -23,6 +23,7 @@ website:
       - validation.qmd
       - criteria.qmd
       - qa.qmd
+      - run/stage1/baseline.ipynb
 
 language:
   search-text-placeholder:
