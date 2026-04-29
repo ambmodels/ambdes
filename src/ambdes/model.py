@@ -45,23 +45,12 @@ class Model:
         self.patients = []
 
         # Initialise distributions, with random seed based on run number
-        flat_dists = DistributionRegistry.create_batch(
+        self.dists = DistributionRegistry.create_batch(
             self.config.dist_config,
             main_seed=self.run_number,
             sort=True,
+            preserve_structure=True,
         )
-
-        # Restructure so can call e.g., self.dists["call"]["C1"]
-        self.dists = {
-            "call": {},
-            "response_time": {},
-            "handover_time": flat_dists["handover_time"],
-        }
-        for name, dist in flat_dists.items():
-            if name == "handover_time":
-                continue
-            group, category = name.rsplit("_", 1)
-            self.dists[group][category] = dist
 
     def generate_patients(self, dist, category):
         """Generate patients for a given category indefinitely.

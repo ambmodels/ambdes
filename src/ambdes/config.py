@@ -54,15 +54,15 @@ class SimConfig:
         # Set up parameters for distributions in required format for
         # sim-tools DistributionsRegistry
         self.dist_config = {
-            **{
-                f"call_{category}": {
+            "call": {
+                category: {
                     "class_name": "Exponential",
                     "params": {"mean": mean_iat},
                 }
                 for category, mean_iat in ambsys_data["mean_iat_min"].items()
             },
-            **{
-                f"response_time_{category}": {
+            "response_time": {
+                category: {
                     "class_name": "Lognormal",
                     "params": {
                         "mean": (
