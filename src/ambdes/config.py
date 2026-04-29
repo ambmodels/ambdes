@@ -74,8 +74,11 @@ class SimConfig:
                 for category in ambsys_data["mean_response_time_min"]
             },
             "handover_time": {
-                "class_name": "Exponential",
-                "params": {"mean": ambsys_data["mean_handover_time_min"]},
+                "class_name": "Lognormal",
+                "params": {
+                    "mean": ambsys_data["mean_handover_time_min"],
+                    "stdev": ambsys_data["sd_handover_time_min"],
+                },
             }
         }
 

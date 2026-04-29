@@ -83,8 +83,15 @@ def ambsys(csv_path, org_code, month, year):
             p90=result["p90_response_time_min"][category],
         )
 
-    # Convert mean handover time from seconds to minutes
+    # Convert mean and 90th centile handover time from seconds to minutes
     result["mean_handover_time_min"] = float(month_df["A142"]) / 60
+    result["p90_handover_time_min"] = float(month_df["A143"]) / 60
+
+    # Estimate handover time SD (minutes) assuming lognormal handover times
+    result["sd_handover_time_min"] = lognormal_sd_from_mean_p90(
+        mean=result["mean_handover_time_min"],
+        p90=result["p90_handover_time_min"]
+    )
 
     return result
 
