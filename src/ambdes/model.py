@@ -77,7 +77,7 @@ class Model:
             patient = Patient(
                 id=len(self.patients) + 1,
                 category=category,
-                call_time=self.env.now,
+                call_timestamp=self.env.now,
             )
             self.patients.append(patient)
 
@@ -112,10 +112,10 @@ class Model:
             )
 
             # Response time
-            response_time = self.dists["response_time"][
+            patient.response_time = self.dists["response_time"][
                 patient.category
             ].sample()
-            yield self.env.timeout(response_time)
+            yield self.env.timeout(patient.response_time)
             self.logger.log(
                 msg="ambulance arrives",
                 patient=patient,
@@ -131,10 +131,10 @@ class Model:
             )
 
             # Travel time to hospital
-            travel_time_to_hospital = (
+            patient.travel_time_to_hospital = (
                 self.dists["travel_time_to_hospital"].sample()
             )
-            yield self.env.timeout(travel_time_to_hospital)
+            yield self.env.timeout(patient.travel_time_to_hospital)
             self.logger.log(
                 msg="arrived at hospital",
                 patient=patient,
@@ -142,8 +142,8 @@ class Model:
             )
 
             # Handover time
-            handover_time = self.dists["handover_time"].sample()
-            yield self.env.timeout(handover_time)
+            patient.handover_time = self.dists["handover_time"].sample()
+            yield self.env.timeout(patient.handover_time)
             self.logger.log(
                 msg="handover completed",
                 patient=patient,
