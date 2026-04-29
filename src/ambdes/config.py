@@ -12,10 +12,10 @@ class SimConfig:
     def __init__(
         self,
         ambsys_data,
-        resource_hours_per_week,
-        on_scene_time=10,
+        resource_hours_per_week=52000,
+        on_scene_time=44,
         travel_time_to_hospital=10,
-        wrap_up_time=5,
+        wrap_up_time=14,
         run_length=100,
         log_to_console=False,
         log_to_file=False,
@@ -38,13 +38,13 @@ class SimConfig:
         wrap_up_time : float
             Fixed time in minutes for post-handover wrap-up before the
             ambulance becomes available again.
-        run_length : float, default=100
+        run_length : float
             Duration of the simulation run.
-        log_to_console : bool, default=False
+        log_to_console : bool
             Whether to write log messages to the console.
-        log_to_file : bool, default=False
+        log_to_file : bool
             Whether to write log messages to a file.
-        log_file_path : str, default=None
+        log_file_path : str
             Path to the log file.
 
         """
@@ -79,6 +79,10 @@ class SimConfig:
                     "mean": ambsys_data["mean_handover_time_min"],
                     "stdev": ambsys_data["sd_handover_time_min"],
                 },
+            },
+            "travel_time_to_hospital": {
+                "class_name": "Exponential",
+                "params": {"mean": travel_time_to_hospital},
             }
         }
 
@@ -90,7 +94,6 @@ class SimConfig:
         self.n_ambulances = round(resource_hours_per_week / 168)
 
         self.on_scene_time = on_scene_time
-        self.travel_time_to_hospital = travel_time_to_hospital
         self.wrap_up_time = wrap_up_time
         self.run_length = run_length
         self.log_to_console = log_to_console

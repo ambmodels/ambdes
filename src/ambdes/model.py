@@ -131,7 +131,10 @@ class Model:
             )
 
             # Travel time to hospital
-            yield self.env.timeout(self.config.travel_time_to_hospital)
+            travel_time_to_hospital = (
+                self.dists["travel_time_to_hospital"].sample()
+            )
+            yield self.env.timeout(travel_time_to_hospital)
             self.logger.log(
                 msg="arrived at hospital",
                 patient=patient,
