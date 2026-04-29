@@ -55,8 +55,11 @@ class Model:
         self.dists = {
             "call": {},
             "response_time": {},
+            "handover_time": flat_dists["handover_time"],
         }
         for name, dist in flat_dists.items():
+            if name == "handover_time":
+                continue
             group, category = name.rsplit("_", 1)
             self.dists[group][category] = dist
 
@@ -147,7 +150,8 @@ class Model:
             )
 
             # Handover time
-            yield self.env.timeout(self.config.mean_handover_time_min)
+            handover_time = self.dists["handover_time"].sample()
+            yield self.env.timeout(handover_time)
             self.logger.log(
                 msg="handover completed",
                 patient=patient,

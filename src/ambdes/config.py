@@ -27,8 +27,8 @@ class SimConfig:
         ----------
         ambsys_data : dict
             Input data containing mean timings for the simulation, including
-            `mean_iat_min`, `mean_response_time_min`, and
-            `mean_handover_time_min`.
+            `mean_iat_min`, `mean_response_time_min`, `sd_response_time_min`
+            and `mean_handover_time_min`.
         resource_hours_per_week : int
             Ambulance resource hours per week.
         on_scene_time : float
@@ -73,6 +73,10 @@ class SimConfig:
                 }
                 for category in ambsys_data["mean_response_time_min"]
             },
+            "handover_time": {
+                "class_name": "Exponential",
+                "params": {"mean": ambsys_data["mean_handover_time_min"]},
+            }
         }
 
         # Convert total weekly ambulance-hours into an equivalent constant
@@ -81,8 +85,6 @@ class SimConfig:
         # capacity per week (24 × 7), so we approximate the number of
         # ambulances as resource_hours_per_week / 168.
         self.n_ambulances = round(resource_hours_per_week / 168)
-
-        self.mean_handover_time_min = ambsys_data["mean_handover_time_min"]
 
         self.on_scene_time = on_scene_time
         self.travel_time_to_hospital = travel_time_to_hospital
