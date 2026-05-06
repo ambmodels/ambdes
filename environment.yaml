@@ -14,4 +14,5 @@ dependencies:
   - vidigi=1.3.0
   - pip:
     - -e .
+    - lintquarto==0.10.0
     - sim-tools==1.1.0
