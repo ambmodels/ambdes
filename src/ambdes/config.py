@@ -17,6 +17,7 @@ class SimConfig:
         travel_time_to_hospital=10,
         wrap_up_time=14,
         run_length=100,
+        n_reps=5,
         log_to_console=False,
         log_to_file=False,
         log_file_path=None,
@@ -40,6 +41,8 @@ class SimConfig:
             ambulance becomes available again.
         run_length : float
             Duration of the simulation run.
+        n_reps : int
+            Number of replications to run.
         log_to_console : bool
             Whether to write log messages to the console.
         log_to_file : bool
@@ -96,6 +99,7 @@ class SimConfig:
         self.on_scene_time = on_scene_time
         self.wrap_up_time = wrap_up_time
         self.run_length = run_length
+        self.n_reps = n_reps
         self.log_to_console = log_to_console
         self.log_to_file = log_to_file
         self.log_file_path = log_file_path
