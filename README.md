@@ -14,6 +14,8 @@ conda activate ambdes
 To render documentation locally:
 
 ```
+quarto render docs
+quarto render docs --execute
 quarto preview docs
 ```
 
