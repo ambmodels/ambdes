@@ -154,6 +154,44 @@ def test_low_demand():
 
 
 # -----------------------------------------------------------------------------
+# Boundary value tests
+# -----------------------------------------------------------------------------
+
+
+@pytest.mark.system
+def test_run_length_zero():
+    """Raises ValueError if attempt to run with run_length=0."""
+    # SimPy itself should raise an error message
+    with pytest.raises(
+        ValueError,
+        match="must be greater than the current simulation time"
+    ):
+        config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=0)
+        model = Model(run_number=0, config=config)
+        model.run()
+
+
+@pytest.mark.system
+def test_on_scene_time_zero():
+    """on_scene_time=0 is allowed and model still completes."""
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA, on_scene_time=0, run_length=500
+    )
+    model = Model(run_number=0, config=config)
+    model.run()
+    assert len(model.patients) > 0
+
+
+@pytest.mark.system
+def test_wrap_up_time_zero():
+    """wrap_up_time=0 is allowed and model still completes."""
+    config = SimConfig(ambsys_data=AMBSYS_DATA, wrap_up_time=0, run_length=500)
+    model = Model(run_number=0, config=config)
+    model.run()
+    assert len(model.patients) > 0
+
+
+# -----------------------------------------------------------------------------
 # Reproducibility
 # -----------------------------------------------------------------------------
 
