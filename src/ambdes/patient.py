@@ -6,7 +6,7 @@ class Patient:
 
     Attributes
     ----------
-    id : int
+    patient_id : int
         Unique identifier for the patient.
     category : str
         Ambulance response category ("C1", "C2", "C3" or "C4").
@@ -22,12 +22,12 @@ class Patient:
 
     """
 
-    def __init__(self, id, category, call_timestamp):
+    def __init__(self, patient_id, category, call_timestamp):
         """Create instance of Patient.
 
         Parameters
         ----------
-        id : int
+        patient_id : int
             Unique identifier for the patient.
         category : str
             Ambulance response category ("C1", "C2", "C3" or "C4").
@@ -35,7 +35,7 @@ class Patient:
             Time at which patient called 999.
 
         """
-        self.id = id
+        self.patient_id = patient_id
         self.category = category
         self.call_timestamp = call_timestamp
 

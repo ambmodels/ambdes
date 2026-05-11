@@ -75,7 +75,7 @@ def test_patient_generation():
     assert len(model.patients) > 0
 
     # Patient IDs are assigned sequentially starting from 1
-    ids = [p.id for p in model.patients]
+    ids = [p.patient_id for p in model.patients]
     assert ids == list(range(1, len(ids) + 1))
 
     # All patients have recognised response category

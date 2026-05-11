@@ -75,7 +75,7 @@ class Model:
 
             # Create a new patient
             patient = Patient(
-                id=len(self.patients) + 1,
+                patient_id=len(self.patients) + 1,
                 category=category,
                 call_timestamp=self.env.now,
             )
