@@ -30,7 +30,7 @@ jobs:
             echo 'matrix=["${{ inputs.operating_systems }}"]' >> $GITHUB_OUTPUT
           fi
 
-tests:
+  tests:
     permissions:
       contents: write
     needs: setup-matrix
