@@ -49,6 +49,7 @@ jobs:
           auto-activate-base: false
           activate-environment: ambdes
           environment-file: environment.yaml
+          channels: conda-forge
 
       - name: Run tests
         run: pytest
