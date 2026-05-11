@@ -178,11 +178,11 @@ def test_lognormal_sd_invalid_inputs(mean, p90, match):
 
 
 # -----------------------------------------------------------------------------
-# integration tests
+# Workflow tests
 # -----------------------------------------------------------------------------
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_values_through_workflow(ambsys_csv_path):
     """End-to-end check that mean IAT correct from CSV -> config -> model."""
     # Extract metrics from CSV

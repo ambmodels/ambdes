@@ -64,7 +64,7 @@ def make_model(
 # -----------------------------------------------------------------------------
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_patient_generation():
     """Patients are generated with appropriate attributes."""
     run_length = 500
@@ -89,7 +89,7 @@ def test_patient_generation():
     assert all(p.call_timestamp <= run_length for p in model.patients)
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_completed_patients():
     """Patients who completed the full pathway have all time attributes."""
     # Use a long run so there is time for patients to complete
@@ -121,7 +121,7 @@ def test_completed_patients():
 # -----------------------------------------------------------------------------
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_high_demand():
     """Model completes without error under very high call volume."""
     # Very low inter-arrival time
@@ -139,7 +139,7 @@ def test_high_demand():
     assert len(model.patients) > 0
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_low_demand():
     """Model completes without error when calls are extremely rare."""
     # Very high inter-arrival time
@@ -158,7 +158,7 @@ def test_low_demand():
 # -----------------------------------------------------------------------------
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_same_seed_same_results():
     """Two runs with the same run_number produce identical results."""
     m1 = make_model(run_number=42, run_length=500)
@@ -171,7 +171,7 @@ def test_same_seed_same_results():
     ]
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_different_seeds_different_results():
     """Two runs with different run_numbers produce different results."""
     m1 = make_model(run_number=0, run_length=500)

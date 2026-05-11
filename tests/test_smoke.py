@@ -1,6 +1,7 @@
 """Smoke tests - checks the model runs end-to-end without errors."""
 
 import pytest
+
 from ambdes import Model, SimConfig
 
 AMBSYS_DATA = {
@@ -19,7 +20,7 @@ AMBSYS_DATA = {
 }
 
 
-@pytest.mark.integration
+@pytest.mark.system
 @pytest.mark.parametrize(
     "log_to_console",
     [
