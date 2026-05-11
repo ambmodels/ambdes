@@ -38,3 +38,5 @@ format:
       - css/styles.css
     lightbox: true
     toc: true
+    execute:
+      freeze: auto

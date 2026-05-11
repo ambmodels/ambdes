@@ -37,6 +37,7 @@ def ambsys_csv_path(tmp_path) -> Path:
                 "A37": 900,
                 "A38": 950,
                 "A142": 120,
+                "A143": 130,
             }
         ]
     )
@@ -87,11 +88,39 @@ def test_missing_from_ambsys(ambsys_csv_path, org_code, year, month):
         )
 
 
+@pytest.mark.unit
+def test_ambsys_result_structure(ambsys_csv_path):
+    """Result dict has expected keys and values are in minutes."""
+    result = ambsys(
+        csv_path=str(ambsys_csv_path), org_code="ORG1", year=2025, month=1
+    )
+    expected_keys = {
+        "mean_iat_min",
+        "mean_response_time_min",
+        "p90_response_time_min",
+        "sd_response_time_min",
+        "mean_handover_time_min",
+        "p90_handover_time_min",
+        "sd_handover_time_min",
+    }
+    assert result.keys() == expected_keys
+    assert set(result["mean_response_time_min"].keys()) == {
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+    }
+    # Check seconds to minutes conversion was correct
+    assert result["mean_response_time_min"]["C1"] == pytest.approx(600 / 60)
+    assert result["mean_handover_time_min"] == pytest.approx(120 / 60)
+
+
 # -----------------------------------------------------------------------------
 # lognormal_sd_from_mean_p90 tests
 # -----------------------------------------------------------------------------
 
 
+@pytest.mark.unit
 @pytest.mark.parametrize(
     "mean, sd",
     [
@@ -130,12 +159,30 @@ def test_known_param(mean, sd):
     assert sd == pytest.approx(sd_est, rel=0.5)
 
 
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "mean, p90, match",
+    [
+        (0, 10, "must be positive"),  # mean <= 0
+        (-5, 10, "must be positive"),  # mean < 0
+        (10, 0, "must be positive"),  # p90 <= 0
+        (10, -5, "must be positive"),  # p90 < 0
+        (10, 8, "p90 should exceed mean"),  # p90 <= mean
+        (10, 10, "p90 should exceed mean"),  # p90 == mean (edge case)
+    ],
+)
+def test_lognormal_sd_invalid_inputs(mean, p90, match):
+    """ValueError raised for inputs incompatible with a lognormal."""
+    with pytest.raises(ValueError, match=match):
+        lognormal_sd_from_mean_p90(mean=mean, p90=p90)
+
+
 # -----------------------------------------------------------------------------
-# integration tests
+# Workflow tests
 # -----------------------------------------------------------------------------
 
 
-@pytest.mark.integration
+@pytest.mark.system
 def test_values_through_workflow(ambsys_csv_path):
     """End-to-end check that mean IAT correct from CSV -> config -> model."""
     # Extract metrics from CSV

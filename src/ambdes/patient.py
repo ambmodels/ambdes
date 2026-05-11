@@ -4,18 +4,9 @@
 class Patient:
     """Represents a patient who has called 999.
 
-    Parameters
-    ----------
-    id : int
-        Unique identifier for the patient.
-    category : str
-        Ambulance response category ("C1", "C2", "C3" or "C4").
-    call_timestamp : float
-        Time at which patient called 999.
-
     Attributes
     ----------
-    id : int
+    patient_id : int
         Unique identifier for the patient.
     category : str
         Ambulance response category ("C1", "C2", "C3" or "C4").
@@ -30,8 +21,21 @@ class Patient:
         handover delays from queueing at hospital).
 
     """
-    def __init__(self, id, category, call_timestamp):
-        self.id = id
+
+    def __init__(self, patient_id, category, call_timestamp):
+        """Create instance of Patient.
+
+        Parameters
+        ----------
+        patient_id : int
+            Unique identifier for the patient.
+        category : str
+            Ambulance response category ("C1", "C2", "C3" or "C4").
+        call_timestamp : float
+            Time at which patient called 999.
+
+        """
+        self.patient_id = patient_id
         self.category = category
         self.call_timestamp = call_timestamp
 

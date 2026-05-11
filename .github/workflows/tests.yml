@@ -1,0 +1,66 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      operating_systems:
+        description: 'Operating systems to test on'
+        type: choice
+        default: 'all'
+        options:
+          - all
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+jobs:
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set matrix
+        id: set-matrix
+        run: |
+          if [[ "${{ inputs.operating_systems }}" == "all" || "${{ github.event_name }}" == "push" ]]; then
+            echo 'matrix=["ubuntu-latest", "windows-latest", "macos-latest"]' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix=["${{ inputs.operating_systems }}"]' >> $GITHUB_OUTPUT
+          fi
+
+  tests:
+    permissions:
+      contents: write
+    needs: setup-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Cache conda packages
+        uses: actions/cache@v5
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
+            hashFiles('environment.yaml') }}
+
+      - name: Set up Conda environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ambdes
+          channel-priority: strict
+          environment-file: environment.yaml
+          use-only-tar-bz2: true  # Required for caching to work properly
+
+      - name: Run tests
+        run: pytest
+        shell: bash

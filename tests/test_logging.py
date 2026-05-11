@@ -1,4 +1,4 @@
-"""Tests for Logger."""
+"""Tests for logging module."""
 
 import logging
 from types import SimpleNamespace

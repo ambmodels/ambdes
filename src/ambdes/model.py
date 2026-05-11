@@ -1,4 +1,9 @@
-"""Simulation model."""
+"""Core simulation model.
+
+Defines the Model class with all simulation logic for a single run. Handles
+SimPy processes and records Patient instances, but does not format results or
+manage replications.
+"""
 
 import simpy
 from sim_tools.distributions import DistributionRegistry
@@ -20,10 +25,9 @@ class Model:
         Parameters
         ----------
         run_number : int
-            Simulation run identifier used to initialise random seeds.
+            Simulation run identifier.
         config : object
-            Configuration object containing model parameters, including
-            `mean_iat_min` and `run_length`.
+            Configuration object containing model parameters.
 
         """
         self.run_number = run_number
@@ -75,7 +79,7 @@ class Model:
 
             # Create a new patient
             patient = Patient(
-                id=len(self.patients) + 1,
+                patient_id=len(self.patients) + 1,
                 category=category,
                 call_timestamp=self.env.now,
             )
@@ -131,9 +135,9 @@ class Model:
             )
 
             # Travel time to hospital
-            patient.travel_time_to_hospital = (
-                self.dists["travel_time_to_hospital"].sample()
-            )
+            patient.travel_time_to_hospital = self.dists[
+                "travel_time_to_hospital"
+            ].sample()
             yield self.env.timeout(patient.travel_time_to_hospital)
             self.logger.log(
                 msg="arrived at hospital",

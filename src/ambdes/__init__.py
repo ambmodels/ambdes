@@ -10,6 +10,8 @@ from .config import SimConfig
 from .logging import Logger
 from .model import Model
 from .patient import Patient
+from .results import Results
+from .runner import Runner
 
 __all__ = [
     "ambsys",
@@ -17,5 +19,7 @@ __all__ = [
     "lognormal_sd_from_mean_p90",
     "Model",
     "Patient",
+    "Results",
+    "Runner",
     "SimConfig",
 ]
