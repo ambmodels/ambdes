@@ -37,6 +37,7 @@ def ambsys_csv_path(tmp_path) -> Path:
                 "A37": 900,
                 "A38": 950,
                 "A142": 120,
+                "A143": 130,
             }
         ]
     )
