@@ -57,6 +57,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: ambdes
+          channels: conda-forge
           channel-priority: strict
           environment-file: environment.yaml
           use-only-tar-bz2: true  # Required for caching to work properly
