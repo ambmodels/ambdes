@@ -1,8 +1,8 @@
 """Tests for config module."""
 
 import pytest
-from ambdes import SimConfig
 
+from ambdes import SimConfig
 
 # -----------------------------------------------------------------------------
 # Fixtures
@@ -26,6 +26,7 @@ AMBSYS_DATA = {
 
 @pytest.fixture
 def config():
+    """Return a SimConfig instance with minimal AMBSYS_DATA."""
     return SimConfig(ambsys_data=AMBSYS_DATA)
 
 
