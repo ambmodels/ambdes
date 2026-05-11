@@ -90,7 +90,7 @@ def ambsys(csv_path, org_code, month, year):
     # Estimate handover time SD (minutes) assuming lognormal handover times
     result["sd_handover_time_min"] = lognormal_sd_from_mean_p90(
         mean=result["mean_handover_time_min"],
-        p90=result["p90_handover_time_min"]
+        p90=result["p90_handover_time_min"],
     )
 
     return result

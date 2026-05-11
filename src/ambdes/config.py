@@ -83,7 +83,7 @@ class SimConfig:
             "travel_time_to_hospital": {
                 "class_name": "Exponential",
                 "params": {"mean": travel_time_to_hospital},
-            }
+            },
         }
 
         # Convert total weekly ambulance-hours into an equivalent constant

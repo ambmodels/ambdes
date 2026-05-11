@@ -131,9 +131,9 @@ class Model:
             )
 
             # Travel time to hospital
-            patient.travel_time_to_hospital = (
-                self.dists["travel_time_to_hospital"].sample()
-            )
+            patient.travel_time_to_hospital = self.dists[
+                "travel_time_to_hospital"
+            ].sample()
             yield self.env.timeout(patient.travel_time_to_hospital)
             self.logger.log(
                 msg="arrived at hospital",
