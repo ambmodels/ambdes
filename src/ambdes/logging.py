@@ -116,7 +116,9 @@ class Logger:
         """
         if self.config.log_to_console or self.config.log_to_file:
             if patient is not None:
-                msg = f"Patient {patient.id} ({patient.category}) {msg}"
+                msg = (
+                    f"Patient {patient.patient_id} ({patient.category}) {msg}"
+                )
             if sim_time is not None:
                 self.logger.info("%0.3f: %s", sim_time, msg)
             else:
