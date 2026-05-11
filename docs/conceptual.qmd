@@ -87,7 +87,7 @@ Currently, the on-scene time is deterministic.
 
 Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time at scene (tas)).
 
-It may be possible though to estimate a SD from the provided mean/median/IQR, allowing use of a lognormal distributions.
+It may be possible though to estimate a SD from the provided mean/median/IQR, allowing use of a lognormal distribution.
 
 #### Travel time to hospital
 
@@ -98,7 +98,7 @@ The most relevant public data identified to support this estimate was @roberts_f
 * **Left-skewed distribution** for distances between person's home and site where they received an emergency inpatient admission in 2011/12 (for whole of England) (Figure 3.2).
 * **Average 12.24km (7.61 miles) in South West** between where a person lives and the hospital site used for an emergency admission.
 
-No relevant data was identified to estimate travel speed, so an arbirtrary speed of 45mph was chosen. Based on this, the average travel time to hospital would be:
+No relevant data was identified to estimate travel speed, so an arbitrary speed of 45mph was chosen. Based on this, the average travel time to hospital would be:
 
 * `7.61 miles / 45mph = 0.169 hours`
 * `0.169 x 60 = 10.1 minutes`
@@ -181,6 +181,10 @@ Additional information:
 * Conveying resource hours per day (and % lost to handover delays).
 
 :::
+
+#### Notes
+
+Could add assumption confidence scale/scoring (sometimes part of an assumption audit framework) - every assumption gets a rating from 1 to 5 (e.g., 1 low confidence guesswork, 2 low confidence weak evidence maybe anecdotal, 3 moderate confidence some supporting data but gaps/uncertainty, 4 high confidence good quality data 5 very high confidence strong empirical evidence repeated validation well established). Other names may include assumption register/log, confidence weighting, model risk scoring. May be done in combination with impact scoring (how much assumption affects outcomes) and sensitivity analysis (what happens if the assumption is wrong). Was suggested in relation to another model by someone in a HaCORN meeting.
 
 <br>
 
