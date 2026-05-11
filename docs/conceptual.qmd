@@ -15,6 +15,15 @@ Progressing through the stages, we can evaluate whether the added detail improve
 
 <br>
 
+Response time categories:
+
+* C1 - life-threatening incidents
+* C2 - emergency incidents
+* C3 - urgent incidents
+* C4 - less urgent incidents
+
+<br>
+
 ## Stage 1: Whole-system resourcing using public data
 
 ### Key question
@@ -25,9 +34,98 @@ How do changes in total vehicle hours, number of incidents per day, and/or hando
 
 :::
 
-### Public data
+### Model content and inputs from public data
 
-::: {.callout-note title="View open public data source" collapse="true"}
+#### Summary
+
+| Element | Model content | Input |
+| - | - | - |
+| Arrivals and response category | Homogeneous Poisson Process | Mean inter-arrival time by response category |
+| Resource | Single pooled ambulance resource | Number of ambulances available (assuming 24/7 pool) |
+| Queue | FIFO | - |
+| Response time (mobilisation time + time to scene) | Lognormal distribution* | Mean and SD by response category |
+| On scene time | Deterministic | Mean |
+| Travel time to hospital | Exponential distribution | Mean |
+| Handover time | Lognormal distribution | Mean and SD |
+| Wrap up time | Deterministic | Mean |
+
+#### Arrivals and response category
+
+These are based on **AmbSYS** data, which reports total count of incidents for each response category (C1, C2, C3, C4) for each region for each month (A8, A10, A11, A12).
+
+This can be converted to a mean inter-arrival time in minutes by dividing the minutes in that month by the number of incidents.
+
+A Homogeneous Poisson Process (HPP) is used as we don't have any information on incidents by day of week, which would be necessary for Non-Homogeneous Poisson Process (NHPP), which is most common in the literature.
+
+#### Resource
+
+This is based on the [SWAST Annual Report and Accounts (1 April 2024 - 31 March 2025)](https://www.swast.nhs.uk/download/swasft-annual-report-and-accounts-202425pdf.pdf?ver=2868&doc=docm93jijm4n2818.pdf) section 3.4 Operational Resourcing which reports the weekly conveying resource hours. since April 2024, the mean was 52,000 per week.
+
+Our model will assume a constant fleet size, with a fixed 24/7 resource pool with no shift pattern. One always-available ambulance provides 168 hours of capacity per week (24 × 7), so we approximate the number of ambulances as `resource_hours_per_week / 168`.
+
+#### Queue
+
+A first-in-first-out (FIFO) queue is used - a simple approach, common in the ambulance DES literature.
+
+#### Response time
+
+These are based on **AmbSYS** data, which reports the mean and 90th percentile response time by response category (C1, C2, C3, C4) for each region for each month (A25, A26, A31, A32, A34, A35, A37, A38).
+
+We use a lognormal distribution, as likewise implemented in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal distributions to model time to scene (tts).
+
+Lognormal requires mean and standard deviation, so the standard deviation was estimated from the mean and 90th percentile, assuming a lognormal distribution.
+
+#### On scene time
+
+The most relevant public data identified for on-scene time is a study from @davis_what_2025 in London, reporting times from 2023. For on-scene times, they report:
+
+* Mean on-scene time: 44 minutes
+* Median on-scene time: 46 minutes
+* Inter-quartile range (IQR) for on-scene time: 33 to 54 minutes
+
+Currently, the on-scene time is deterministic.
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time at scene (tas)).
+
+It may be possible though to estimate a SD from the provided mean/median/IQR, allowing use of a lognormal distribution.
+
+#### Travel time to hospital
+
+Travel time to hospital is currently very rough.
+
+The most relevant public data identified to support this estimate was @roberts_focus_2014. Two relevant sections of their report:
+
+* **Left-skewed distribution** for distances between person's home and site where they received an emergency inpatient admission in 2011/12 (for whole of England) (Figure 3.2).
+* **Average 12.24km (7.61 miles) in South West** between where a person lives and the hospital site used for an emergency admission.
+
+No relevant data was identified to estimate travel speed, so an arbitrary speed of 45mph was chosen. Based on this, the average travel time to hospital would be:
+
+* `7.61 miles / 45mph = 0.169 hours`
+* `0.169 x 60 = 10.1 minutes`
+
+Hence, a very rough mean time of 10 minutes is used, with an exponential distribution (as this is left skewed and only requires a mean).
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time to site (ttsi)).
+
+#### Handover time
+
+This is based on **AmbSYS** data, which reports the mean and 90th percentile handover time overall for each region each month (A142, A143).
+
+We use a lognormal distribution.
+
+#### Wrap-up time
+
+The most relevant public data identified for on-scene time is a study from @davis_what_2025 in London, reporting times from 2023. For wrap up times, they report:
+
+* Mean handover-to-clear time: 14 minutes
+
+Currently, the wrap-up time is deterministic.
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time to clear (ttc)).
+
+#### Further details on public ambulance data
+
+::: {.callout-note title="View public sources of ambulance data" collapse="true"}
 
 ### Ambulance Quality Indicators Data
 
@@ -82,31 +180,11 @@ Additional information:
 * Sickness
 * Conveying resource hours per day (and % lost to handover delays).
 
-### What's not in open data
-
-For stage 1:
-
-* Day-of-week arrival rates.
-* Vehicle hours (just has resource numbers).
-* Job cycle time sub-components.
-
 :::
 
-### Model content and inputs
+#### Notes
 
-| Element | Model content | Input |
-| - | -- | -- |
-| Arrivals | HPP | Mean inter-arrival time (converted from total incident count / month length) |
-| Response category | Probabilities | % each category |
-| Resource | Single pooled ambulance resource | Estimate from monthly resource data |
-| Queue | FIFO | - |
-| Service time | (a) Mobilisation time + Time to scene + (b) On scene time + Travel to hospital + (c) Handover queueing + Wrap up  | Data can provide mean response time and mean handover time. For on-scene time/travel to hospital/wrap-up, would need a proxy |
-
-Outputs:
-
-* Response time by category
-
-You could estimate parameters - e.g., use historical data months, estimate service times - then run scenarios and observe simulation response times and handover times.
+Could add assumption confidence scale/scoring (sometimes part of an assumption audit framework) - every assumption gets a rating from 1 to 5 (e.g., 1 low confidence guesswork, 2 low confidence weak evidence maybe anecdotal, 3 moderate confidence some supporting data but gaps/uncertainty, 4 high confidence good quality data 5 very high confidence strong empirical evidence repeated validation well established). Other names may include assumption register/log, confidence weighting, model risk scoring. May be done in combination with impact scoring (how much assumption affects outcomes) and sensitivity analysis (what happens if the assumption is wrong). Was suggested in relation to another model by someone in a HaCORN meeting.
 
 <br>
 
@@ -172,6 +250,8 @@ And overall across reps
 Can quantify uncertainty via 95% confidence interval (or could do prediction interval)
 
 ### Notes
+
+See Tom's [NSPP notebook](https://github.com/pythonhealthdatascience/intro-open-sim/blob/main/content/16_time_dependent_arrivals.ipynb).
 
 The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
@@ -293,6 +373,8 @@ May also be other new outputs that are relevant like:
 When evaluating shift scenarioes, will work with **Ambulance Operations Managers** (visit in-person) (often ex-paramedics).
 
 Will not explore cost, as not something their team get asked to report on.
+
+Will need to track individual resources to model shifts - can do so via Store and FilterStore - check out Tom's notebooks - <https://github.com/pythonhealthdatascience/intro-open-sim/blob/main/content/15_resource_stores.ipynb> - and Sammi has done this a bunch too.
 
 ::: {.box-hl}
 

@@ -58,8 +58,8 @@ class Logger:
             )
         if not str(self.config.log_file_path).endswith(".log"):
             raise ValueError(
-                f"The log file path '{self.config.log_file_path}' must " +
-                 "end with '.log'."
+                f"The log file path '{self.config.log_file_path}' must "
+                + "end with '.log'."
             )
 
     def _configure_logging(self):
@@ -83,8 +83,10 @@ class Logger:
             console = Console()
             console.is_jupyter = False
             rich_handler = RichHandler(
-                console=console, show_time=False,
-                show_level=False, show_path=False
+                console=console,
+                show_time=False,
+                show_level=False,
+                show_path=False,
             )
             handlers.append(rich_handler)
 
@@ -99,18 +101,22 @@ class Logger:
         for handler in handlers:
             handler.setFormatter(formatter)
 
-    def log(self, msg, sim_time=None):
+    def log(self, msg, patient=None, sim_time=None):
         """Log a message if logging is enabled.
 
         Parameters
         ----------
         msg : str
             Message to log.
+        patient : Patient
+            Patient whom the log message is about.
         sim_time : float or None, optional
             Current simulation time. If provided, prints before message.
 
         """
         if self.config.log_to_console or self.config.log_to_file:
+            if patient is not None:
+                msg = f"Patient {patient.id} ({patient.category}) {msg}"
             if sim_time is not None:
                 self.logger.info("%0.3f: %s", sim_time, msg)
             else:

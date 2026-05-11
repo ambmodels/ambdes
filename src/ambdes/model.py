@@ -1,8 +1,7 @@
 """Simulation model."""
 
-import numpy as np
 import simpy
-from sim_tools.distributions import Exponential
+from sim_tools.distributions import DistributionRegistry
 
 from .logging import Logger
 from .patient import Patient
@@ -33,36 +32,35 @@ class Model:
         # Create SimPy environment
         self.env = simpy.Environment()
 
+        # Set up ambulance resource
+        self.ambulance = simpy.Resource(
+            self.env, capacity=self.config.n_ambulances
+        )
+
         # Set up logger
         self.logger = Logger(config=self.config)
         self.logger.log(f"Initialising model for run {self.run_number}")
 
-        # Create a random seed sequence based on the run number
-        ss = np.random.SeedSequence(self.run_number)
-        seeds = ss.spawn(4)
-
         # Set up attribute to store results
         self.patients = []
 
-        # Initialise call inter-arrival distributions
-        self.call_dists = {}
-        for i, (category, mean_iat_min) in enumerate(
-            self.config.mean_iat_min.items()
-        ):
-            self.call_dists[category] = Exponential(
-                mean=mean_iat_min,
-                random_seed=seeds[i]
-            )
+        # Initialise distributions, with random seed based on run number
+        self.dists = DistributionRegistry.create_batch(
+            self.config.dist_config,
+            main_seed=self.run_number,
+            sort=True,
+            preserve_structure=True,
+        )
 
     def generate_patients(self, dist, category):
         """Generate patients for a given category indefinitely.
 
         Parameters
         ----------
-        dist : Exponential
+        dist : Distribution
             Inter-arrival time distribution for the patient category.
-        category : int
-            Response category number.
+        category : str
+            Response category label, e.g., "C1".
 
         Yields
         ------
@@ -77,16 +75,87 @@ class Model:
 
             # Create a new patient
             patient = Patient(
-                id=len(self.patients)+1,
+                id=len(self.patients) + 1,
                 category=category,
-                call_time=self.env.now
+                call_timestamp=self.env.now,
             )
             self.patients.append(patient)
 
-            # Print call time
+            # Log call time
             self.logger.log(
-                msg=f"Patient {patient.id} (C{patient.category}) calls",
-                sim_time=self.env.now
+                msg="calls",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Start process of requesting an ambulance
+            self.env.process(self.request_ambulance(patient))
+
+    def request_ambulance(self, patient):
+        """Simulate ambulance response.
+
+        Parameters
+        ----------
+        patient : Patient
+            Patient requesting ambulance transport.
+
+        """
+        # Request an ambulance (and queue if none available)
+        with self.ambulance.request() as req:
+            yield req
+
+            # Record when patient was assigned as ambulance
+            self.logger.log(
+                msg="assigned an ambulance",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Response time
+            patient.response_time = self.dists["response_time"][
+                patient.category
+            ].sample()
+            yield self.env.timeout(patient.response_time)
+            self.logger.log(
+                msg="ambulance arrives",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # On-scene time
+            yield self.env.timeout(self.config.on_scene_time)
+            self.logger.log(
+                msg="completed on-scene care; departing for hospital",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Travel time to hospital
+            patient.travel_time_to_hospital = (
+                self.dists["travel_time_to_hospital"].sample()
+            )
+            yield self.env.timeout(patient.travel_time_to_hospital)
+            self.logger.log(
+                msg="arrived at hospital",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Handover time
+            patient.handover_time = self.dists["handover_time"].sample()
+            yield self.env.timeout(patient.handover_time)
+            self.logger.log(
+                msg="handover completed",
+                patient=patient,
+                sim_time=self.env.now,
+            )
+
+            # Wrap up time
+            yield self.env.timeout(self.config.wrap_up_time)
+            self.logger.log(
+                msg="wrap-up completed; ambulance available",
+                patient=patient,
+                sim_time=self.env.now,
             )
 
     def run(self):
@@ -97,12 +166,15 @@ class Model:
 
         """
         # Set up processes to generate patients of each category
-        for category, dist in self.call_dists.items():
+        for category, dist in self.dists["call"].items():
             self.env.process(
-                self.generate_patients(
-                    dist=dist,
-                    category=category
-                )
+                self.generate_patients(dist=dist, category=category)
             )
         # Run simulation
         self.env.run(until=self.config.run_length)
+
+        # Log end of simulation
+        self.logger.log(
+            msg=f"Simulation run {self.run_number} ends",
+            sim_time=self.env.now,
+        )
