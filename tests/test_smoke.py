@@ -24,3 +24,13 @@ def test_model_runs_without_error():
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0
+
+
+def test_model_with_logs_runs_without_error():
+    """Model completes a short run with logs."""
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA, run_length=100, log_to_console=True
+    )
+    model = Model(run_number=0, config=config)
+    model.run()
+    assert len(model.patients) > 0
