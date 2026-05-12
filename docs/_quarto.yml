@@ -23,7 +23,13 @@ website:
       - validation.qmd
       - criteria.qmd
       - qa.qmd
+      - reuse.qmd
       - run/stage1/baseline.ipynb
+
+  announcement:
+    dismissable: false
+    content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="reuse.qmd">Learn more about appropriate reuse</a>.
+    position: below-navbar
 
 language:
   search-text-placeholder:
