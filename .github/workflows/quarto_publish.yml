@@ -3,7 +3,7 @@ run-name: Render quarto site and publish on GitHub pages
 
 on:
   push:
-    branches: main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash -el {0}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -29,7 +33,7 @@ jobs:
       - name: Render site
         run: quarto render docs --execute
 
-      - name: Render and publish to GitHub pages
+      - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages

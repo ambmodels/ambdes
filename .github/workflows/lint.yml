@@ -5,9 +5,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+
 jobs:
   lint:
       runs-on: ubuntu-latest
+      defaults:
+        run:
+          shell: bash -el {0}
       steps:
 
         - name: Check out repository
