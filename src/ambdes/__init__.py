@@ -6,6 +6,7 @@ __version__ = "0.1.0"
 # rather than `from ambdes.model import Model`.
 
 from .ambsys import ambsys, lognormal_sd_from_mean_p90
+from .animation import generate_animation
 from .config import SimConfig
 from .logging import Logger
 from .model import Model
@@ -15,6 +16,7 @@ from .runner import Runner
 
 __all__ = [
     "ambsys",
+    "generate_animation",
     "Logger",
     "lognormal_sd_from_mean_p90",
     "Model",

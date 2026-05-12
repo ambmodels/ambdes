@@ -7,6 +7,8 @@ manage replications.
 
 import simpy
 from sim_tools.distributions import DistributionRegistry
+from vidigi.logging import EventLogger
+from vidigi.resources import VidigiStore
 
 from .logging import Logger
 from .patient import Patient
@@ -37,13 +39,18 @@ class Model:
         self.env = simpy.Environment()
 
         # Set up ambulance resource
-        self.ambulance = simpy.Resource(
-            self.env, capacity=self.config.n_ambulances
+        self.ambulance = VidigiStore(
+            self.env, num_resources=self.config.n_ambulances
         )
 
-        # Set up logger
+        # Set up logger with our custom log messages
         self.logger = Logger(config=self.config)
         self.logger.log(f"Initialising model for run {self.run_number}")
+
+        # Set up Vidigi logger
+        self.vidigi_logger = EventLogger(
+            env=self.env, run_number=self.run_number
+        )
 
         # Set up attribute to store results
         self.patients = []
@@ -91,6 +98,7 @@ class Model:
                 patient=patient,
                 sim_time=self.env.now,
             )
+            self.vidigi_logger.log_arrival(entity_id=patient.patient_id)
 
             # Start process of requesting an ambulance
             self.env.process(self.request_ambulance(patient))
@@ -105,14 +113,22 @@ class Model:
 
         """
         # Request an ambulance (and queue if none available)
+        self.vidigi_logger.log_queue(
+            entity_id=patient.patient_id, event="ambulance_wait_begins"
+        )
         with self.ambulance.request() as req:
-            yield req
+            vehicle = yield req
 
             # Record when patient was assigned as ambulance
             self.logger.log(
                 msg="assigned an ambulance",
                 patient=patient,
                 sim_time=self.env.now,
+            )
+            self.vidigi_logger.log_resource_use_start(
+                entity_id=patient.patient_id,
+                event="ambulance_arrives",
+                resource_id=vehicle.id_attribute,
             )
 
             # Response time
@@ -160,6 +176,14 @@ class Model:
                 msg="wrap-up completed; ambulance available",
                 patient=patient,
                 sim_time=self.env.now,
+            )
+            self.vidigi_logger.log_resource_use_end(
+                entity_id=patient.patient_id,
+                event="ambulance_available",
+                resource_id=vehicle.id_attribute,
+            )
+            self.vidigi_logger.log_departure(
+                entity_id=patient.patient_id,
             )
 
     def run(self):
