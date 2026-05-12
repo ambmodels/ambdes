@@ -49,3 +49,7 @@
 .callout-toggle-btn.is-expanded {
   background: rgba(0, 0, 0, 0.08);
 }
+
+#quarto-announcement a {
+  color: #08354f !important;
+}
