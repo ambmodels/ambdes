@@ -1,0 +1,58 @@
+# Model { #ambdes.Model }
+
+```python
+Model(run_number, config)
+```
+
+Discrete-event simulation model for generating patient calls.
+
+The model creates one call-generation process per patient category and
+records generated patients during a single simulation run.
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [generate_patients](#ambdes.Model.generate_patients) | Generate patients for a given category indefinitely. |
+| [request_ambulance](#ambdes.Model.request_ambulance) | Simulate ambulance response. |
+| [run](#ambdes.Model.run) | Run the simulation model. |
+
+### generate_patients { #ambdes.Model.generate_patients }
+
+```python
+Model.generate_patients(dist, category)
+```
+
+Generate patients for a given category indefinitely.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type         | Description                                               | Default    |
+|----------|--------------|-----------------------------------------------------------|------------|
+| dist     | Distribution | Inter-arrival time distribution for the patient category. | _required_ |
+| category | str          | Response category label, e.g., "C1".                      | _required_ |
+
+### request_ambulance { #ambdes.Model.request_ambulance }
+
+```python
+Model.request_ambulance(patient)
+```
+
+Simulate ambulance response.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type    | Description                             | Default    |
+|---------|---------|-----------------------------------------|------------|
+| patient | Patient | Patient requesting ambulance transport. | _required_ |
+
+### run { #ambdes.Model.run }
+
+```python
+Model.run()
+```
+
+Run the simulation model.
+
+Starts one patient-generation process for each category and runs the
+simulation until the configured run length.

@@ -73,11 +73,6 @@ class Model:
         category : str
             Response category label, e.g., "C1".
 
-        Yields
-        ------
-        simpy.events.Timeout
-            Timeout event until the next patient arrival.
-
         """
         while True:
             # Sample and pass time to next call

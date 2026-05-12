@@ -6,30 +6,68 @@ website:
   favicon: images/pixelambulance.png
   search:
     type: textbox
-
   navbar:
     logo: images/pixelambulance.png
     right:
       - icon: github
         text: GitHub
         href: https://github.com/ambmodels/ambdes
-
-  sidebar:
-    - contents:
-      - conceptual.qmd
-      - literature.qmd
-      - code.qmd
-      - verification.qmd
-      - validation.qmd
-      - criteria.qmd
-      - qa.qmd
-      - reuse.qmd
-      - run/stage1/baseline.ipynb
-
   announcement:
     dismissable: false
-    content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="reuse.qmd">Learn more about appropriate reuse</a>.
+    content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="/reuse.qmd">Learn more about appropriate reuse</a>.
     position: below-navbar
+
+metadata-files:
+  - _sidebar.yml
+
+quartodoc:
+  dir: api
+  out_index: index.qmd
+  package: ambdes
+  title: "Overview"
+  sections:
+    - title: "Core classes"
+      desc: "Main classes used to build and run simulations."
+      contents:
+        - SimConfig
+        - Logger
+        - Model
+        - Patient
+        - Results
+        - Runner
+    - title: "Top-level functions"
+      desc: "Common utility functions for calibration and configuration."
+      contents:
+        - lognormal_sd_from_mean_p90
+        - generate_animation
+  sidebar:
+    file: "_sidebar.yml"
+    title: "Ambulance DES"
+    collapse-level: 1
+    contents:
+      - text: Home
+        href: index.qmd
+      - section: "Planning"
+        contents:
+          - literature.qmd
+          - conceptual.qmd
+          - code.qmd
+      - section: "Models"
+        contents:
+          - run/stage1/baseline.ipynb
+      - section: "Quality assurance"
+        contents:
+          - verification.qmd
+          - validation.qmd
+          - criteria.qmd
+          - qa.qmd
+      - section: "User guide"
+        contents:
+          - userguide.qmd
+      - section: "API reference"
+        contents:
+          - "{{ contents }}"
+      - reuse.qmd
 
 language:
   search-text-placeholder:

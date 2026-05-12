@@ -14,9 +14,9 @@ conda activate ambdes
 To render documentation locally:
 
 ```
-quarto render docs
-quarto render docs --execute
-quarto preview docs
+make -C docs render
+make -C docs execute
+make -C docs preview
 ```
 
 To run linter and code formatter:

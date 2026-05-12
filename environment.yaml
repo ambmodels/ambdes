@@ -14,5 +14,7 @@ dependencies:
   - vidigi=1.3.0
   - pip:
     - -e .
+    - griffe==1.15.0
     - lintquarto==0.10.0
+    - quartodoc==0.11.1
     - sim-tools==1.1.0
