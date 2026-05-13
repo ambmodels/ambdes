@@ -1,0 +1,12 @@
+---
+title: Assumptions
+---
+
+To reflect on and document. Things like:
+
+* Multiple vehicles attending the same incident - not modelling that (should you?)
+* Including/excluding see-and-treat and hear-and-treat
+* Out of ambulance service patch
+* Not modelling hospital capacity (AmbModelOpen did that)
+
+Could add assumption confidence scale/scoring (sometimes part of an assumption audit framework) - every assumption gets a rating from 1 to 5 (e.g., 1 low confidence guesswork, 2 low confidence weak evidence maybe anecdotal, 3 moderate confidence some supporting data but gaps/uncertainty, 4 high confidence good quality data 5 very high confidence strong empirical evidence repeated validation well established). Other names may include assumption register/log, confidence weighting, model risk scoring. May be done in combination with impact scoring (how much assumption affects outcomes) and sensitivity analysis (what happens if the assumption is wrong). Was suggested in relation to another model by someone in a HaCORN meeting.

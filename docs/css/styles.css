@@ -61,7 +61,14 @@
 }
 
 .overview_summary {
-  background: #008276;
+  background: #007268;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 1em 1.4em 0.4em 1.4em;
+  margin-bottom: 1.8rem;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 114, 104, 0.18);
 }
 
 /* Step box */
@@ -107,7 +114,7 @@
   background: #a5a9b0;
 }
 
-/* Title */
+/* Font */
 .overview_step h3 {
   margin-top: 0;
   margin-bottom: 0.8rem;
@@ -115,32 +122,13 @@
   font-weight: 700;
   color: #243447;
 }
-
-/* Update section */
-.step_update {
-  padding: 0.7rem 0.9rem;
-  margin-bottom: 1rem;
-
-  border-radius: 8px;
-
-  font-size: 0.92rem;
-  line-height: 1.4;
-}
-.is_new .step_update {
-  background: #e9f7ef;
-  color: #1f5e38;
-}
-.is_change .step_update {
-  background: #fff3e8;
-  color: #9a4d00;
+.overview_step h4 {
+  font-size: 1rem;
 }
 
 /* Details section */
-.overview_details {
-  background: #f8f9fb;
-  border-radius: 5px;
-  font-size: 0.9em;
-  padding: 1em 1em 0.1em 1em
+.overview_step .callout {
+  background: #f5f7fa;
 }
 
 /* Arrow between boxes */
@@ -149,7 +137,7 @@
   font-size: 2rem;
   line-height: 1;
   color: #b0b7c3;
-  margin: -0.5rem 0 0.5rem 0;
+  margin: -0.8em 0 -0.5em 0;
   user-select: none;
 }
 

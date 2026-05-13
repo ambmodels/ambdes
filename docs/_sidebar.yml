@@ -4,14 +4,16 @@ website:
     contents:
     - href: index.qmd
       text: Home
+    - literature.qmd
+    - code.qmd
+    - modeloverview.qmd
     - contents:
-      - literature.qmd
-      - conceptual.qmd
-      - code.qmd
-      section: Planning
+      - stage1/assumptions.qmd
+      - stage1/baseline.ipynb
+      section: Stage 1
     - contents:
-      - run/stage1/baseline.ipynb
-      section: Models
+      - stage2/assumptions.qmd
+      section: Stage 2
     - contents:
       - verification.qmd
       - validation.qmd

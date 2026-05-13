@@ -8,9 +8,8 @@ website:
     type: textbox
   navbar:
     logo: images/pixelambulance.png
-    right:
+    tools:
       - icon: github
-        text: GitHub
         href: https://github.com/ambmodels/ambdes
   announcement:
     dismissable: false
@@ -47,14 +46,17 @@ quartodoc:
     contents:
       - text: Home
         href: index.qmd
-      - section: "Planning"
+      - literature.qmd
+      - code.qmd
+      - modeloverview.qmd
+      - section: "Stage 1"
         contents:
-          - literature.qmd
-          - conceptual.qmd
-          - code.qmd
-      - section: "Models"
+          - stage1/assumptions.qmd
+          - stage1/baseline.ipynb
+          - stage1/animate.ipynb
+      - section: "Stage 2"
         contents:
-          - run/stage1/baseline.ipynb
+          - stage2/assumptions.qmd
       - section: "Quality assurance"
         contents:
           - verification.qmd
