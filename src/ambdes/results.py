@@ -34,8 +34,7 @@ class Results:
         Returns
         -------
         pd.DataFrame
-            Columns: run, patient_id, category, call_timestamp,
-            response_time, travel_time_to_hospital, handover_time.
+            Columns: run, patient_id, category, call_timestamp, response_time.
 
         """
         return pd.DataFrame(
@@ -46,8 +45,6 @@ class Results:
                     "category": p.category,
                     "call_timestamp": p.call_timestamp,
                     "response_time": p.response_time,
-                    "travel_time_to_hospital": p.travel_time_to_hospital,
-                    "handover_time": p.handover_time,
                 }
                 for p in self.patients
             ]
@@ -69,11 +66,6 @@ class Results:
             .agg(
                 n_patients=("patient_id", "count"),
                 mean_response_time=("response_time", "mean"),
-                mean_travel_time_to_hospital=(
-                    "travel_time_to_hospital",
-                    "mean",
-                ),
-                mean_handover_time=("handover_time", "mean"),
             )
             .reset_index()
             .assign(run=self.run_number)

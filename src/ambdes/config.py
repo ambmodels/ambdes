@@ -13,8 +13,9 @@ class SimConfig:
         self,
         ambsys_data,
         resource_hours_per_week=52000,
+        mean_time_to_scene=10,
         on_scene_time=44,
-        travel_time_to_hospital=10,
+        mean_time_to_hospital=10,
         wrap_up_time=14,
         run_length=100,
         n_reps=5,
@@ -27,15 +28,15 @@ class SimConfig:
         Parameters
         ----------
         ambsys_data : dict
-            Input data containing mean timings for the simulation, including
-            `mean_iat_min`, `mean_response_time_min`, `sd_response_time_min`
-            and `mean_handover_time_min`.
+            Input data containing mean and SD of timings for the simulation.
         resource_hours_per_week : int
             Ambulance resource hours per week.
+        mean_time_to_scene : float
+            Mean time from ambulance assignment to arrival on scene in minutes.
         on_scene_time : float
             Fixed time in minutes spent on scene before transport.
-        travel_time_to_hospital : float
-            Fixed travel time in minutes from scene to hospital.
+        mean_time_to_hospital : float
+            Mean time from leaving scene to arriving at hospital in minutes.
         wrap_up_time : float
             Fixed time in minutes for post-handover wrap-up before the
             ambulance becomes available again.
@@ -64,17 +65,9 @@ class SimConfig:
                 }
                 for category, mean_iat in ambsys_data["mean_iat_min"].items()
             },
-            "response_time": {
-                category: {
-                    "class_name": "Lognormal",
-                    "params": {
-                        "mean": (
-                            ambsys_data["mean_response_time_min"][category]
-                        ),
-                        "stdev": ambsys_data["sd_response_time_min"][category],
-                    },
-                }
-                for category in ambsys_data["mean_response_time_min"]
+            "time_to_scene": {
+                "class_name": "Exponential",
+                "params": {"mean": mean_time_to_scene},
             },
             "handover_time": {
                 "class_name": "Lognormal",
@@ -83,9 +76,9 @@ class SimConfig:
                     "stdev": ambsys_data["sd_handover_time_min"],
                 },
             },
-            "travel_time_to_hospital": {
+            "time_to_hospital": {
                 "class_name": "Exponential",
-                "params": {"mean": travel_time_to_hospital},
+                "params": {"mean": mean_time_to_hospital},
             },
         }
 

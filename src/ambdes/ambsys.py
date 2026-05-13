@@ -24,9 +24,8 @@ def ambsys(csv_path, org_code, month, year):
     Returns
     -------
     dict
-        Nested dictionary containing mean inter-arrival times for C1-C4 calls,
-        mean response times for C1-C4 calls, and mean handover time, all
-        expressed in minutes.
+        Nested dictionary containing mean inter-arrival times for C1-C4 calls
+        and mean handover time, all expressed in minutes.
 
     """
     # Convert year and month to int, if not already
@@ -60,28 +59,6 @@ def ambsys(csv_path, org_code, month, year):
         category: min_in_month / int(month_df[code])
         for category, code in count_codes.items()
     }
-
-    # Convert mean response times from seconds to minutes
-    response_mean_codes = {"C1": "A25", "C2": "A31", "C3": "A34", "C4": "A37"}
-    result["mean_response_time_min"] = {
-        category: float(month_df[code]) / 60
-        for category, code in response_mean_codes.items()
-    }
-
-    # Convert 90th centile response times from seconds to minutes
-    response_p90_codes = {"C1": "A26", "C2": "A32", "C3": "A35", "C4": "A38"}
-    result["p90_response_time_min"] = {
-        category: float(month_df[code]) / 60
-        for category, code in response_p90_codes.items()
-    }
-
-    # Estimate response time SDs (minutes) assuming lognormal response times
-    result["sd_response_time_min"] = {}
-    for category in response_mean_codes:
-        result["sd_response_time_min"][category] = lognormal_sd_from_mean_p90(
-            mean=result["mean_response_time_min"][category],
-            p90=result["p90_response_time_min"][category],
-        )
 
     # Convert mean and 90th centile handover time from seconds to minutes
     result["mean_handover_time_min"] = float(month_df["A142"]) / 60
