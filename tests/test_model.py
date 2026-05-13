@@ -96,11 +96,7 @@ def test_completed_patients():
             assert p.response_time > 0
 
     # Check there is at least 1 patient with all time attributes i.e. complete
-    completed = [
-        p
-        for p in model.patients
-        if p.response_time is not None
-    ]
+    completed = [p for p in model.patients if p.response_time is not None]
     assert len(completed) > 0
 
 

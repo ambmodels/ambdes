@@ -43,9 +43,7 @@ class Model:
         )
 
         # Set up logger
-        self.logger = EventLogger(
-            env=self.env, run_number=self.run_number
-        )
+        self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
         # Set up attribute to store results
         self.patients = []

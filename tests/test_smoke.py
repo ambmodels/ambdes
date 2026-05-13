@@ -1,6 +1,5 @@
 """Smoke tests - checks the model runs end-to-end without errors."""
 
-import pytest
 
 from ambdes import Model, SimConfig
 
@@ -11,11 +10,10 @@ AMBSYS_DATA = {
     "sd_handover_time_min": 15.0,
 }
 
+
 def test_model_runs_without_error():
     """Model completes a short run (with/without logs) successfully."""
-    config = SimConfig(
-        ambsys_data=AMBSYS_DATA, run_length=100
-    )
+    config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=100)
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0
