@@ -1,15 +1,26 @@
 ---
 title: Model overview
+bibliography: references.bib
 format: 
   html:
     page-layout: full
 ---
 
-:::: {.panel-tabset}
+::::: {.panel-tabset}
 
 ## Stage 1 (public data)
 
-::: {.overview_step}
+::: {.overview_summary}
+
+This stage uses public data - combination of ambsys, trust reports, and reported data in literature. It is a model of whole system. it can be used to ask:
+
+How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?
+
+:::
+
+### Conceptual model
+
+:::: {.overview_step}
 
 ### Incident arrives
 
@@ -19,9 +30,7 @@ format:
 
 **Source:** AmbSYS (derived from monthly incident counts).
 
-<details>
-<summary>More details</summary>
-<div class="overview_details">
+::: {.callout-note appearance="simple" collapse="true" title="More details"}
 
 These are based on AmbSYS data, which reports total count of incidents for each response category (C1, C2, C3, C4) for each region for each month (A8, A10, A11, A12).
 
@@ -29,14 +38,17 @@ This can be converted to a mean inter-arrival time in minutes by dividing the mi
 
 A Homogeneous Poisson Process (HPP) is used as we don’t have any information on incidents by day of week, which would be necessary for Non-Homogeneous Poisson Process (NHPP), which is most common in the literature.
 
-</div>
-</details>
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
 
 :::
 
-<div class="overview_arrow">↓</div>
-
-::: {.overview_step}
+:::: {.overview_step}
 
 ### Wait for resource
 
@@ -48,9 +60,7 @@ A Homogeneous Poisson Process (HPP) is used as we don’t have any information o
 
 **Source:** SWASFT Annual Report (derived from reported weekly conveying resource hours).
 
-<details>
-<summary>More details</summary>
-<div class="overview_details">
+::: {.callout-note appearance="simple" collapse="true" title="More details"}
 
 A FIFO queue is a simple approach, common in the ambulance DES literature.
 
@@ -58,14 +68,17 @@ The number of ambulances is based on the [SWAST Annual Report and Accounts (1 Ap
 
 Our model will assume a constant fleet size, with a fixed 24/7 resource pool with no shift pattern. One always-available ambulance provides 168 hours of capacity per week (24 × 7), so we approximate the number of ambulances as `resource_hours_per_week / 168`.
 
-</div>
-</details>
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
 
 :::
 
-<div class="overview_arrow">↓</div>
-
-::: {.overview_step}
+:::: {.overview_step}
 
 ### Response time (mobilisation time + time to scene)
 
@@ -75,9 +88,7 @@ Our model will assume a constant fleet size, with a fixed 24/7 resource pool wit
 
 **Source:** AmbSYS (derive reported mean and 90th percentile response time).
 
-<details>
-<summary>More details</summary>
-<div class="overview_details">
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
 
 These are based on **AmbSYS** data, which reports the mean and 90th percentile response time by response category (C1, C2, C3, C4) for each region for each month (A25, A26, A31, A32, A34, A35, A37, A38).
 
@@ -85,20 +96,141 @@ We use a lognormal distribution, as likewise implemented in [AmbModelOpen](https
 
 Lognormal requires mean and standard deviation, so the standard deviation was estimated from the mean and 90th percentile, assuming a lognormal distribution.
 
-</div>
-</details>
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
 
 :::
 
+:::: {.overview_step}
+
+### On-scene time
+
+**Distribution:** N/A - deterministic.
+
+**Data:** Mean.
+
+**Source:** Reported times from a study in London in 2023.
+
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
+
+The most relevant public data identified for on-scene time is a study from @davis_what_2025 in London, reporting times from 2023. For on-scene times, they report:
+
+* Mean on-scene time: 44 minutes
+* Median on-scene time: 46 minutes
+* Inter-quartile range (IQR) for on-scene time: 33 to 54 minutes
+
+Currently, the on-scene time is deterministic.
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time at scene (tas)).
+
+It may be possible though to estimate a SD from the provided mean/median/IQR, allowing use of a lognormal distribution.
+
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
+
+:::
+
+:::: {.overview_step}
+
+### Travel to hospital
+
+**Distribution:** Exponential.
+
+**Data:** Mean.
+
+**Source:** Very rough estimate, based on reported distribution skew and average distance between where a person lives and an emergency hospital site as reported 2011 study data.
+
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
+
+The most relevant public data identified to support this estimate was @roberts_focus_2014. Two relevant sections of their report:
+
+* **Left-skewed distribution** for distances between person's home and site where they received an emergency inpatient admission in 2011/12 (for whole of England) (Figure 3.2).
+* **Average 12.24km (7.61 miles) in South West** between where a person lives and the hospital site used for an emergency admission.
+
+No relevant data was identified to estimate travel speed, so an arbitrary speed of 45mph was chosen. Based on this, the average travel time to hospital would be:
+
+* `7.61 miles / 45mph = 0.169 hours`
+* `0.169 x 60 = 10.1 minutes`
+
+Hence, a very rough mean time of 10 minutes is used, with an exponential distribution (as this is left skewed and only requires a mean).
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time to site (ttsi)).
+
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
+
+:::
+
+:::: {.overview_step}
+
+### Handover
+
+**Distribution:** Lognormal.
+
+**Data:** Mean and SD.
+
+**Source:** AmbSYS (derived from mean and 90th percentile handover time).
+
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
+
+This is based on **AmbSYS** data, which reports the mean and 90th percentile handover time overall for each region each month (A142, A143).
+
+:::
+
+::::
+
+::: {.overview_arrow}
+
+↓
+
+:::
+
+:::: {.overview_step}
+
+### Wrap-up time
+
+**Distribution:** N/A - deterministic.
+
+**Data:** Mean.
+
+**Source:** Reported wrap-up times in 2023 in London.
+
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
+
+The most relevant public data identified for on-scene time is a study from @davis_what_2025 in London, reporting times from 2023. For wrap up times, they report:
+
+* Mean handover-to-clear time: 14 minutes
+
+Currently, the wrap-up time is deterministic.
+
+Ideally, these would be modelled using a lognormal distribution (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), who use empirical or lognormal for time to clear (ttc)).
+
+:::
+
+::::
+
 ## Stage 2 (internal data)
 
-::: {.overview_step .is_change}
+:::: {.overview_step .is_change}
 
-<div class="step_badge">Changed</div>
+<div class="step_badge" title="(1) Varies by day of week. (2) New data source.">Changed</div>
 
 ### Incident arrives
-
-<div class="step_update">**Changed:** (1) Varies by day of week (2) New data source.</div>
 
 **Distribution:** Non-homogeneous Poisson.
 
@@ -106,26 +238,25 @@ Lognormal requires mean and standard deviation, so the standard deviation was es
 
 **Source:** Internal SWASFT data.
 
-<details>
-<summary>More details</summary>
-<div class="overview_details">
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
 
 TODO
 
-</div>
-</details>
-
 :::
+
+::::
 
 <div class="overview_arrow">↓</div>
 
-::: {.overview_step}
+:::: {.overview_step .is_same}
+
+<div class="step_badge">Same as Stage 1</div>
 
 ### Wait for resource
 
 Same as stage 1.
 
-:::
+::::
 
 ## Stage 3 (county models)
 
@@ -136,5 +267,30 @@ Same as stage 1.
 ## Stage 6 (geography)
 
 ## Stage 7 (stations)
+
+:::::
+
+
+::: {.overview_arrow}
+
+↓
+
+:::
+
+:::: {.overview_step}
+
+### TODO
+
+**Distribution:** TODO.
+
+**Data:** TODO.
+
+**Source:** TODO.
+
+::: {.callout-note appearance="simple"  collapse="true" title="More details"}
+
+TODO.
+
+:::
 
 ::::

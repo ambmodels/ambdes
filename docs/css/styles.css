@@ -54,10 +54,19 @@
   color: #08354f !important;
 }
 
-/* Model overview DIVs ----------------------------------------------------- */
+/* Model overview */
+
+.tab-content {
+  background: #e4f3ef;
+}
+
+.overview_summary {
+  background: #008276;
+}
 
 /* Step box */
 .overview_step {
+  background: white;
   position: relative;
   border: 2px solid #cfd4dc;
   border-radius: 10px;
@@ -74,24 +83,28 @@
 /* Badge */
 .step_badge {
   position: absolute;
-  top: -10px;
+  top: -12px;
   right: 12px;
 
-  padding: 0.15rem 0.55rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 999px;
 
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 
   color: white;
   text-transform: uppercase;
+  cursor: help;
 }
 .is_new .step_badge {
   background: #2ca25f;
 }
 .is_change .step_badge {
   background: #f28e2b;
+}
+.is_same .step_badge {
+  background: #a5a9b0;
 }
 
 /* Title */
