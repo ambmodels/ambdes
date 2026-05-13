@@ -6,7 +6,7 @@ import time
 class SimConfig:
     """Configuration for a simulation run.
 
-    Stores input data, run settings, and logging options used by the model.
+    Stores input data and run settings used by the model.
     """
 
     def __init__(
@@ -19,9 +19,6 @@ class SimConfig:
         wrap_up_time=14,
         run_length=100,
         n_reps=5,
-        log_to_console=False,
-        log_to_file=False,
-        log_file_path=None,
     ):
         """Initialise simulation configuration.
 
@@ -44,17 +41,8 @@ class SimConfig:
             Duration of the simulation run.
         n_reps : int
             Number of replications to run.
-        log_to_console : bool
-            Whether to write log messages to the console.
-        log_to_file : bool
-            Whether to write log messages to a file.
-        log_file_path : str
-            Path to the log file.
 
         """
-        if log_file_path is None:
-            log_file_path = f"{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
-
         # Set up parameters for distributions in required format for
         # sim-tools DistributionsRegistry
         self.dist_config = {
@@ -93,6 +81,3 @@ class SimConfig:
         self.wrap_up_time = wrap_up_time
         self.run_length = run_length
         self.n_reps = n_reps
-        self.log_to_console = log_to_console
-        self.log_to_file = log_to_file
-        self.log_file_path = log_file_path
