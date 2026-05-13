@@ -53,3 +53,90 @@
 #quarto-announcement a {
   color: #08354f !important;
 }
+
+/* Model overview DIVs ----------------------------------------------------- */
+
+/* Step box */
+.overview_step {
+  position: relative;
+  border: 2px solid #cfd4dc;
+  border-radius: 10px;
+  padding: 1.2em 1.2em 0.5em 1.2em;
+  margin: 1.5rem 0;
+}
+.overview_step.is_new {
+  border-color: #2ca25f;
+}
+.overview_step.is_change {
+  border-color: #f28e2b;
+}
+
+/* Badge */
+.step_badge {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+
+  color: white;
+  text-transform: uppercase;
+}
+.is_new .step_badge {
+  background: #2ca25f;
+}
+.is_change .step_badge {
+  background: #f28e2b;
+}
+
+/* Title */
+.overview_step h3 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #243447;
+}
+
+/* Update section */
+.step_update {
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1rem;
+
+  border-radius: 8px;
+
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+.is_new .step_update {
+  background: #e9f7ef;
+  color: #1f5e38;
+}
+.is_change .step_update {
+  background: #fff3e8;
+  color: #9a4d00;
+}
+
+/* Details section */
+.overview_details {
+  background: #f8f9fb;
+  border-radius: 5px;
+  font-size: 0.9em;
+  padding: 1em 1em 0.1em 1em
+}
+
+/* Arrow between boxes */
+.overview_arrow {
+  text-align: center;
+  font-size: 2rem;
+  line-height: 1;
+  color: #b0b7c3;
+  margin: -0.5rem 0 0.5rem 0;
+  user-select: none;
+}
+
