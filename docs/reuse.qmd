@@ -1,0 +1,26 @@
+---
+title: Reuse
+---
+
+This model and the accompanying results were developed in partnership with the South Western Ambulance Service NHS Foundation Trust (SWASFT) for a specific service context, dataset and set of questions. They are shared to support transparency, learning and reuse of methods, but the results shown on this website should not be interpreted as directly applicable to other ambulance services, regions or operational settings without **further local adaptation and validation**.
+
+## Reuse
+
+We are keen for others to learn from and build on this work. The code is released under the MIT licence, so you are free to reuse, adapt and integrate it into your own projects, with attribution. We would be glad to hear from anyone interested in adapting the model for their own context.
+
+However, it is important that any reuse involves appropriate local validation and does not simply apply the example results elsewhere. Anyone wishing to reuse this work should:
+
+1. **Define the local purpose clearly** – what questions you want to answer, and what decisions the model is intended to inform in your setting.
+2. **Review whether the structure matches your context** – check that the pathway, demand patterns, resources and performance measures in the code are appropriate for your service.
+3. **Replace example data with local data** – use data from your own organisation, applying your local information governance and disclosure control rules.
+4. **Repeat verification and validation locally** – work with your own stakeholders to check that the model behaves plausibly, reproduces key patterns in your data, and is suitable for the kinds of scenarios you want to explore.
+
+If you are planning to adapt the model and would like to discuss this, please do get in touch.
+
+## Knowledge for reuse
+
+To make effective use of this model, some background knowledge may be helpful. You can find lots of relevant material in the [DES RAP Book](https://pythonhealthdatascience.github.io/des_rap_book/). At a minimum, we suggest:
+
+* [**Discrete-event simulation**](https://pythonhealthdatascience.github.io/des_rap_book/pages/intros/des.html) - what DES is, how it represents systems, and why it is commonly used in healthcare modelling.
+* [**Initialisation bias and warm-up periods**](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/output_analysis/warmup.html) - why simulation models can produce biased early results, and how warm-up periods help address this.
+* [**Object-oriented programming (OOP)**](https://pythonhealthdatascience.github.io/des_rap_book/pages/guide/setup/code_structure.html) - useful background for understanding how the model code is structured.

@@ -49,3 +49,95 @@
 .callout-toggle-btn.is-expanded {
   background: rgba(0, 0, 0, 0.08);
 }
+
+#quarto-announcement a {
+  color: #08354f !important;
+}
+
+/* Model overview */
+
+.tab-content {
+  background: #e4f3ef;
+}
+
+.overview_summary {
+  background: #007268;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 1em 1.4em 0.4em 1.4em;
+  margin-bottom: 1.8rem;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 114, 104, 0.18);
+}
+
+/* Step box */
+.overview_step {
+  background: white;
+  position: relative;
+  border: 2px solid #cfd4dc;
+  border-radius: 10px;
+  padding: 1.2em 1.2em 0.5em 1.2em;
+  margin: 1.5rem 0;
+}
+.overview_step.is_new {
+  border-color: #2ca25f;
+}
+.overview_step.is_change {
+  border-color: #f28e2b;
+}
+
+/* Badge */
+.step_badge {
+  position: absolute;
+  top: -12px;
+  right: 12px;
+
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+
+  color: white;
+  text-transform: uppercase;
+  cursor: help;
+}
+.is_new .step_badge {
+  background: #2ca25f;
+}
+.is_change .step_badge {
+  background: #f28e2b;
+}
+.is_same .step_badge {
+  background: #a5a9b0;
+}
+
+/* Font */
+.overview_step h3 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #243447;
+}
+.overview_step h4 {
+  font-size: 1rem;
+}
+
+/* Details section */
+.overview_step .callout {
+  background: #f5f7fa;
+}
+
+/* Arrow between boxes */
+.overview_arrow {
+  text-align: center;
+  font-size: 2rem;
+  line-height: 1;
+  color: #b0b7c3;
+  margin: -0.8em 0 -0.5em 0;
+  user-select: none;
+}
+

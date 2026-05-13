@@ -31,7 +31,7 @@ jobs:
           channels: conda-forge
 
       - name: Render site
-        run: quarto render docs --execute
+        run: make -C docs execute
 
       - name: Publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2

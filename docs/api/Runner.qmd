@@ -1,0 +1,48 @@
+# Runner { #ambdes.Runner }
+
+```python
+Runner(config)
+```
+
+Run the simulation for one or more replications.
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [run_reps](#ambdes.Runner.run_reps) | Run replications, as defined by config.n_reps. |
+| [run_single](#ambdes.Runner.run_single) | Run a single replication and return results. |
+
+### run_reps { #ambdes.Runner.run_reps }
+
+```python
+Runner.run_reps()
+```
+
+Run replications, as defined by config.n_reps.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                                             |
+|--------|--------|-----------------------------------------------------------------------------------------------------------------------------------------|
+|        | dict   | Dictionary with two DataFrames: - "patients": concatenated per-patient results across runs. - "summary": one-row-per-run summary table. |
+
+### run_single { #ambdes.Runner.run_single }
+
+```python
+Runner.run_single(run_number)
+```
+
+Run a single replication and return results.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                | Default    |
+|------------|--------|----------------------------|------------|
+| run_number | int    | Simulation run identifier. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                                 |
+|--------|--------|-----------------------------------------------------------------------------------------------------------------------------|
+|        | dict   | Dictionary with two DataFrames: - "patients": per-patient results for the run. - "summary": single-row summary for the run. |

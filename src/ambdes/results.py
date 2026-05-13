@@ -34,8 +34,7 @@ class Results:
         Returns
         -------
         pd.DataFrame
-            Columns: run, patient_id, category, call_timestamp,
-            response_time, travel_time_to_hospital, handover_time.
+            Columns: run, patient_id, category, call_timestamp, response_time.
 
         """
         return pd.DataFrame(
@@ -46,15 +45,13 @@ class Results:
                     "category": p.category,
                     "call_timestamp": p.call_timestamp,
                     "response_time": p.response_time,
-                    "travel_time_to_hospital": p.travel_time_to_hospital,
-                    "handover_time": p.handover_time,
                 }
                 for p in self.patients
             ]
         )
 
     def summary_df(self):
-        """Return a single-row summary DataFrame.
+        """Return summary DataFrame with four rows: one per response category.
 
         Returns
         -------
@@ -62,11 +59,14 @@ class Results:
             Columns: run, n_patients.
 
         """
-        return pd.DataFrame(
-            [
-                {
-                    "run": self.run_number,
-                    "n_patients": len(self.patients),
-                }
-            ]
+        df = self.patient_df()
+
+        return (
+            df.groupby("category", dropna=False)
+            .agg(
+                n_patients=("patient_id", "count"),
+                mean_response_time=("response_time", "mean"),
+            )
+            .reset_index()
+            .assign(run=self.run_number)
         )

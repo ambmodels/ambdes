@@ -28,14 +28,6 @@ def ambsys_csv_path(tmp_path) -> Path:
                 "A10": 200,
                 "A11": 300,
                 "A12": 400,
-                "A25": 600,
-                "A26": 650,
-                "A31": 700,
-                "A32": 750,
-                "A34": 800,
-                "A35": 850,
-                "A37": 900,
-                "A38": 950,
                 "A142": 120,
                 "A143": 130,
             }
@@ -96,22 +88,18 @@ def test_ambsys_result_structure(ambsys_csv_path):
     )
     expected_keys = {
         "mean_iat_min",
-        "mean_response_time_min",
-        "p90_response_time_min",
-        "sd_response_time_min",
         "mean_handover_time_min",
         "p90_handover_time_min",
         "sd_handover_time_min",
     }
     assert result.keys() == expected_keys
-    assert set(result["mean_response_time_min"].keys()) == {
+    assert set(result["mean_iat_min"].keys()) == {
         "C1",
         "C2",
         "C3",
         "C4",
     }
     # Check seconds to minutes conversion was correct
-    assert result["mean_response_time_min"]["C1"] == pytest.approx(600 / 60)
     assert result["mean_handover_time_min"] == pytest.approx(120 / 60)
 
 

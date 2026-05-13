@@ -1,0 +1,44 @@
+website:
+  sidebar:
+  - collapse-level: 1
+    contents:
+    - href: index.qmd
+      text: Home
+    - literature.qmd
+    - code.qmd
+    - modeloverview.qmd
+    - contents:
+      - stage1/assumptions.qmd
+      - stage1/baseline.ipynb
+      section: Stage 1
+    - contents:
+      - stage2/assumptions.qmd
+      section: Stage 2
+    - contents:
+      - verification.qmd
+      - validation.qmd
+      - criteria.qmd
+      - qa.qmd
+      section: Quality assurance
+    - contents:
+      - userguide.qmd
+      section: User guide
+    - contents:
+      - api/index.qmd
+      - contents:
+        - api/SimConfig.qmd
+        - api/Logger.qmd
+        - api/Model.qmd
+        - api/Patient.qmd
+        - api/Results.qmd
+        - api/Runner.qmd
+        section: Core classes
+      - contents:
+        - api/lognormal_sd_from_mean_p90.qmd
+        - api/generate_animation.qmd
+        section: Top-level functions
+      section: API reference
+    - reuse.qmd
+    id: api
+    title: Ambulance DES
+  - id: dummy-sidebar

@@ -7,8 +7,9 @@ manage replications.
 
 import simpy
 from sim_tools.distributions import DistributionRegistry
+from vidigi.logging import EventLogger
+from vidigi.resources import VidigiStore
 
-from .logging import Logger
 from .patient import Patient
 
 
@@ -37,13 +38,12 @@ class Model:
         self.env = simpy.Environment()
 
         # Set up ambulance resource
-        self.ambulance = simpy.Resource(
-            self.env, capacity=self.config.n_ambulances
+        self.ambulance = VidigiStore(
+            self.env, num_resources=self.config.n_ambulances
         )
 
         # Set up logger
-        self.logger = Logger(config=self.config)
-        self.logger.log(f"Initialising model for run {self.run_number}")
+        self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
         # Set up attribute to store results
         self.patients = []
@@ -66,11 +66,6 @@ class Model:
         category : str
             Response category label, e.g., "C1".
 
-        Yields
-        ------
-        simpy.events.Timeout
-            Timeout event until the next patient arrival.
-
         """
         while True:
             # Sample and pass time to next call
@@ -86,11 +81,7 @@ class Model:
             self.patients.append(patient)
 
             # Log call time
-            self.logger.log(
-                msg="calls",
-                patient=patient,
-                sim_time=self.env.now,
-            )
+            self.logger.log_arrival(entity_id=patient.patient_id)
 
             # Start process of requesting an ambulance
             self.env.process(self.request_ambulance(patient))
@@ -104,62 +95,47 @@ class Model:
             Patient requesting ambulance transport.
 
         """
-        # Request an ambulance (and queue if none available)
+        # Request an ambulance (will queue if none available)
+        self.logger.log_queue(
+            entity_id=patient.patient_id, event="ambulance_wait_begins"
+        )
         with self.ambulance.request() as req:
-            yield req
+            vehicle = yield req
 
             # Record when patient was assigned as ambulance
-            self.logger.log(
-                msg="assigned an ambulance",
-                patient=patient,
-                sim_time=self.env.now,
+            self.logger.log_resource_use_start(
+                entity_id=patient.patient_id,
+                event="ambulance_arrives",
+                resource_id=vehicle.id_attribute,
             )
 
-            # Response time
-            patient.response_time = self.dists["response_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(patient.response_time)
-            self.logger.log(
-                msg="ambulance arrives",
-                patient=patient,
-                sim_time=self.env.now,
-            )
+            # Sample travel to scene
+            time_to_scene = self.dists["time_to_scene"].sample()
+            yield self.env.timeout(time_to_scene)
+
+            # Record response time (queue + time to scene)
+            patient.response_time = self.env.now - patient.call_timestamp
 
             # On-scene time
             yield self.env.timeout(self.config.on_scene_time)
-            self.logger.log(
-                msg="completed on-scene care; departing for hospital",
-                patient=patient,
-                sim_time=self.env.now,
-            )
 
-            # Travel time to hospital
-            patient.travel_time_to_hospital = self.dists[
-                "travel_time_to_hospital"
-            ].sample()
-            yield self.env.timeout(patient.travel_time_to_hospital)
-            self.logger.log(
-                msg="arrived at hospital",
-                patient=patient,
-                sim_time=self.env.now,
-            )
+            # Sample travel to hospital
+            time_to_hospital = self.dists["time_to_hospital"].sample()
+            yield self.env.timeout(time_to_hospital)
 
             # Handover time
-            patient.handover_time = self.dists["handover_time"].sample()
-            yield self.env.timeout(patient.handover_time)
-            self.logger.log(
-                msg="handover completed",
-                patient=patient,
-                sim_time=self.env.now,
-            )
+            handover_time = self.dists["handover_time"].sample()
+            yield self.env.timeout(handover_time)
 
             # Wrap up time
             yield self.env.timeout(self.config.wrap_up_time)
-            self.logger.log(
-                msg="wrap-up completed; ambulance available",
-                patient=patient,
-                sim_time=self.env.now,
+            self.logger.log_resource_use_end(
+                entity_id=patient.patient_id,
+                event="ambulance_available",
+                resource_id=vehicle.id_attribute,
+            )
+            self.logger.log_departure(
+                entity_id=patient.patient_id,
             )
 
     def run(self):
@@ -176,9 +152,3 @@ class Model:
             )
         # Run simulation
         self.env.run(until=self.config.run_length)
-
-        # Log end of simulation
-        self.logger.log(
-            msg=f"Simulation run {self.run_number} ends",
-            sim_time=self.env.now,
-        )

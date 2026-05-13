@@ -35,17 +35,19 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with two DataFrames:
+            Dictionary with model instance and two DataFrames:
+            - "model": model instance (useful for development/debugging).
             - "patients": per-patient results for the run.
-            - "summary": single-row summary for the run.
+            - "run": summary of results for run by response category.
 
         """
         model = Model(run_number=run_number, config=self.config)
         model.run()
         results = Results(model.patients, run_number)
         return {
+            "model": model,
             "patients": results.patient_df(),
-            "summary": results.summary_df(),
+            "run": results.summary_df(),
         }
 
     def run_reps(self):
@@ -56,15 +58,26 @@ class Runner:
         dict
             Dictionary with two DataFrames:
             - "patients": concatenated per-patient results across runs.
-            - "summary": one-row-per-run summary table.
+            - "run": summary of results for each run by response category.
+            - "overall": summary of results across runs by response category.
 
         """
         all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
+        patients = pd.concat(
+            [r["patients"] for r in all_runs], ignore_index=True
+        )
+        run = pd.concat([r["run"] for r in all_runs], ignore_index=True)
+        overall = (
+            run.drop(columns=["run"], errors="ignore")
+            .groupby("category", dropna=False)
+            .mean()
+            .rename(
+                columns=lambda c: c if c.startswith("mean_") else f"mean_{c}"
+            )
+            .reset_index()
+        )
         return {
-            "patients": pd.concat(
-                [r["patients"] for r in all_runs], ignore_index=True
-            ),
-            "summary": pd.concat(
-                [r["summary"] for r in all_runs], ignore_index=True
-            ),
+            "patients": patients,
+            "run": run,
+            "overall": overall,
         }
