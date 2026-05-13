@@ -24,8 +24,6 @@ def test_patients():
         "category",
         "call_timestamp",
         "response_time",
-        "travel_time_to_hospital",
-        "handover_time",
     ]
     assert df["run"].unique().tolist() == [3]
     assert df["patient_id"].tolist() == [1, 2]
@@ -51,8 +49,6 @@ def test_summary():
         "category",
         "n_patients",
         "mean_response_time",
-        "mean_travel_time_to_hospital",
-        "mean_handover_time",
         "run",
     ]
     assert len(df.index) == 2

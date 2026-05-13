@@ -35,7 +35,8 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with two DataFrames:
+            Dictionary with model instance and two DataFrames:
+            - "model": model instance (useful for development/debugging).
             - "patients": per-patient results for the run.
             - "run": summary of results for run by response category.
 
@@ -44,6 +45,7 @@ class Runner:
         model.run()
         results = Results(model.patients, run_number)
         return {
+            "model": model,
             "patients": results.patient_df(),
             "run": results.summary_df(),
         }

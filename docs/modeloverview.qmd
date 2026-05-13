@@ -123,19 +123,25 @@ One always-available ambulance provides 168 hours of capacity per week (24 × 7)
 
 :::: {.overview_step}
 
-### Response time (mobilisation + time to scene)
+### Travel to scene
 
-**Distribution:** Lognormal \
-**Data:** Mean and standard deviation by C1–C4 \
-**Source:** AmbSYS (derived from reported mean and 90th percentile response time)
+**Distribution:** Exponential \
+**Data:** Mean \
+**Source:** Rough estimate from a 2011 study on distances to emergency hospital sites
 
 ::: {.callout-note appearance="simple" collapse="true" title="More details"}
 
-Based on **AmbSYS** data reporting mean and 90th percentile response times by response category and region per month (A25, A26, A31, A32, A34, A35, A37, A38).
+The most relevant public data is from @roberts_focus_2014, which reports:
 
-A lognormal distribution is used, consistent with [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which models time to scene (tts) using empirical or lognormal distributions.
+- A **left-skewed distribution** of distances between home and emergency inpatient admission site in 2011/12 (Figure 3.2)
+- **Average 12.24 km (7.61 miles)** between home and hospital site in the South West
 
-The standard deviation is estimated from the mean and 90th percentile, assuming lognormality.
+No travel speed data was available, so an arbitrary speed of 45 mph is assumed:
+
+- `7.61 miles ÷ 45 mph = 0.169 hours`
+- `0.169 × 60 ≈ 10.1 minutes`
+
+A rough mean of **10 minutes** is used with an exponential distribution (left-skewed, single-parameter). Ideally, a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time to site).
 
 :::
 
@@ -177,23 +183,7 @@ On-scene time is currently deterministic. Ideally a lognormal distribution would
 
 **Distribution:** Exponential \
 **Data:** Mean \
-**Source:** Rough estimate from a 2011 study on distances to emergency hospital sites
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-The most relevant public data is from @roberts_focus_2014, which reports:
-
-- A **left-skewed distribution** of distances between home and emergency inpatient admission site in 2011/12 (Figure 3.2)
-- **Average 12.24 km (7.61 miles)** between home and hospital site in the South West
-
-No travel speed data was available, so an arbitrary speed of 45 mph is assumed:
-
-- `7.61 miles ÷ 45 mph = 0.169 hours`
-- `0.169 × 60 ≈ 10.1 minutes`
-
-A rough mean of **10 minutes** is used with an exponential distribution (left-skewed, single-parameter). Ideally, a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time to site).
-
-:::
+**Source:** Rough estimate from a 2011 study on distances to emergency hospital sites (as for travel to scene)
 
 ::::
 
