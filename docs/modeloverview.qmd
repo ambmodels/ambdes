@@ -8,32 +8,28 @@ format:
     toc: false
 ---
 
+## Introduction
 
-The proposed approach begins with a simple prototype and builds up in stages. Each stage aligns with specific use case proposed by the ambulance service. 
+This model is developed iteratively, starting with a simple prototype and adding complexity in stages aligned to ambulance service use cases. At each stage, we assess whether the additional detail meaningfully improves validity or whether a simpler version remains sufficient.
 
-Progressing through the stages, we can evaluate whether the added detail improves the model's validity for previous questions, or whether the simpler version remains sufficient.
-
-Response time categories:
+The model represents incidents across four response categories:
 
 * C1 - life-threatening incidents
 * C2 - emergency incidents
 * C3 - urgent incidents
 * C4 - less urgent incidents
 
-We will use a warm-up period. We anticipate maybe a one year run time. We will run replications (more intuitive than long run).
+The primary output is **category 2 mean response time**, and resource utilisation is a secondary output.
 
-For distributions used, will do input modelling using `distfit`, and grouped empirical distributions if not fit (group into bins and interpolate between those bins).
+The simulations use a warm-up period, (we anticipate will) run for one year, and use replications to capture variability. Distributions are estimated using input modelling with `distfit` where possible, with grouped empirical distributions used when parametric fits are inadequate.
 
-**Outputs:**
-
-* **Primary:** Category 2 mean response time
-* **Secondary:** Resource utilisation
-
-The DES version should broadly agree with regression estimates, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
+The DES (particularly those with similar parameters) should broadly agree with existing estimates from regression models, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
 * Multiple outcomes from the same run (regression just one per model).
 * More intuitive system representation (can "see" how resourcing assumptions translate into waits and utilisation).
 * Extendability (once core structure is in place, we can add more components in later stages).
+
+## Model overview
 
 <div
   id="callout-toggle-here"
@@ -543,6 +539,38 @@ County-level of interest e.g., sometimes each county is given a different target
 ### Conceptual model
 
 Does job cycle need breaking down further? (a) mobilisation time (b) time to scene (c) on scene time (d) if conveyed, travel to hospital (e) handover queueing (f) wrap up.
+
+:::: {.overview_step .is_same}
+
+<div class="step_badge">Same as Stage 3</div>
+
+### Example
+
+::::
+
+::: {.overview_arrow}
+↓
+:::
+
+:::: {.overview_step .is_change}
+
+<div class="step_badge" title="Description of change">Change</div>
+
+### Example
+
+::::
+
+::: {.overview_arrow}
+↓
+:::
+
+:::: {.overview_step .is_new}
+
+<div class="step_badge" title="Description of new item">New</div>
+
+### Example
+
+::::
 
 ## Stage 5 (shifts)
 
