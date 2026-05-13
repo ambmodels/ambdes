@@ -54,7 +54,7 @@ class Results:
         )
 
     def summary_df(self):
-        """Return a single-row summary DataFrame.
+        """Return summary DataFrame with four rows: one per response category.
 
         Returns
         -------
@@ -62,11 +62,19 @@ class Results:
             Columns: run, n_patients.
 
         """
-        return pd.DataFrame(
-            [
-                {
-                    "run": self.run_number,
-                    "n_patients": len(self.patients),
-                }
-            ]
+        df = self.patient_df()
+
+        return (
+            df.groupby("category", dropna=False)
+            .agg(
+                n_patients=("patient_id", "count"),
+                mean_response_time=("response_time", "mean"),
+                mean_travel_time_to_hospital=(
+                    "travel_time_to_hospital",
+                    "mean",
+                ),
+                mean_handover_time=("handover_time", "mean"),
+            )
+            .reset_index()
+            .assign(run=self.run_number)
         )

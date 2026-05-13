@@ -47,8 +47,17 @@ def test_summary():
     df = results.summary_df()
 
     # Confirm summary dataframe is as expected
-    assert list(df.columns) == ["run", "n_patients"]
-    assert len(df) == 1
+    assert list(df.columns) == [
+        "category",
+        "n_patients",
+        "mean_response_time",
+        "mean_travel_time_to_hospital",
+        "mean_handover_time",
+        "run",
+    ]
+    assert len(df.index) == 2
     row = df.iloc[0]
     assert row["run"] == 7
-    assert row["n_patients"] == len(patients)
+    assert row["n_patients"] == 2
+    row = df.iloc[1]
+    assert row["n_patients"] == 1

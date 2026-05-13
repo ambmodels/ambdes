@@ -23,16 +23,16 @@ AMBSYS_DATA = {
 
 @pytest.mark.system
 def test_run_single():
-    """run_single returns patients and summary DataFrames for one run."""
+    """run_single returns patients and run DataFrames for one run."""
     # Run single
     config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=200)
     runner = Runner(config=config)
     results = runner.run_single(run_number=0)
     # Check results
-    assert set(results.keys()) == {"patients", "summary"}
+    assert set(results.keys()) == {"patients", "run"}
     assert isinstance(results["patients"], pd.DataFrame)
-    assert isinstance(results["summary"], pd.DataFrame)
-    assert len(results["summary"]) == 1
+    assert isinstance(results["run"], pd.DataFrame)
+    assert len(results["run"].index) == 4
 
 
 @pytest.mark.system
@@ -44,8 +44,12 @@ def test_run_reps():
     results = runner.run_reps()
     # Check results
     patients = results["patients"]
-    summary = results["summary"]
+    run = results["run"]
+    overall = results["overall"]
     assert patients["run"].nunique() == 3
-    assert len(summary) == 3
+    assert run["run"].nunique() == 3
+    assert len(run.index) == 12
+    assert len(overall.index) == 4
     assert isinstance(patients, pd.DataFrame)
-    assert isinstance(summary, pd.DataFrame)
+    assert isinstance(run, pd.DataFrame)
+    assert isinstance(overall, pd.DataFrame)

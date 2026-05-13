@@ -30,7 +30,7 @@ RUN_NUMBER = 0
 RUN_LENGTH = 2_000
 
 PATIENTS_PATH = Path(__file__).parent.joinpath("patients.csv")
-SUMMARY_PATH = Path(__file__).parent.joinpath("summary.csv")
+RUN_PATH = Path(__file__).parent.joinpath("run.csv")
 
 
 def main():
@@ -41,10 +41,10 @@ def main():
     results = runner.run_single(run_number=RUN_NUMBER)
 
     results["patients"].to_csv(PATIENTS_PATH, index=False)
-    results["summary"].to_csv(SUMMARY_PATH, index=False)
+    results["run"].to_csv(RUN_PATH, index=False)
 
     print(f"Saved patients baseline to {PATIENTS_PATH}")
-    print(f"Saved summary baseline to {SUMMARY_PATH}")
+    print(f"Saved run baseline to {RUN_PATH}")
 
 
 if __name__ == "__main__":
