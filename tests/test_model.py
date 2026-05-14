@@ -229,6 +229,7 @@ def test_different_seeds_different_results():
 # Warm-up
 # -----------------------------------------------------------------------------
 
+
 def test_warm_up():
     """Patient retained after run are only those generated after warm-up."""
     warm_up_period = 300

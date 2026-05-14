@@ -158,10 +158,7 @@ def plot_warm_up(audit, metric, category):
 
     # Plot cumulative mean for each run
     fig = px.line(
-        data_frame=audit_results,
-        x="time",
-        y=metric,
-        line_group="run"
+        data_frame=audit_results, x="time", y=metric, line_group="run"
     )
     fig.update_traces(line_color="lightblue")
 
@@ -175,6 +172,6 @@ def plot_warm_up(audit, metric, category):
     fig.update_layout(
         xaxis_title="Run time (minutes)",
         yaxis_title=f"cumulative_mean_{metric}",
-        template="plotly_white"
+        template="plotly_white",
     )
     return fig
