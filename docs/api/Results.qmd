@@ -11,7 +11,7 @@ Simulation output for a single model run.
 | Name | Description |
 | --- | --- |
 | [patient_df](#ambdes.Results.patient_df) | Return per-patient results as a DataFrame. |
-| [summary_df](#ambdes.Results.summary_df) | Return a single-row summary DataFrame. |
+| [summary_df](#ambdes.Results.summary_df) | Return summary DataFrame with four rows: one per response category. |
 
 ### patient_df { #ambdes.Results.patient_df }
 
@@ -27,9 +27,9 @@ time attributes.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type         | Description                                                                                                |
-|--------|--------------|------------------------------------------------------------------------------------------------------------|
-|        | pd.DataFrame | Columns: run, patient_id, category, call_timestamp, response_time, travel_time_to_hospital, handover_time. |
+| Name   | Type         | Description                                                        |
+|--------|--------------|--------------------------------------------------------------------|
+|        | pd.DataFrame | Columns: run, patient_id, category, call_timestamp, response_time. |
 
 ### summary_df { #ambdes.Results.summary_df }
 
@@ -37,7 +37,7 @@ time attributes.
 Results.summary_df()
 ```
 
-Return a single-row summary DataFrame.
+Return summary DataFrame with four rows: one per response category.
 
 #### Returns {.doc-section .doc-section-returns}
 

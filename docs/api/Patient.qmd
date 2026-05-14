@@ -8,11 +8,9 @@ Represents a patient who has called 999.
 
 ## Attributes {.doc-section .doc-section-attributes}
 
-| Name                    | Type   | Description                                                                                                      |
-|-------------------------|--------|------------------------------------------------------------------------------------------------------------------|
-| patient_id              | int    | Unique identifier for the patient.                                                                               |
-| category                | str    | Ambulance response category ("C1", "C2", "C3" or "C4").                                                          |
-| call_timestamp          | float  | Time at which patient called 999.                                                                                |
-| response_time           | float  | Time between the call and ambulance arrival on scene.                                                            |
-| travel_time_to_hospital | float  | Time taken to transport the patient from the scene to hospital.                                                  |
-| handover_time           | float  | Time spent handing over the patient to hospital staff (including any handover delays from queueing at hospital). |
+| Name           | Type   | Description                                             |
+|----------------|--------|---------------------------------------------------------|
+| patient_id     | int    | Unique identifier for the patient.                      |
+| category       | str    | Ambulance response category ("C1", "C2", "C3" or "C4"). |
+| call_timestamp | float  | Time at which patient called 999.                       |
+| response_time  | float  | Time between the call and ambulance arrival on scene.   |

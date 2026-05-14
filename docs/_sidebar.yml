@@ -10,6 +10,7 @@ website:
     - contents:
       - stage1/assumptions.qmd
       - stage1/baseline.ipynb
+      - stage1/animate.ipynb
       section: Stage 1
     - contents:
       - stage2/assumptions.qmd
@@ -27,7 +28,6 @@ website:
       - api/index.qmd
       - contents:
         - api/SimConfig.qmd
-        - api/Logger.qmd
         - api/Model.qmd
         - api/Patient.qmd
         - api/Results.qmd

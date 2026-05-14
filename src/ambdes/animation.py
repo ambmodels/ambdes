@@ -39,7 +39,7 @@ def generate_animation(model):
         ]
     )
     fig = animate_activity_log(
-        event_log=model.vidigi_logger.to_dataframe(),
+        event_log=model.logger.to_dataframe(),
         event_position_df=event_position_df,
         scenario=model.config,
         entity_icon_size=16,

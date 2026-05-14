@@ -7,7 +7,6 @@ Main classes used to build and run simulations.
 | | |
 | --- | --- |
 | [SimConfig](SimConfig.qmd#ambdes.SimConfig) | Configuration for a simulation run. |
-| [Logger](Logger.qmd#ambdes.Logger) | Provides log of events as the simulation runs. |
 | [Model](Model.qmd#ambdes.Model) | Discrete-event simulation model for generating patient calls. |
 | [Patient](Patient.qmd#ambdes.Patient) | Represents a patient who has called 999. |
 | [Results](Results.qmd#ambdes.Results) | Simulation output for a single model run. |

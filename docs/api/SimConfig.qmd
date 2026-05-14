@@ -4,17 +4,15 @@
 SimConfig(
     ambsys_data,
     resource_hours_per_week=52000,
+    mean_time_to_scene=10,
     on_scene_time=44,
-    travel_time_to_hospital=10,
+    mean_time_to_hospital=10,
     wrap_up_time=14,
     run_length=100,
     n_reps=5,
-    log_to_console=False,
-    log_to_file=False,
-    log_file_path=None,
 )
 ```
 
 Configuration for a simulation run.
 
-Stores input data, run settings, and logging options used by the model.
+Stores input data and run settings used by the model.

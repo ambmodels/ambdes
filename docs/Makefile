@@ -3,7 +3,7 @@ render:
 	quarto render
 
 execute:
-	quartodoc build
+	quartodoc build --verbose
 	quarto render --execute
 
 preview:

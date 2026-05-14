@@ -29,7 +29,6 @@ quartodoc:
       desc: "Main classes used to build and run simulations."
       contents:
         - SimConfig
-        - Logger
         - Model
         - Patient
         - Results

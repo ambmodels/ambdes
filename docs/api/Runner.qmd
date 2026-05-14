@@ -23,9 +23,9 @@ Run replications, as defined by config.n_reps.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type   | Description                                                                                                                             |
-|--------|--------|-----------------------------------------------------------------------------------------------------------------------------------------|
-|        | dict   | Dictionary with two DataFrames: - "patients": concatenated per-patient results across runs. - "summary": one-row-per-run summary table. |
+| Name   | Type   | Description                                                                                                                                                                                                                  |
+|--------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        | dict   | Dictionary with two DataFrames: - "patients": concatenated per-patient results across runs. - "run": summary of results for each run by response category. - "overall": summary of results across runs by response category. |
 
 ### run_single { #ambdes.Runner.run_single }
 
@@ -43,6 +43,6 @@ Run a single replication and return results.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type   | Description                                                                                                                 |
-|--------|--------|-----------------------------------------------------------------------------------------------------------------------------|
-|        | dict   | Dictionary with two DataFrames: - "patients": per-patient results for the run. - "summary": single-row summary for the run. |
+| Name   | Type   | Description                                                                                                                                                                                                               |
+|--------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        | dict   | Dictionary with model instance and two DataFrames: - "model": model instance (useful for development/debugging). - "patients": per-patient results for the run. - "run": summary of results for run by response category. |
