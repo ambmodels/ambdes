@@ -1,7 +1,6 @@
 """Model configuration."""
 
 
-
 class SimConfig:
     """Configuration for a simulation run.
 

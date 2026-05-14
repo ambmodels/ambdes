@@ -1,6 +1,5 @@
 """Smoke tests - checks the model runs end-to-end without errors."""
 
-
 from ambdes import Model, SimConfig
 
 AMBSYS_DATA = {
