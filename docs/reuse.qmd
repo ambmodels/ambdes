@@ -17,6 +17,14 @@ However, it is important that any reuse involves appropriate local validation an
 
 If you are planning to adapt the model and would like to discuss this, please do get in touch.
 
+## Citation
+
+If you reuse this model, please cite us!
+
+```{.txt}
+{{< include ../CITATION.cff >}}
+```
+
 ## Knowledge for reuse
 
 To make effective use of this model, some background knowledge may be helpful. You can find lots of relevant material in the [DES RAP Book](https://pythonhealthdatascience.github.io/des_rap_book/). At a minimum, we suggest:

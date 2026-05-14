@@ -1,4 +1,4 @@
-# ambdes
+# ambdes: open reproducible discrete-event simulation of ambulance operations
 
 Discrete-event simulation of the ambulance system
 
@@ -35,6 +35,10 @@ pytest tests/test_smoke.py && pytest --ignore=tests/test_smoke.py
 ```
 
 This work is part of the [STARS project](https://pythonhealthdatascience.github.io/stars/), supported by the Medical Research Council [grant number MR/Z503915/1] 
+
+## Citation
+
+To cite this repository, please refer to `CITATION.cff`.
 
 ## Acknowledgements
 

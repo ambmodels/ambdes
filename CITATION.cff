@@ -1,0 +1,30 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  ambdes: open reproducible discrete-event simulation of
+  ambulance operations
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Amy
+    family-names: Heather
+    email: a.heather2@exeter.ac.uk
+    affiliation: University of Exeter
+    orcid: 'https://orcid.org/0000-0002-6596-3479'
+  - given-names: Lee
+    family-names: Coulson
+    affiliation: South Western Ambulance Service NHS Foundation Trust
+  - given-names: Thomas
+    family-names: Monks
+    affiliation: University of Exeter
+    orcid: 'https://orcid.org/0000-0003-2631-4481'
+    email: T.M.W.Monks@exeter.ac.uk
+  - given-names: Irene
+    family-names: Irungu
+    affiliation: South Western Ambulance Service NHS Foundation Trust
+repository-code: 'https://github.com/ambmodels/ambdes'
+license: MIT
