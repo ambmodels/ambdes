@@ -138,6 +138,12 @@ class Model:
                 entity_id=patient.patient_id,
             )
 
+    def warm_up(self):
+        """Reset results collection after the warm-up period."""
+        if self.config.warm_up_period > 0:
+            yield self.env.timeout(self.config.warm_up_period)
+            self.patients = []
+
     def run(self):
         """Run the simulation model.
 
@@ -145,10 +151,15 @@ class Model:
         simulation until the configured run length.
 
         """
-        # Set up processes to generate patients of each category
+        # Schedule arrival generator and warm-up
         for category, dist in self.dists["call"].items():
             self.env.process(
                 self.generate_patients(dist=dist, category=category)
             )
+        self.env.process(self.warm_up())
+
         # Run simulation
-        self.env.run(until=self.config.run_length)
+        self.env.run(
+            until=self.config.warm_up_period
+            + self.config.data_collection_period
+        )

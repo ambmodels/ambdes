@@ -195,7 +195,10 @@ def test_values_through_workflow(ambsys_csv_path):
 
     # Build Model and check each distribution has the right mean
     config = SimConfig(
-        ambsys_data=amb_data, resource_hours_per_week=50000, run_length=100
+        ambsys_data=amb_data,
+        resource_hours_per_week=50000,
+        warm_up_period=0,
+        data_collection_period=100,
     )
     model = Model(run_number=1, config=config)
     assert set(model.dists["call"].keys()) == set(expected_mean_iat.keys())

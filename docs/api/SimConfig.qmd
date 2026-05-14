@@ -8,7 +8,8 @@ SimConfig(
     on_scene_time=44,
     mean_time_to_hospital=10,
     wrap_up_time=14,
-    run_length=100,
+    warm_up_period=100,
+    data_collection_period=100,
     n_reps=5,
 )
 ```
