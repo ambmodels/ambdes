@@ -11,6 +11,7 @@ website:
       - stage1/assumptions.qmd
       - stage1/baseline.ipynb
       - stage1/animate.ipynb
+      - stage1/warm_up.ipynb
       section: Stage 1
     - contents:
       - stage2/assumptions.qmd

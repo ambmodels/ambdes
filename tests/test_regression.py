@@ -15,7 +15,8 @@ AMBSYS_DATA = {
 }
 
 RUN_NUMBER = 0
-RUN_LENGTH = 2_000
+WARM_UP_PERIOD = 0
+DATA_COLLECTION_PERIOD = 2_000
 
 PATIENTS_PATH = Path(__file__).parent.joinpath("regression/patients.csv")
 RUN_PATH = Path(__file__).parent.joinpath("regression/run.csv")
@@ -25,7 +26,11 @@ RUN_PATH = Path(__file__).parent.joinpath("regression/run.csv")
 def test_results_match_baseline():
     """Patient-level and run results match stored baseline."""
     # Run model
-    config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=RUN_LENGTH)
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA,
+        warm_up_period=WARM_UP_PERIOD,
+        data_collection_period=DATA_COLLECTION_PERIOD,
+    )
     runner = Runner(config=config)
     results = runner.run_single(run_number=RUN_NUMBER)
     # Import stored baseline results

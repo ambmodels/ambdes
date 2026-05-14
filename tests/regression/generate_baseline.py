@@ -19,7 +19,8 @@ AMBSYS_DATA = {
 }
 
 RUN_NUMBER = 0
-RUN_LENGTH = 2_000
+WARM_UP_PERIOD = 0
+DATA_COLLECTION_PERIOD = 2_000
 
 PATIENTS_PATH = Path(__file__).parent.joinpath("patients.csv")
 RUN_PATH = Path(__file__).parent.joinpath("run.csv")
@@ -27,7 +28,11 @@ RUN_PATH = Path(__file__).parent.joinpath("run.csv")
 
 def main():
     """Generate baseline results and save to CSV."""
-    config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=RUN_LENGTH)
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA,
+        warm_up_period=WARM_UP_PERIOD,
+        data_collection_period=DATA_COLLECTION_PERIOD,
+    )
     runner = Runner(config=config)
 
     results = runner.run_single(run_number=RUN_NUMBER)

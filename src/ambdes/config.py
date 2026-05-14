@@ -15,7 +15,8 @@ class SimConfig:
         on_scene_time=44,
         mean_time_to_hospital=10,
         wrap_up_time=14,
-        run_length=100,
+        warm_up_period=100,
+        data_collection_period=100,
         n_reps=5,
     ):
         """Initialise simulation configuration.
@@ -35,8 +36,10 @@ class SimConfig:
         wrap_up_time : float
             Fixed time in minutes for post-handover wrap-up before the
             ambulance becomes available again.
-        run_length : float
-            Duration of the simulation run.
+        warm_up_period : int
+            Duration of the warm-up period in minutes.
+        data_collection_period : int
+            Duration of the data collection period in minutes.
         n_reps : int
             Number of replications to run.
 
@@ -77,5 +80,6 @@ class SimConfig:
 
         self.on_scene_time = on_scene_time
         self.wrap_up_time = wrap_up_time
-        self.run_length = run_length
+        self.warm_up_period = warm_up_period
+        self.data_collection_period = data_collection_period
         self.n_reps = n_reps

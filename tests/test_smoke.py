@@ -12,7 +12,9 @@ AMBSYS_DATA = {
 
 def test_model_runs_without_error():
     """Model completes a short run (with/without logs) successfully."""
-    config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=100)
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA, warm_up_period=0, data_collection_period=100
+    )
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0

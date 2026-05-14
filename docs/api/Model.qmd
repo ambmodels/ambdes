@@ -16,6 +16,7 @@ records generated patients during a single simulation run.
 | [generate_patients](#ambdes.Model.generate_patients) | Generate patients for a given category indefinitely. |
 | [request_ambulance](#ambdes.Model.request_ambulance) | Simulate ambulance response. |
 | [run](#ambdes.Model.run) | Run the simulation model. |
+| [warm_up](#ambdes.Model.warm_up) | Reset results collection after the warm-up period. |
 
 ### generate_patients { #ambdes.Model.generate_patients }
 
@@ -56,3 +57,11 @@ Run the simulation model.
 
 Starts one patient-generation process for each category and runs the
 simulation until the configured run length.
+
+### warm_up { #ambdes.Model.warm_up }
+
+```python
+Model.warm_up()
+```
+
+Reset results collection after the warm-up period.

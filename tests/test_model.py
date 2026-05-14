@@ -17,7 +17,10 @@ AMBSYS_DATA = {
 
 
 def make_model(
-    run_number=0, run_length=500, resource_hours_per_week=52000, **kwargs
+    run_number=0,
+    data_collection_period=500,
+    resource_hours_per_week=52000,
+    **kwargs,
 ):
     """Create a Model instance with a minimal default configuration.
 
@@ -29,7 +32,7 @@ def make_model(
     ----------
     run_number : int, optional
         Simulation run identifier used to seed distributions.
-    run_length : float, optional
+    data_collection_period : float, optional
         Duration of the simulation run in minutes.
     resource_hours_per_week : int, optional
         Ambulance resource hours per week, used to derive n_ambulances.
@@ -44,7 +47,8 @@ def make_model(
     """
     config = SimConfig(
         ambsys_data=AMBSYS_DATA,
-        run_length=run_length,
+        warm_up_period=0,
+        data_collection_period=data_collection_period,
         resource_hours_per_week=resource_hours_per_week,
         **kwargs,
     )
@@ -59,8 +63,8 @@ def make_model(
 @pytest.mark.system
 def test_patient_generation():
     """Patients are generated with appropriate attributes."""
-    run_length = 500
-    model = make_model(run_length=run_length)
+    data_collection_period = 500
+    model = make_model(data_collection_period=data_collection_period)
     model.run()
 
     # Patients are generated
@@ -77,15 +81,17 @@ def test_patient_generation():
     # All call timestamps are non-negative
     assert all(p.call_timestamp >= 0 for p in model.patients)
 
-    # No patient is recorded with a call timestamp beyond run_length
-    assert all(p.call_timestamp <= run_length for p in model.patients)
+    # No patient is recorded with a call timestamp beyond run length
+    assert all(
+        p.call_timestamp <= data_collection_period for p in model.patients
+    )
 
 
 @pytest.mark.system
 def test_completed_patients():
     """Patients who completed the full pathway have all time attributes."""
     # Use a long run so there is time for patients to complete
-    model = make_model(run_length=2000)
+    model = make_model(data_collection_period=2000)
     model.run()
 
     # Check all time attributes are positive.
@@ -116,7 +122,8 @@ def test_high_demand():
     config = SimConfig(
         ambsys_data=high_demand_data,
         resource_hours_per_week=168,  # 1 ambulance
-        run_length=500,
+        warm_up_period=0,
+        data_collection_period=500,
     )
     model = Model(run_number=0, config=config)
     model.run()
@@ -131,7 +138,11 @@ def test_low_demand():
         **AMBSYS_DATA,
         "mean_iat_min": {"C1": 1e6, "C2": 1e6, "C3": 1e6, "C4": 1e6},
     }
-    config = SimConfig(ambsys_data=low_demand_data, run_length=500)
+    config = SimConfig(
+        ambsys_data=low_demand_data,
+        warm_up_period=0,
+        data_collection_period=500,
+    )
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) == 0
@@ -143,13 +154,15 @@ def test_low_demand():
 
 
 @pytest.mark.system
-def test_run_length_zero():
-    """Raises ValueError if attempt to run with run_length=0."""
+def test_run_for_zero_minutes():
+    """Raises ValueError if attempt to run with data_collection_period=0."""
     # SimPy itself should raise an error message
     with pytest.raises(
         ValueError, match="must be greater than the current simulation time"
     ):
-        config = SimConfig(ambsys_data=AMBSYS_DATA, run_length=0)
+        config = SimConfig(
+            ambsys_data=AMBSYS_DATA, warm_up_period=0, data_collection_period=0
+        )
         model = Model(run_number=0, config=config)
         model.run()
 
@@ -158,7 +171,10 @@ def test_run_length_zero():
 def test_on_scene_time_zero():
     """on_scene_time=0 is allowed and model still completes."""
     config = SimConfig(
-        ambsys_data=AMBSYS_DATA, on_scene_time=0, run_length=500
+        ambsys_data=AMBSYS_DATA,
+        on_scene_time=0,
+        warm_up_period=0,
+        data_collection_period=500,
     )
     model = Model(run_number=0, config=config)
     model.run()
@@ -168,7 +184,12 @@ def test_on_scene_time_zero():
 @pytest.mark.system
 def test_wrap_up_time_zero():
     """wrap_up_time=0 is allowed and model still completes."""
-    config = SimConfig(ambsys_data=AMBSYS_DATA, wrap_up_time=0, run_length=500)
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA,
+        wrap_up_time=0,
+        warm_up_period=0,
+        data_collection_period=500,
+    )
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0
@@ -182,8 +203,8 @@ def test_wrap_up_time_zero():
 @pytest.mark.system
 def test_same_seed_same_results():
     """Two runs with the same run_number produce identical results."""
-    m1 = make_model(run_number=42, run_length=500)
-    m2 = make_model(run_number=42, run_length=500)
+    m1 = make_model(run_number=42, data_collection_period=500)
+    m2 = make_model(run_number=42, data_collection_period=500)
     m1.run()
     m2.run()
     assert len(m1.patients) == len(m2.patients)
@@ -195,10 +216,40 @@ def test_same_seed_same_results():
 @pytest.mark.system
 def test_different_seeds_different_results():
     """Two runs with different run_numbers produce different results."""
-    m1 = make_model(run_number=0, run_length=500)
-    m2 = make_model(run_number=1, run_length=500)
+    m1 = make_model(run_number=0, data_collection_period=500)
+    m2 = make_model(run_number=1, data_collection_period=500)
     m1.run()
     m2.run()
     assert [p.call_timestamp for p in m1.patients] != [
         p.call_timestamp for p in m2.patients
     ]
+
+
+# -----------------------------------------------------------------------------
+# Warm-up
+# -----------------------------------------------------------------------------
+
+
+def test_warm_up():
+    """Patient retained after run are only those generated after warm-up."""
+    warm_up_period = 300
+    data_collection_period = 400
+
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA,
+        warm_up_period=warm_up_period,
+        data_collection_period=data_collection_period,
+    )
+    model = Model(run_number=0, config=config)
+    model.run()
+
+    # Only post-warm-up patients should remain
+    assert all(p.call_timestamp >= warm_up_period for p in model.patients)
+
+    # Patient list is reset and ID is based on length of list, so the IDs
+    # should restart from 1
+    ids = [p.patient_id for p in model.patients]
+    assert ids == list(range(1, len(ids) + 1))
+
+    # Run ends at warm_up + data_collection
+    assert model.env.now == warm_up_period + data_collection_period
