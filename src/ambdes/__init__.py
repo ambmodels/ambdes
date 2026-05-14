@@ -7,6 +7,7 @@ __version__ = "0.1.0"
 
 from .ambsys import ambsys, lognormal_sd_from_mean_p90
 from .animation import generate_animation
+from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
 from .config import SimConfig
 from .model import Model
 from .patient import Patient
@@ -19,7 +20,10 @@ __all__ = [
     "lognormal_sd_from_mean_p90",
     "Model",
     "Patient",
+    "plot_warm_up",
     "Results",
+    "run_warm_up_audit",
     "Runner",
     "SimConfig",
+    "WarmUpAuditor",
 ]

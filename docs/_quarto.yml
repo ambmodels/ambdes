@@ -53,6 +53,7 @@ quartodoc:
           - stage1/assumptions.qmd
           - stage1/baseline.ipynb
           - stage1/animate.ipynb
+          - stage1/warmup.ipynb
       - section: "Stage 2"
         contents:
           - stage2/assumptions.qmd
