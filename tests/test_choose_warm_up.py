@@ -16,6 +16,14 @@ AMBSYS_DATA = {
 
 
 @pytest.mark.unit
+def test_auditor_warm_up_period_0():
+    """WarmUpAuditor rejects models with non-zero warm-up period."""
+    model = SimpleNamespace(config=SimpleNamespace(warm_up_period=100))
+    with pytest.raises(ValueError, match="warm_up_period == 0"):
+        WarmUpAuditor(model=model, interval=10)
+
+
+@pytest.mark.unit
 def test_get_response_times_returns_mean():
     """_get_response_times returns mean response time by category."""
     patients = [
@@ -24,7 +32,10 @@ def test_get_response_times_returns_mean():
         SimpleNamespace(category="C2", response_time=30.0),
         SimpleNamespace(category="C3", response_time=None),
     ]
-    model = SimpleNamespace(patients=patients)
+    model = SimpleNamespace(
+        patients=patients,
+        config=SimpleNamespace(warm_up_period=0),
+    )
     auditor = WarmUpAuditor(model=model, interval=10)
 
     result = auditor._get_response_times()
@@ -38,7 +49,10 @@ def test_get_response_times_returns_mean():
 @pytest.mark.unit
 def test_to_df_returns_expected_columns():
     """to_df returns audit results with run column."""
-    model = SimpleNamespace(run_number=7)
+    model = SimpleNamespace(
+        run_number=7,
+        config=SimpleNamespace(warm_up_period=0),
+    )
     auditor = WarmUpAuditor(model=model, interval=10)
     auditor.audit_results = [
         {"time": 0, "category": "C1", "response_time": np.nan},

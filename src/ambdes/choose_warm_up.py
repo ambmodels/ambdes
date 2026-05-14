@@ -27,6 +27,9 @@ def run_warm_up_audit(config, interval, n_reps):
     """
     dfs = []
 
+    # Enforce warm_up_period == 0
+    config.warm_up_period = 0
+
     for run_number in range(n_reps):
         model = Model(run_number=run_number, config=config)
         auditor = WarmUpAuditor(model=model, interval=interval)
@@ -67,6 +70,11 @@ class WarmUpAuditor:
         self.interval = interval
         self.audit_results = []
         self.response_categories = ["C1", "C2", "C3", "C4"]
+
+        if self.model.config.warm_up_period != 0:
+            raise ValueError(
+                "WarmUpAuditor requires model.config.warm_up_period == 0."
+            )
 
     def _audit_model(self):
         """Audit the model at specified intervals."""
