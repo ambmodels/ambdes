@@ -223,3 +223,32 @@ def test_different_seeds_different_results():
     assert [p.call_timestamp for p in m1.patients] != [
         p.call_timestamp for p in m2.patients
     ]
+
+
+# -----------------------------------------------------------------------------
+# Warm-up
+# -----------------------------------------------------------------------------
+
+def test_warm_up():
+    """Patient retained after run are only those generated after warm-up."""
+    warm_up_period = 300
+    data_collection_period = 400
+
+    config = SimConfig(
+        ambsys_data=AMBSYS_DATA,
+        warm_up_period=warm_up_period,
+        data_collection_period=data_collection_period,
+    )
+    model = Model(run_number=0, config=config)
+    model.run()
+
+    # Only post-warm-up patients should remain
+    assert all(p.call_timestamp >= warm_up_period for p in model.patients)
+
+    # Patient list is reset and ID is based on length of list, so the IDs
+    # should restart from 1
+    ids = [p.patient_id for p in model.patients]
+    assert ids == list(range(1, len(ids) + 1))
+
+    # Run ends at warm_up + data_collection
+    assert model.env.now == warm_up_period + data_collection_period
