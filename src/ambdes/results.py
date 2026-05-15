@@ -10,19 +10,16 @@ import pandas as pd
 class Results:
     """Simulation output for a single model run."""
 
-    def __init__(self, patients, run_number):
+    def __init__(self, model):
         """Create instance of Results.
 
         Parameters
         ----------
-        patients : list of Patient
-            Patient instances recorded during the run.
-        run_number : int
-            Simulation run identifier.
+        model : Model
+        A model instance that has already been executed (model.run())
 
         """
-        self.patients = patients
-        self.run_number = run_number
+        self.model = model
 
     def patient_df(self):
         """Return per-patient results as a DataFrame.
@@ -40,15 +37,79 @@ class Results:
         return pd.DataFrame(
             [
                 {
-                    "run": self.run_number,
+                    "run": self.model.run_number,
                     "patient_id": p.patient_id,
                     "category": p.category,
                     "call_timestamp": p.call_timestamp,
                     "response_time": p.response_time,
                 }
-                for p in self.patients
+                for p in self.model.patients
             ]
         )
+
+    def utilisation_df(self):
+        """Return mean utilisation of ambulances.
+        
+        Returns
+        -------
+        pd.DataFrame
+            Columns: run, mean_utilisation.
+        """
+        log = self.model.logger.to_dataframe()
+        warm_up_period = self.model.config.warm_up_period
+        run_length = warm_up_period + self.model.config.data_collection_period
+
+        amb = log[log["event"].isin(["ambulance_assigned", "ambulance_available"])][["entity_id", "event_type", "time"]]
+
+        # Create dataframe with one row per ID and columns with start and end time of resource use
+        starts = amb[amb["event_type"] == "resource_use"].rename(columns={"time": "start_time"})[["entity_id", "start_time"]]
+        ends = amb[amb["event_type"] == "resource_use_end"].rename(columns={"time": "end_time"})[["entity_id", "end_time"]]
+        intervals = starts.merge(ends, on="entity_id", how="left")
+
+        # Drop events that completed before data collection period started
+        intervals = intervals[~(intervals["end_time"] < warm_up_period)]
+
+        # Events not complete by simulation end, replace NA with simulation end time
+        intervals["end_time"] = intervals["end_time"].fillna(run_length)
+
+        # Split by arrival time
+        arrive_before = intervals[intervals["start_time"] < warm_up_period].copy()
+        arrive_after = intervals[intervals["start_time"] >= warm_up_period]
+
+        # For resource_use events before warmup with end events after warmup, replace
+        # time with the start of the warm-up period
+        arrive_before["start_time"] = warm_up_period
+
+        # Combine and sort
+        result = (
+            pd.concat([arrive_before, arrive_after], ignore_index=True)
+            .sort_values(["start_time"])
+        )
+
+        # Convert to state changes
+        rows = []
+        for _, row in result.iterrows():
+            rows.append({'time': row['start_time'], 'event': 'start'})
+            rows.append({'time': row['end_time'], 'event': 'end'})
+
+        events_df = pd.DataFrame(rows).sort_values('time').reset_index(drop=True)
+        events_df['server'] = events_df['event'].apply(
+            lambda x: 1 if x == 'start' else -1).cumsum()
+        state_changes = events_df[['time', 'server']].drop_duplicates(
+            subset='time', keep='last').copy()
+
+        # Calculate interval metrics
+        state_changes['interval_duration'] = (
+            state_changes['time'].shift(-1).fillna(run_length) - state_changes['time']
+        )
+        state_changes['effective_capacity'] = np.maximum(capacity, state_changes['server'])
+        state_changes['utilisation'] = np.where(
+            state_changes['effective_capacity'] > 0,
+            state_changes['server'] / state_changes['effective_capacity'],
+            np.nan
+        )
+
+        (state_changes['utilisation'] * state_changes['interval_duration']).sum() / state_changes['interval_duration'].sum()
 
     def summary_df(self):
         """Return summary DataFrame with four rows: one per response category.
@@ -68,5 +129,5 @@ class Results:
                 mean_response_time=("response_time", "mean"),
             )
             .reset_index()
-            .assign(run=self.run_number)
+            .assign(run=self.model.run_number)
         )

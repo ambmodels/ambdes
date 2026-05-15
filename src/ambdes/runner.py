@@ -43,7 +43,7 @@ class Runner:
         """
         model = Model(run_number=run_number, config=self.config)
         model.run()
-        results = Results(model.patients, run_number)
+        results = Results(model=model)
         return {
             "model": model,
             "patients": results.patient_df(),
