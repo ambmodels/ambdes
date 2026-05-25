@@ -4,6 +4,7 @@ Takes patient list from one Model run and returns tidy pandas DataFrames
 (per-patient and run-level summaries).
 """
 
+import numpy as np
 import pandas as pd
 
 
@@ -48,100 +49,135 @@ class Results:
         )
 
     def utilisation_df(self):
-        """Return mean utilisation of ambulances.
+        """Return time-weighted ambulance utilisation intervals.
 
         Returns
         -------
-        pd.DataFrame
-            Columns: run, mean_utilisation.
+        state_changes : pd.DataFrame
+            TODO.
         """
         log = self.model.logger.to_dataframe()
         warm_up_period = self.model.config.warm_up_period
         run_length = warm_up_period + self.model.config.data_collection_period
+        capacity = self.model.config.n_ambulances
 
-        amb = log[
-            log["event"].isin(["ambulance_assigned", "ambulance_available"])
-        ][["entity_id", "event_type", "time"]]
+        # Filter to events marking start and end of ambulance resource use
+        amb = log.loc[
+            log["event"].isin(["ambulance_assigned", "ambulance_available"]),
+            ["entity_id", "event_type", "time"],
+        ]
 
-        # Create dataframe with one row per ID and columns with start and end time of resource use
-        starts = amb[amb["event_type"] == "resource_use"].rename(
-            columns={"time": "start_time"}
-        )[["entity_id", "start_time"]]
-        ends = amb[amb["event_type"] == "resource_use_end"].rename(
-            columns={"time": "end_time"}
-        )[["entity_id", "end_time"]]
+        # Create two dataframes - one with start times and one with end times
+        starts = amb.loc[
+            amb["event_type"] == "resource_use", ["entity_id", "time"]
+        ].rename(columns={"time": "start_time"})
+        ends = amb.loc[
+            amb["event_type"] == "resource_use_end", ["entity_id", "time"]
+        ].rename(columns={"time": "end_time"})
+
+        # Combine these, so each patient has one row with start and end time
         intervals = starts.merge(ends, on="entity_id", how="left")
 
-        # Drop events that completed before data collection period started
-        intervals = intervals[~(intervals["end_time"] < warm_up_period)]
-
-        # Events not complete by simulation end, replace NA with simulation end time
+        # If end_time is NA, use end of observation window as end time
         intervals["end_time"] = intervals["end_time"].fillna(run_length)
 
-        # Split by arrival time
-        arrive_before = intervals[
-            intervals["start_time"] < warm_up_period
-        ].copy()
-        arrive_after = intervals[intervals["start_time"] >= warm_up_period]
-
-        # For resource_use events before warmup with end events after warmup, replace
-        # time with the start of the warm-up period
-        arrive_before["start_time"] = warm_up_period
-
-        # Combine and sort
-        result = pd.concat(
-            [arrive_before, arrive_after], ignore_index=True
-        ).sort_values(["start_time"])
-
-        # Convert to state changes
-        rows = []
-        for _, row in result.iterrows():
-            rows.append({"time": row["start_time"], "event": "start"})
-            rows.append({"time": row["end_time"], "event": "end"})
-
-        events_df = (
-            pd.DataFrame(rows).sort_values("time").reset_index(drop=True)
+        # Clip the intervals, so those entirely before warm-up are dropped,
+        # and those that span warm-up are trimmed so their start time is the
+        # start of the data collection period
+        intervals["start_time"] = intervals["start_time"].clip(
+            lower=warm_up_period
         )
-        events_df["server"] = (
-            events_df["event"]
-            .apply(lambda x: 1 if x == "start" else -1)
-            .cumsum()
+        intervals["end_time"] = intervals["end_time"].clip(
+            lower=warm_up_period
         )
+        # Drop those before warm-up (becomes [start, start])
+        intervals = intervals.loc[
+            intervals["end_time"] > intervals["start_time"]
+        ]
+
+        if intervals.empty:
+            return pd.DataFrame(
+                columns=["time", "busy", "interval_duration", "utilisation"]
+            )
+
+        # Convert intervals into event times: +1 when ambulance becomes busy
+        # and -1 when ambulance stops being busy
+        events = pd.concat(
+            [
+                intervals[["start_time"]]
+                .rename(columns={"start_time": "time"})
+                .assign(delta=1),
+                intervals[["end_time"]]
+                .rename(columns={"end_time": "time"})
+                .assign(delta=-1),
+            ],
+            ignore_index=True,
+        ).sort_values("time")
+
+        # Combine all changes that happen at the same simulation time, then
+        # take a cumulative sum to get the number of busy ambulances after
+        # each event time. Grouping by time is important because multiple
+        # ambulances may start/end at exactly the same timestamp.
         state_changes = (
-            events_df[["time", "server"]]
-            .drop_duplicates(subset="time", keep="last")
-            .copy()
+            events.groupby("time", as_index=False)["delta"]
+            .sum()
+            .assign(busy=lambda df: df["delta"].cumsum())
+            .drop(columns="delta")
         )
 
-        # Calculate interval metrics
+        # The duration of each state is the gap until the next change in state.
+        # The final state runs until the end of the observation window.
         state_changes["interval_duration"] = (
             state_changes["time"].shift(-1).fillna(run_length)
             - state_changes["time"]
         )
-        capacity = self.model.config.n_ambulances
-        state_changes["utilisation"] = (
-            state_changes["server"] / capacity if capacity > 0 else np.nan
-        )
+
+        # Drop any zero-length states, just to be safe
+        state_changes = state_changes.loc[
+            state_changes["interval_duration"] > 0
+        ]
+
+        # Convert busy ambulances into utilisation.
+        # Because capacity is fixed in this model, utilisation is simply
+        # busy/capacity.
+        state_changes["utilisation"] = state_changes["busy"] / capacity
+
+        return state_changes
 
     def utilisation(self):
-        """TODO"""
-        util_df = self.utilisation_df()
-        return (
-            util_df["utilisation"] * util_df["interval_duration"]
-        ).sum() / util_df["interval_duration"].sum()
-
-    def summary_df(self):
-        """Return summary DataFrame with four rows: one per response category.
+        """Return mean time-weighted ambulance utilisation.
 
         Returns
         -------
-        pd.DataFrame
-            Columns: run, n_patients.
+        float
+            Mean time-weighted ambulance utilisation.
+        """
+        util_df = self.utilisation_df()
+        data_collection_period = self.model.config.data_collection_period
+        capacity = self.model.config.n_ambulances
+
+        # If there is no observed utilisation interval, return NaN
+        if util_df.empty:
+            return np.nan
+
+        # Time-weighted mean utilisation
+        return (
+            (util_df["busy"] * util_df["interval_duration"]).sum()
+            / (capacity * data_collection_period)
+        )
+
+    def summary_df(self):
+        """Return run-level summary in long format.
+
+        Returns
+        -------
+        summary : pd.DataFrame
 
         """
         df = self.patient_df()
 
-        return (
+        # Per category summaries for response time
+        summary = (
             df.groupby("category", dropna=False)
             .agg(
                 n_patients=("patient_id", "count"),
@@ -150,3 +186,4 @@ class Results:
             .reset_index()
             .assign(run=self.model.run_number)
         )
+        return summary
