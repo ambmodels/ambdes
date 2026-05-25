@@ -54,12 +54,20 @@ class Results:
         Returns
         -------
         state_changes : pd.DataFrame
-            TODO.
+            Columns: time, busy, interval_duration, utilisation.
+            One row per state-change interval during the data collection period.
+            busy is the number of ambulances in use during that interval.
         """
         log = self.model.logger.to_dataframe()
         warm_up_period = self.model.config.warm_up_period
         run_length = warm_up_period + self.model.config.data_collection_period
         capacity = self.model.config.n_ambulances
+
+        # Return empty of logger returned an empty DataFrame with no columns
+        if log.empty:
+            return pd.DataFrame(
+                columns=["time", "busy", "interval_duration", "utilisation"]
+            )
 
         # Filter to events marking start and end of ambulance resource use
         amb = log.loc[
