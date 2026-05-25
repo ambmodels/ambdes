@@ -163,6 +163,7 @@ class MonitoredResource(simpy.Resource):
 
 class StubConfig:
     """Minimal config stub satisfying the Results interface."""
+
     def __init__(self, n_ambulances, warm_up_period, data_collection_period):
         self.n_ambulances = n_ambulances
         self.warm_up_period = warm_up_period
@@ -171,6 +172,7 @@ class StubConfig:
 
 class StubModel:
     """Minimal model stub satisfying the Results interface."""
+
     def __init__(self, config, logger, run_number=0):
         self.config = config
         self.logger = logger
@@ -195,69 +197,107 @@ MEAN_SERVICE = 25.0
 # ---------------------------------------------------------------------------
 
 
-def run_monitored_resource(seed):
+def run_monitored_resource(
+    seed,
+    mean_iat=MEAN_IAT,
+    mean_service=MEAN_SERVICE,
+    n_ambulances=N_AMBULANCES,
+    warm_up=WARM_UP,
+    data_period=DATA_PERIOD,
+):
     """Run simulation using MonitoredResource.
 
     Parameters
     ----------
     seed : int
         Random seed.
+    mean_iat : float
+        Mean inter-arrival time.
+    mean_service : float
+        Mean service time.
+    n_ambulances : int
+        Number of ambulances (resource capacity).
+    warm_up : float
+        Warm-up period duration.
+    data_period : float
+        Data collection period duration.
 
     Returns
     -------
     float
         Time-weighted resource utilisation.
+
     """
+    run_length = warm_up + data_period
     rng = np.random.default_rng(seed)
     env = simpy.Environment()
-    monitored = MonitoredResource(env, capacity=N_AMBULANCES)
+    monitored = MonitoredResource(env, capacity=n_ambulances)
 
     def attend(patient_id):
         """Request ambulance and sample time with ambulance."""
         with monitored.request() as req:
             yield req
-            yield env.timeout(rng.exponential(MEAN_SERVICE))
+            yield env.timeout(rng.exponential(mean_service))
 
     def generate():
         """Generate new patient arrivals."""
         pid = 0
         while True:
-            yield env.timeout(rng.exponential(MEAN_IAT))
+            yield env.timeout(rng.exponential(mean_iat))
             pid += 1
             env.process(attend(pid))
 
     def warm_up_reset():
         """Reset results at end of warm-up period."""
-        yield env.timeout(WARM_UP)
+        yield env.timeout(warm_up)
         monitored.init_results()
 
     env.process(generate())
     env.process(warm_up_reset())
-    env.run(until=RUN_LENGTH)
+    env.run(until=run_length)
 
     # Close the final open interval
     monitored.update_time_weighted_stats()
 
-    return sum(monitored.area_resource_busy) / (N_AMBULANCES * DATA_PERIOD)
+    return sum(monitored.area_resource_busy) / (n_ambulances * data_period)
 
 
-def run_vidigi_store(seed):
+def run_vidigi_store(
+    seed,
+    mean_iat=MEAN_IAT,
+    mean_service=MEAN_SERVICE,
+    n_ambulances=N_AMBULANCES,
+    warm_up=WARM_UP,
+    data_period=DATA_PERIOD,
+):
     """Run simulation using VidigiStore + EventLogger.
 
     Parameters
     ----------
     seed : int
         Random seed.
+    mean_iat : float
+        Mean inter-arrival time.
+    mean_service : float
+        Mean service time.
+    n_ambulances : int
+        Number of ambulances (resource capacity).
+    warm_up : float
+        Warm-up period duration.
+    data_period : float
+        Data collection period duration.
 
     Returns
     -------
     float
         Time-weighted resource utilisation.
+
     """
+    run_length = warm_up + data_period
     rng = np.random.default_rng(seed)
     env = simpy.Environment()
-    config = StubConfig(N_AMBULANCES, WARM_UP, DATA_PERIOD)
-    vidigi_store = VidigiStore(env, num_resources=N_AMBULANCES)
+    config = StubConfig(n_ambulances, warm_up, data_period)
+    vidigi_store = VidigiStore(env, num_resources=n_ambulances)
     logger = EventLogger(env=env, run_number=0)
 
     def attend(patient_id):
@@ -269,7 +309,7 @@ def run_vidigi_store(seed):
                 event="ambulance_assigned",
                 resource_id=vehicle.id_attribute,
             )
-            yield env.timeout(rng.exponential(MEAN_SERVICE))
+            yield env.timeout(rng.exponential(mean_service))
             logger.log_resource_use_end(
                 entity_id=patient_id,
                 event="ambulance_available",
@@ -280,14 +320,14 @@ def run_vidigi_store(seed):
         """Generate new patient arrivals."""
         pid = 0
         while True:
-            yield env.timeout(rng.exponential(MEAN_IAT))
+            yield env.timeout(rng.exponential(mean_iat))
             pid += 1
             env.process(attend(pid))
 
-    # No warm_up_reset process needed here: Results.utilisation_df() clips
-    # the event log to the data collection period internally.
+    # No warm_up_reset needed: Results.utilisation_df() clips the event log
+    # to the data collection period internally.
     env.process(generate())
-    env.run(until=RUN_LENGTH)
+    env.run(until=run_length)
 
     return Results(StubModel(config=config, logger=logger)).utilisation()
 
@@ -297,11 +337,58 @@ def run_vidigi_store(seed):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("seed", [0, 1, 7, 42, 99])
-def test_utilisation_methods_equivalent(seed):
+SCENARIOS = {
+    "low_demand": dict(
+        mean_iat=500,
+        mean_service=5,
+        n_ambulances=3,
+        warm_up=100,
+        data_period=500,
+    ),
+    "near_saturation": dict(
+        mean_iat=5,
+        mean_service=25,
+        n_ambulances=3,
+        warm_up=100,
+        data_period=500,
+    ),
+    "zero_warmup": dict(
+        mean_iat=10,
+        mean_service=25,
+        n_ambulances=3,
+        warm_up=0,
+        data_period=500,
+    ),
+    "long_warmup": dict(
+        mean_iat=10,
+        mean_service=25,
+        n_ambulances=3,
+        warm_up=1000,
+        data_period=100,
+    ),
+    "short_data": dict(
+        mean_iat=10,
+        mean_service=5,
+        n_ambulances=3,
+        warm_up=100,
+        data_period=10,
+    ),
+    "single_ambulance": dict(
+        mean_iat=10,
+        mean_service=25,
+        n_ambulances=1,
+        warm_up=100,
+        data_period=500,
+    ),
+}
+
+
+@pytest.mark.parametrize("scenario", SCENARIOS.values(), ids=SCENARIOS.keys())
+@pytest.mark.parametrize("seed", [0, 42])
+def test_utilisation_equivalence(scenario, seed):
     """Test equivalence of time-weighted utilisation calculations."""
-    u_old = run_monitored_resource(seed)
-    u_new = run_vidigi_store(seed)
+    u_old = run_monitored_resource(seed, **scenario)
+    u_new = run_vidigi_store(seed, **scenario)
     assert u_old == pytest.approx(u_new, abs=1e-9), (
-        f"seed={seed}: old={u_old:.10f}, new={u_new:.10f}"
+        f"{scenario}, seed={seed}: old={u_old:.10f}, new={u_new:.10f}"
     )
