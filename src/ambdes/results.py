@@ -164,9 +164,9 @@ class Results:
         data_collection_period = self.model.config.data_collection_period
         capacity = self.model.config.n_ambulances
 
-        # If there is no observed utilisation interval, return NaN
+        # If there is no observed utilisation interval, return 0
         if util_df.empty:
-            return np.nan
+            return 0
 
         # Time-weighted mean utilisation
         return (
