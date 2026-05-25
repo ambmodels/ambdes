@@ -4,7 +4,6 @@ Takes patient list from one Model run and returns tidy pandas DataFrames
 (per-patient and run-level summaries).
 """
 
-import numpy as np
 import pandas as pd
 
 
@@ -17,7 +16,7 @@ class Results:
         Parameters
         ----------
         model : Model
-        A model instance that has already been executed (model.run())
+            A model instance that has already been executed (model.run())
 
         """
         self.model = model
@@ -54,9 +53,10 @@ class Results:
         Returns
         -------
         state_changes : pd.DataFrame
-            Columns: time, busy, interval_duration, utilisation.
-            One row per state-change interval during the data collection period.
-            busy is the number of ambulances in use during that interval.
+            Columns: time, busy, interval_duration, utilisation. One row per
+            state-change interval during the data collection period. `busy`
+            is the number of ambulances in use during that interval.
+
         """
         log = self.model.logger.to_dataframe()
         warm_up_period = self.model.config.warm_up_period
@@ -133,8 +133,8 @@ class Results:
             .drop(columns="delta")
         )
 
-        # The duration of each state is the gap until the next change in state.
-        # The final state runs until the end of the observation window.
+        # The duration of each state is the gap until the next change in
+        # state. The final state runs until the end of the observation window.
         state_changes["interval_duration"] = (
             state_changes["time"].shift(-1).fillna(run_length)
             - state_changes["time"]
@@ -159,6 +159,7 @@ class Results:
         -------
         float
             Mean time-weighted ambulance utilisation.
+
         """
         util_df = self.utilisation_df()
         data_collection_period = self.model.config.data_collection_period
@@ -169,9 +170,8 @@ class Results:
             return 0
 
         # Time-weighted mean utilisation
-        return (
-            (util_df["busy"] * util_df["interval_duration"]).sum()
-            / (capacity * data_collection_period)
+        return (util_df["busy"] * util_df["interval_duration"]).sum() / (
+            capacity * data_collection_period
         )
 
     def summary_df(self):
@@ -179,7 +179,8 @@ class Results:
 
         Returns
         -------
-        summary : pd.DataFrame
+        pd.DataFrame
+            Run-level summary.
 
         """
         df = self.patient_df()
@@ -194,4 +195,18 @@ class Results:
             .reset_index()
             .assign(run=self.model.run_number)
         )
-        return summary
+
+        # Overall utilisation
+        utilisation = pd.DataFrame(
+            [
+                {
+                    "run": self.model.run_number,
+                    "category": "all",
+                    "n_patients": pd.NA,
+                    "mean_response_time": pd.NA,
+                    "mean_utilisation": self.utilisation(),
+                }
+            ]
+        )
+
+        return pd.concat([summary, utilisation], ignore_index=True)
