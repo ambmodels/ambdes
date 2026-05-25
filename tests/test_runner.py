@@ -31,7 +31,7 @@ def test_run_single():
     assert set(results.keys()) == {"model", "patients", "run"}
     assert isinstance(results["patients"], pd.DataFrame)
     assert isinstance(results["run"], pd.DataFrame)
-    assert len(results["run"].index) == 4
+    assert len(results["run"].index) == 5
 
 
 @pytest.mark.system
@@ -52,8 +52,8 @@ def test_run_reps():
     overall = results["overall"]
     assert patients["run"].nunique() == 3
     assert run["run"].nunique() == 3
-    assert len(run.index) == 12
-    assert len(overall.index) == 4
+    assert len(run.index) == 15
+    assert len(overall.index) == 5
     assert isinstance(patients, pd.DataFrame)
     assert isinstance(run, pd.DataFrame)
     assert isinstance(overall, pd.DataFrame)

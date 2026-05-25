@@ -1,7 +1,7 @@
 # Results { #ambdes.Results }
 
 ```python
-Results(patients, run_number)
+Results(model)
 ```
 
 Simulation output for a single model run.
@@ -11,7 +11,9 @@ Simulation output for a single model run.
 | Name | Description |
 | --- | --- |
 | [patient_df](#ambdes.Results.patient_df) | Return per-patient results as a DataFrame. |
-| [summary_df](#ambdes.Results.summary_df) | Return summary DataFrame with four rows: one per response category. |
+| [summary_df](#ambdes.Results.summary_df) | Return run-level summary in long format. |
+| [utilisation](#ambdes.Results.utilisation) | Return mean time-weighted ambulance utilisation. |
+| [utilisation_df](#ambdes.Results.utilisation_df) | Return time-weighted ambulance utilisation intervals. |
 
 ### patient_df { #ambdes.Results.patient_df }
 
@@ -37,10 +39,38 @@ time attributes.
 Results.summary_df()
 ```
 
-Return summary DataFrame with four rows: one per response category.
+Return run-level summary in long format.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type         | Description               |
-|--------|--------------|---------------------------|
-|        | pd.DataFrame | Columns: run, n_patients. |
+| Name   | Type         | Description        |
+|--------|--------------|--------------------|
+|        | pd.DataFrame | Run-level summary. |
+
+### utilisation { #ambdes.Results.utilisation }
+
+```python
+Results.utilisation()
+```
+
+Return mean time-weighted ambulance utilisation.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                               |
+|--------|--------|-------------------------------------------|
+|        | float  | Mean time-weighted ambulance utilisation. |
+
+### utilisation_df { #ambdes.Results.utilisation_df }
+
+```python
+Results.utilisation_df()
+```
+
+Return time-weighted ambulance utilisation intervals.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name          | Type         | Description                                                                                                                                                                               |
+|---------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| state_changes | pd.DataFrame | Columns: time, busy, interval_duration, utilisation. One row per state-change interval during the data collection period. `busy` is the number of ambulances in use during that interval. |

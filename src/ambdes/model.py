@@ -105,7 +105,7 @@ class Model:
             # Record when patient was assigned as ambulance
             self.logger.log_resource_use_start(
                 entity_id=patient.patient_id,
-                event="ambulance_arrives",
+                event="ambulance_assigned",
                 resource_id=vehicle.id_attribute,
             )
 
