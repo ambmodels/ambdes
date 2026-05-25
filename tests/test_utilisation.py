@@ -8,6 +8,7 @@ Compares:
 import numpy as np
 import pytest
 import simpy
+from conftest import StubConfig, StubModel
 from vidigi.logging import EventLogger
 from vidigi.resources import VidigiStore
 
@@ -31,7 +32,7 @@ from ambdes import Results
 
 
 class MonitoredResource(simpy.Resource):
-    """Subclass of simpy.Resource used to monitor resource usage during the run.
+    """Subclass of simpy.Resource used to monitor resource use during the run.
 
     Calculates resource utilisation and the queue length during the model run.
 
@@ -55,7 +56,7 @@ class MonitoredResource(simpy.Resource):
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialises MonitoredResource.
+        """Initialise MonitoredResource.
 
         Involves initialising a SimPy resource and resetting monitoring
         attributes.
@@ -74,13 +75,15 @@ class MonitoredResource(simpy.Resource):
         self.init_results()
 
     def init_results(self):
-        """Resets monitoring attributes to initial values."""
+        """Reset monitoring attributes to initial values."""
         self.time_last_event = [self._env.now]
         self.area_n_in_queue = [0.0]
         self.area_resource_busy = [0.0]
 
     def request(self, *args, **kwargs):
-        """Requests a resource, but updates time-weighted statistics BEFORE
+        """Request a resource.
+
+        Requests a resource but updates time-weighted statistics BEFORE
         making the request.
 
         Parameters
@@ -102,7 +105,9 @@ class MonitoredResource(simpy.Resource):
         return super().request(*args, **kwargs)
 
     def release(self, *args, **kwargs):
-        """Releases a resource, but updates time-weighted statistics BEFORE
+        """Release a resource.
+
+        Releases a resource, but updates time-weighted statistics BEFORE
         releasing it.
 
         Parameters
@@ -154,30 +159,6 @@ class MonitoredResource(simpy.Resource):
         # Add "area under curve" of resources in use
         # self.count is the number of resources in use
         self.area_resource_busy.append(self.count * time_since_last_event)
-
-
-# ---------------------------------------------------------------------------
-# Stubs for Results interface
-# ---------------------------------------------------------------------------
-
-
-class StubConfig:
-    """Minimal config stub satisfying the Results interface."""
-
-    def __init__(self, n_ambulances, warm_up_period, data_collection_period):
-        self.n_ambulances = n_ambulances
-        self.warm_up_period = warm_up_period
-        self.data_collection_period = data_collection_period
-
-
-class StubModel:
-    """Minimal model stub satisfying the Results interface."""
-
-    def __init__(self, config, logger, run_number=0):
-        self.config = config
-        self.logger = logger
-        self.run_number = run_number
-        self.patients = []
 
 
 # ---------------------------------------------------------------------------
