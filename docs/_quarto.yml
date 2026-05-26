@@ -1,5 +1,7 @@
 project:
   type: website
+  render:
+    - "*.qmd"
 
 website:
   title: "Ambulance DES"
@@ -51,9 +53,6 @@ quartodoc:
       - section: "Stage 1"
         contents:
           - stage1/assumptions.qmd
-          - stage1/baseline.ipynb
-          - stage1/animate.ipynb
-          - stage1/warm_up.ipynb
       - section: "Stage 2"
         contents:
           - stage2/assumptions.qmd
