@@ -56,21 +56,17 @@ class Model:
             preserve_structure=True,
         )
 
-    def generate_patients(self, dist, category):
-        """Generate patients for a given category indefinitely.
-
-        Parameters
-        ----------
-        dist : Distribution
-            Inter-arrival time distribution for the patient category.
-        category : str
-            Response category label, e.g., "C1".
-
-        """
+    def generate_patients(self):
+        """Generate patients."""
         while True:
             # Sample and pass time to next call
-            iat = dist.sample()
+            iat = self.dists["call_arrival"].sample(
+                simulation_time=self.env.now
+            )
             yield self.env.timeout(iat)
+
+            # Sample call type
+            category = self.dists["call_category"].sample()
 
             # Create a new patient
             patient = Patient(
@@ -152,10 +148,7 @@ class Model:
 
         """
         # Schedule arrival generator and warm-up
-        for category, dist in self.dists["call"].items():
-            self.env.process(
-                self.generate_patients(dist=dist, category=category)
-            )
+        self.env.process(self.generate_patients())
         self.env.process(self.warm_up())
 
         # Run simulation
