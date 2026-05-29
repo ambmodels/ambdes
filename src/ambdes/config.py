@@ -64,7 +64,7 @@ class SimConfig:
                 "params": {
                     "values": arrival_config.category_proportions.index,
                     "freq": arrival_config.category_proportions.values,
-                }
+                },
             },
             "time_to_scene": {
                 "class_name": "Exponential",
@@ -124,6 +124,7 @@ class ArrivalConfig:
         ----------
         arrival_df : str | Path | pd.DataFrame
             Arrival counts by day of week and response category.
+
         """
         # Import arrivals dataframe
         if isinstance(arrival_df, (str, Path)):
@@ -132,16 +133,21 @@ class ArrivalConfig:
             self.arrival_df = arrival_df
 
         # Convert to proportion by response category for each day
-        self.proportion_df = self.arrival_df.div(self.arrival_df.sum(axis=1), axis=0)
+        self.proportion_df = self.arrival_df.div(
+            self.arrival_df.sum(axis=1), axis=0
+        )
 
         # Summarise the variations in proportions by day of week
-        self.variation_df = pd.DataFrame({
-            "mean": self.proportion_df.mean(axis=0),
-            "min": self.proportion_df.min(axis=0),
-            "max": self.proportion_df.max(axis=0),
-            "range": self.proportion_df.max(axis=0) - self.proportion_df.min(axis=0),
-            "sd": self.proportion_df.std(axis=0),
-        })
+        self.variation_df = pd.DataFrame(
+            {
+                "mean": self.proportion_df.mean(axis=0),
+                "min": self.proportion_df.min(axis=0),
+                "max": self.proportion_df.max(axis=0),
+                "range": self.proportion_df.max(axis=0)
+                - self.proportion_df.min(axis=0),
+                "sd": self.proportion_df.std(axis=0),
+            }
+        )
 
         # Get overall mean proportion by response category
         self.category_proportions = self.proportion_df.mean(axis=0)
@@ -152,7 +158,9 @@ class ArrivalConfig:
         # Convert to format required by sim_tools NSPPThinning class
         # It requires a dataframe with columns "t" (timepoint when arrival
         # rate changes) and "mean_iat" (mean inter-arrival time)
-        self.nspp_df = pd.DataFrame({
-            "t": range(0, 7 * 1440, 1440),
-            "mean_iat": 1440 / self.arrivals_per_day.values,
-        })
+        self.nspp_df = pd.DataFrame(
+            {
+                "t": range(0, 7 * 1440, 1440),
+                "mean_iat": 1440 / self.arrivals_per_day.values,
+            }
+        )
