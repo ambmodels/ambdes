@@ -13,7 +13,7 @@ records generated patients during a single simulation run.
 
 | Name | Description |
 | --- | --- |
-| [generate_patients](#ambdes.Model.generate_patients) | Generate patients for a given category indefinitely. |
+| [generate_patients](#ambdes.Model.generate_patients) | Generate patients. |
 | [request_ambulance](#ambdes.Model.request_ambulance) | Simulate ambulance response. |
 | [run](#ambdes.Model.run) | Run the simulation model. |
 | [warm_up](#ambdes.Model.warm_up) | Reset results collection after the warm-up period. |
@@ -21,17 +21,10 @@ records generated patients during a single simulation run.
 ### generate_patients { #ambdes.Model.generate_patients }
 
 ```python
-Model.generate_patients(dist, category)
+Model.generate_patients()
 ```
 
-Generate patients for a given category indefinitely.
-
-#### Parameters {.doc-section .doc-section-parameters}
-
-| Name     | Type         | Description                                               | Default    |
-|----------|--------------|-----------------------------------------------------------|------------|
-| dist     | Distribution | Inter-arrival time distribution for the patient category. | _required_ |
-| category | str          | Response category label, e.g., "C1".                      | _required_ |
+Generate patients.
 
 ### request_ambulance { #ambdes.Model.request_ambulance }
 

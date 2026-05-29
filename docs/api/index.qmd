@@ -6,6 +6,7 @@ Main classes used to build and run simulations.
 
 | | |
 | --- | --- |
+| [ArrivalConfig](ArrivalConfig.qmd#ambdes.ArrivalConfig) | Prepare arrival inputs for the simulation. |
 | [SimConfig](SimConfig.qmd#ambdes.SimConfig) | Configuration for a simulation run. |
 | [Model](Model.qmd#ambdes.Model) | Discrete-event simulation model for generating patient calls. |
 | [Patient](Patient.qmd#ambdes.Patient) | Represents a patient who has called 999. |
@@ -18,5 +19,4 @@ Common utility functions for calibration and configuration.
 
 | | |
 | --- | --- |
-| [lognormal_sd_from_mean_p90](lognormal_sd_from_mean_p90.qmd#ambdes.lognormal_sd_from_mean_p90) | Approximate SD on the original scale for a lognormal distribution. |
 | [generate_animation](generate_animation.qmd#ambdes.generate_animation) | Generate vidigi animation. |

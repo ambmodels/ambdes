@@ -30,6 +30,7 @@ quartodoc:
     - title: "Core classes"
       desc: "Main classes used to build and run simulations."
       contents:
+        - ArrivalConfig
         - SimConfig
         - Model
         - Patient
@@ -38,7 +39,6 @@ quartodoc:
     - title: "Top-level functions"
       desc: "Common utility functions for calibration and configuration."
       contents:
-        - lognormal_sd_from_mean_p90
         - generate_animation
   sidebar:
     file: "_sidebar.yml"

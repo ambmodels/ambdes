@@ -41,11 +41,11 @@ The DES (particularly those with similar parameters) should broadly agree with e
 
 ::::: {.panel-tabset}
 
-## Stage 1 (public data)
+## Stage 1 (whole trust)
 
 ::: {.overview_summary}
 
-This stage models the whole trust using **public data** - a combination of AmbSYS, trust reports, and the literature.
+This stage models the whole trust.
 
 :::
 
@@ -76,244 +76,15 @@ To begin with, we don't want to break down by whether patients are conveyed or n
 
 ### Incident arrives
 
-**Distribution:** Homogeneous Poisson \
-**Data:** Mean inter-arrival time by C1–C4 \
-**Source:** AmbSYS (derived from monthly incident counts)
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-These are based on **AmbSYS** data, which reports total incident counts for each response category by region and month (A8, A10, A11, A12).
-
-The mean inter-arrival time in minutes is obtained by dividing the number of minutes in that month by the number of incidents.
-
-A Homogeneous Poisson Process (HPP) is used because day-of-week breakdowns are unavailable, which would be required for a Non-Homogeneous Poisson Process (NHPP) - the approach most common in the literature.
-
-:::
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### Wait for resource
-
-**Queue:** First In First Out (FIFO) \
-**Resource:** 24/7 fixed pool \
-**Data:** Number of ambulances \
-**Source:** SWASFT Annual Report (derived from reported weekly conveying resource hours)
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-A FIFO queue is the simplest approach and common in the ambulance DES literature.
-
-The number of ambulances is estimated from the [SWAST Annual Report and Accounts (2024–25)](https://www.swast.nhs.uk/download/swasft-annual-report-and-accounts-202425pdf.pdf?ver=2868&doc=docm93jijm4n2818.pdf), section 3.4 *Operational Resourcing*, which reports weekly conveying resource hours. Since April 2024 the mean has been 52,000 hours per week.
-
-One always-available ambulance provides 168 hours of capacity per week (24 × 7), so the number of ambulances is approximated as `resource_hours_per_week / 168`. The model assumes a constant fleet size with no shift pattern.
-
-:::
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### Travel to scene
-
-**Distribution:** Exponential \
-**Data:** Mean \
-**Source:** Rough estimate from a 2011 study on distances to emergency hospital sites
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-The most relevant public data is from @roberts_focus_2014, which reports:
-
-- A **left-skewed distribution** of distances between home and emergency inpatient admission site in 2011/12 (Figure 3.2)
-- **Average 12.24 km (7.61 miles)** between home and hospital site in the South West
-
-No travel speed data was available, so an arbitrary speed of 45 mph is assumed:
-
-- `7.61 miles ÷ 45 mph = 0.169 hours`
-- `0.169 × 60 ≈ 10.1 minutes`
-
-A rough mean of **10 minutes** is used with an exponential distribution (left-skewed, single-parameter). Ideally, a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time to site).
-
-:::
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### On-scene time
-
-**Distribution:** Deterministic \
-**Data:** Mean \
-**Source:** Study in London, 2023
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-The most relevant public data is from @davis_what_2025, a London study reporting times from 2023:
-
-* Mean on-scene time: **44 minutes**
-* Median on-scene time: 46 minutes
-* Inter-quartile range (IQR) for on-scene time: 33 to 54 minutes
-
-On-scene time is currently deterministic. Ideally a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time at scene). It may be possible to estimate an SD from the mean/median/IQR to enable this.
-
-:::
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### Travel to hospital
-
-**Distribution:** Exponential \
-**Data:** Mean \
-**Source:** Rough estimate from a 2011 study on distances to emergency hospital sites (as for travel to scene)
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### Handover
-
-**Distribution:** Lognormal \
-**Data:** Mean and SD \
-**Source:** AmbSYS (derived from mean and 90th percentile handover time)
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-Based on **AmbSYS** data reporting mean and 90th percentile handover time by region and month
-(A142, A143).
-
-:::
-
-::::
-
-::: {.overview_arrow}
-↓
-:::
-
-:::: {.overview_step}
-
-### Wrap-up time
-
-**Distribution:** Deterministic \
-**Data:** Mean \
-**Source:** Study in London, 2023
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-From @davis_what_2025 (London, 2023):
-
-- Mean handover-to-clear time: **14 minutes**
-
-Wrap-up time is currently deterministic. A lognormal distribution would be preferable (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which models time to clear (ttc) using empirical or lognormal distributions).
-
-:::
-
-::::
-
-### Further details on public ambulance data
-
-::: {.callout-note title="View public sources of ambulance data" collapse="true"}
-
-### Ambulance Quality Indicators Data
-
-<https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/>
-
-Relevant data from **AmbSYS**, overall or monthly, by **ICB**:
-
-* **Count** of category 1, 1T (i.e., C1 ex. non-conveyance), 2, 3 and 4 incidents.
-* Mean, 90th centile and total **response time** for category 1, 1T, 2, 3 and 4 incidents.
-* **Count** of all incidents, face-to-face, convey to ED, convey to non-ED, face-to-face with no conveyance, heart-and-treat, see-and-treat
-* Total **number of calls answered**.
-* Total, mean, median, 90th centile, 95th centile and 99th centile for **call answer times**.
-* Handover times - **count and proportion** over 15, 30, 60 minutes.
-* Handover time - total, **mean, 90th centile**, total over 30.
-* **Resources** (mean + total allocated, mean + total arriving) by category 1, 1T, 2, 3 and 4 incidents.
-
-Less relevant:
-
-* Metrics for C5 clinical assessment and clinical validation
-* Time to identify C1 and how identified
-* Time until CPR started
-* Healthcare professional and inter-facility transfer
-* Section 136
-* Proportion of incidents responded to by each ambulance service in each county.
-
-### Handover data
-
-<https://www.england.nhs.uk/statistics/statistical-work-areas/ambulance-quality-indicators/ambulance-management-information/>
-
-Relevant data from **handover times** day, overall or monthly, reported by **NHS trust** (i.e., by hospital):
-
-* Handover times - **count and proportion** over 15, 30, 60 minutes.
-* Handover time - total, **mean**, total over 30.
-
-Overall or broken down by **ED v.s., non-ED**.
-
-Can get daily from: <https://www.england.nhs.uk/statistics/statistical-work-areas/uec-sitrep/urgent-and-emergency-care-daily-situation-reports-2025-26/>.
-
-### Annual reports and accounts
-
-<https://www.swast.nhs.uk/download/swasft-annual-report-and-accounts-202425pdf.pdf?ver=2868&doc=docm93jijm4n2818.pdf>
-
-Additional information:
-
-* Average resource hours per week
-* Weekly number of ambulance incidents
-* Mean call answer time
-
-<https://www.swast.nhs.uk/download/icpr-march-26pdf.pdf?ver=3923&doc=docm93jijm4n3573.pdf>
-
-* Resource hours per week
-* Sickness
-* Conveying resource hours per day (and % lost to handover delays).
-
-:::
-
-## Stage 2 (internal data)
-
-::: {.overview_summary}
-
-This stages switches to using **internal data**. It enables time-varying arrivals, no deterministic timings, use of the best-fitting parametric or empirical distributions, and more breakdown by response category.
-
-:::
-
-### Key question
-
-*How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?*
-
-### Conceptual model
-
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) Varies by day of week (2) New data source">Changed</div>
-
-### Incident arrives
+#### Arrival timing
 
 **Distribution:** Non-homogeneous Poisson \
-**Data:** Mean inter-arrival time by day of week (and potentially C1-C4, unless those are assigned after - see more details below) \
-**Source:** Internal SWASFT data
+**Data:** Mean inter-arrival time by day of week (and potentially C1-C4, unless those are assigned after - see more details below)
+
+#### Response category
+
+**Distribution:** Discrete \
+**Data:** Proportion of calls that are from each category
 
 ::: {.callout-note appearance="simple" collapse="true" title="More details"}
 
@@ -330,9 +101,30 @@ See Tom's [NSPP notebook](https://github.com/pythonhealthdatascience/intro-open-
 
 #### Response category
 
-If response category is time-varying alongside day of week, it should be sampled as part of NHPP too.
+These are assigned by a probability distribution afterwards, based on the assumption that the proportions don't vary by day of week.
 
-However, if the proportions are consistent over time, then it is simpler to just assign them using another probability distribution afterwards.
+If this assumption fails, it should be changed to sampling as part of the NHPP.
+
+:::
+
+::: {.callout-warning title="Status and next steps" collapse="true"}
+
+#### Status
+
+Implemented NHPP and discrete with fake data.
+
+#### Next steps
+
+Need count of arrivals by day of week and response category. This can then be used to:
+
+* Check assumption that response category proportions don't vary by day of week
+* Plug straight into the model
+
+```{python}
+import pandas as pd
+
+pd.read_csv("stage1/data/arrivals.csv", index_col=0)
+```
 
 :::
 
@@ -342,44 +134,102 @@ However, if the proportions are consistent over time, then it is simpler to just
 ↓
 :::
 
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) New data source (2) Potentially new queueing rules">Changed</div>
+:::: {.overview_step}
 
 ### Wait for resource
 
 **Queue:** First In First Out (FIFO) - TBC whether introduce prioritisation, reneging and/or balking \
 **Resource:** 24/7 fixed pool \
-**Data:** Number of ambulances \
-**Source:** Internal data - weekly conveying resource hours for chosen time period
+**Data:** Number of ambulances, based on weekly conveying resource hours for chosen time period
 
 ::: {.callout-note appearance="simple" collapse="true" title="More details"}
+
+A FIFO queue is the simplest approach and common in the ambulance DES literature.
 
 Need to consider whether we introduce prioritisation, reneging and/or balking. Priority rule timings could be informed by call guidelines.
 
 :::
 
+::: {.callout-warning title="Status and next steps" collapse="true"}
+
+#### Status
+
+Currently, the number of ambulances is estimated from the [SWAST Annual Report and Accounts (2024–25)](https://www.swast.nhs.uk/download/swasft-annual-report-and-accounts-202425pdf.pdf?ver=2868&doc=docm93jijm4n2818.pdf), section 3.4 *Operational Resourcing*, which reports weekly conveying resource hours. Since April 2024 the mean has been 52,000 hours per week.
+
+One always-available ambulance provides 168 hours of capacity per week (24 × 7), so the number of ambulances is approximated as `resource_hours_per_week / 168`. The model assumes a constant fleet size with no shift pattern.
+
+#### Next steps
+
+Update to more accurate number following provision of internal data.
+
+:::
+
 ::::
 
 ::: {.overview_arrow}
 ↓
 :::
 
-:::: {.overview_step .is_change}
+:::: {.overview_step}
 
-<div class="step_badge" title="(1) Potentially new distribution (2) New data source">Changed</div>
+### Mobilisation time
 
-### Response time (mobilisation + time to scene)
+TBC whether include this - nothing currently implemented.
+
+* **Distribution:** TBC
+* **Data:** TBC
+
+::: {.callout-warning title="Status and next steps" collapse="true"}
+
+#### Status
+
+Not yet implemented.
+
+#### Next steps
+
+Research how often this is included in models.
+
+Discuss whether we want at this stage.
+
+:::
+
+::::
+
+::: {.overview_arrow}
+↓
+:::
+
+:::: {.overview_step}
+
+### Travel to scene
 
 **Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4 \
-**Source:** Internal data
+**Data:** Distribution parameters by C1–C4
 
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
+::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Input modelling required to determine appropriate distribution.
+#### Status
 
-Can also consider whether this is one or two times.
+As a placeholder until we receive internal data to support this, we are using estimates based on @roberts_focus_2014, which reports:
+
+- A **left-skewed distribution** of distances between home and emergency inpatient admission site in 2011/12 (Figure 3.2)
+- **Average 12.24 km (7.61 miles)** between home and hospital site in the South West
+
+No travel speed data was available, so an arbitrary speed of 45 mph is assumed:
+
+- `7.61 miles ÷ 45 mph = 0.169 hours`
+- `0.169 × 60 ≈ 10.1 minutes`
+
+A rough mean of **10 minutes** is used with an exponential distribution (left-skewed, single-parameter). Ideally, a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time to site).
+
+#### Next steps
+
+* Change to synthetic data, lognormal, vary by C1 to C4.
+* Add code to check assumption: travel to scene varies by response category.
+* Then would require on real data:
+    * Assess whether travel to scene time varies by response category.
+    * Input modelling of travel to scene time.
+    * Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -389,21 +239,33 @@ Can also consider whether this is one or two times.
 ↓
 :::
 
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) New distribution (2) New data source (3) New breakdown by response category">Changed</div>
+:::: {.overview_step}
 
 ### On-scene time
 
 **Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4 \
-**Source:** Internal data
+**Data:** Distribution parameters by C1–C4
 
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
+::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Input modelling required to determine appropriate distribution.
+#### Status
 
-Can also confirm whether times differ by response category.
+As a placeholder, have a deterministic time from @davis_what_2025, a London study reporting times from 2023:
+
+* Mean on-scene time: **44 minutes**
+* Median on-scene time: 46 minutes
+* Inter-quartile range (IQR) for on-scene time: 33 to 54 minutes
+
+On-scene time is currently deterministic. Ideally a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time at scene).
+
+#### Next steps
+
+* Change to synthetic data, lognormal, vary by C1 to C4.
+* Add code to check assumption: on-scene time varies by response category.
+* Then would require on real data:
+    * Assess whether on-scene time varies by response category.
+    * Input modelling of on-scene time.
+    * Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -413,21 +275,16 @@ Can also confirm whether times differ by response category.
 ↓
 :::
 
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) New distribution (2) New data source (3) New breakdown by response category">Changed</div>
+:::: {.overview_step}
 
 ### Travel to hospital
 
 **Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4 \
-**Source:** Internal data
+**Data:** Distribution parameters by C1–C4
 
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
+::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Input modelling required to determine appropriate distribution.
-
-Can also confirm whether times differ by response category.
+Same as travel to scene.
 
 :::
 
@@ -437,21 +294,27 @@ Can also confirm whether times differ by response category.
 ↓
 :::
 
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) New distribution (2) New data source (3) New breakdown by response category">Changed</div>
+:::: {.overview_step}
 
 ### Handover
 
 **Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4 \
-**Source:** Internal data
+**Data:** Distribution parameters by C1–C4
 
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
+::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Input modelling required to determine appropriate distribution.
+#### Status
 
-Can also confirm whether times differ by response category.
+Current placeholder is lognormal with mean and standard deviation based on AmbSYS data reporting mean and 90th percentile handover time by region and month (A142, A143).
+
+#### Next steps
+
+* Change to synthetic data, lognormal, vary by C1 to C4.
+* Add code to check assumption: on-scene time varies by response category.
+* Then would require on real data:
+    * Assess whether on-scene time varies by response category.
+    * Input modelling of on-scene time.
+    * Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -461,27 +324,37 @@ Can also confirm whether times differ by response category.
 ↓
 :::
 
-:::: {.overview_step .is_change}
-
-<div class="step_badge" title="(1) New distribution (2) New data source (3) New breakdown by response category">Changed</div>
+:::: {.overview_step}
 
 ### Wrap-up time
 
 **Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4 \
-**Source:** Internal data
+**Data:** Distribution parameters by C1–C4
 
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
+::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Input modelling required to determine appropriate distribution.
+#### Status
 
-Can also confirm whether times differ by response category.
+Current placeholder is determinstic from @davis_what_2025 (London, 2023):
+
+- Mean handover-to-clear time: **14 minutes**
+
+Wrap-up time is currently deterministic. A lognormal distribution would be preferable (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which models time to clear (ttc) using empirical or lognormal distributions).
+
+#### Next steps
+
+* Change to synthetic data, lognormal, vary by C1 to C4.
+* Add code to check assumption: on-scene time varies by response category.
+* Then would require on real data:
+    * Assess whether on-scene time varies by response category.
+    * Input modelling of on-scene time.
+    * Relevant parameters (e.g., mean, sd).
 
 :::
 
 ::::
 
-## Stage 3 (county models)
+## Stage 2 (county models)
 
 ::: {.overview_summary}
 
@@ -507,8 +380,9 @@ Although the model doesn't capture interactions between counties (e.g., where pa
 
 Same structure, county-specific parameters.
 
+TBC which inputs county-specific and which not.
 
-## Stage 4 (job cycle)
+## Stage 3 (job cycle)
 
 ::: {.overview_summary}
 
@@ -532,7 +406,7 @@ Does job cycle need breaking down further? (a) mobilisation time (b) time to sce
 
 :::: {.overview_step .is_same}
 
-<div class="step_badge">Same as Stage 3</div>
+<div class="step_badge">Same as Stage 2</div>
 
 ### Example
 
@@ -562,7 +436,7 @@ Does job cycle need breaking down further? (a) mobilisation time (b) time to sce
 
 ::::
 
-## Stage 5 (shifts)
+## Stage 4 (shifts)
 
 ::: {.overview_summary}
 
@@ -614,7 +488,7 @@ Is it relevant to know proportion of crews going straight from one job to the ne
 * Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
 * Will also depends on whether close to break window or end of shift.
 
-## Stage 6 (geography)
+## Stage 5 (geography)
 
 ::: {.overview_summary}
 
@@ -642,12 +516,12 @@ Other things to consider would be:
 
 * What **size area** is required to answer this question?
 * Does this question require **shifts** in the model?
-    * If yes, it builds from stage 4 (as represented in current diagram), If no, it builds from stage 3.
+    * If yes, it builds from stage 3 (as represented in current diagram), If no, it builds from stage 2.
 * **Socioeconomic inequalities**...
 
 ::: {.callout-note title="Socioeconomic inequalities" collapse="true"} 
 
-Either with stage 6 (though may be too broad) or 7.
+Either with stage 5 (though may be too broad) or 6.
 
 Could explore outcome of not just reducing overall response time, but about gaps in response time between more and less deprived? Although, in this case, sometimes it's about rurality rather than socioeconomic - with actually better response times for lower SES.
 
@@ -760,7 +634,7 @@ Outcomes:
 
 :::
 
-## Stage 7 (stations)
+## Stage 6 (stations)
 
 ::: {.overview_summary}
 
