@@ -13,12 +13,13 @@ class SimConfig:
 
     def __init__(
         self,
-        ambsys_data,
         arrival_config,
         resource_hours_per_week=52000,
         mean_time_to_scene=10,
         on_scene_time=44,
         mean_time_to_hospital=10,
+        mean_handover_time=30,
+        sd_handover_time=11.4,
         wrap_up_time=14,
         warm_up_period=100,
         data_collection_period=100,
@@ -28,8 +29,6 @@ class SimConfig:
 
         Parameters
         ----------
-        ambsys_data : dict
-            Input data containing mean and SD of timings for the simulation.
         arrival_config : ArrivalConfig
             Arrival input configuration containing the response category
             proportions and non-stationary arrival schedule.
@@ -41,6 +40,11 @@ class SimConfig:
             Fixed time in minutes spent on scene before transport.
         mean_time_to_hospital : float
             Mean time from leaving scene to arriving at hospital in minutes.
+        mean_handover_time : float
+            Mean time from arrival at hospital to handover in minutes.
+        sd_handover_time : float
+            Standard deviation of time from arrival at hospital to handover
+            in minutes.
         wrap_up_time : float
             Fixed time in minutes for post-handover wrap-up before the
             ambulance becomes available again.
@@ -73,8 +77,8 @@ class SimConfig:
             "handover_time": {
                 "class_name": "Lognormal",
                 "params": {
-                    "mean": ambsys_data["mean_handover_time_min"],
-                    "stdev": ambsys_data["sd_handover_time_min"],
+                    "mean": mean_handover_time,
+                    "stdev": sd_handover_time,
                 },
             },
             "time_to_hospital": {
