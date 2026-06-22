@@ -88,7 +88,7 @@ class ArrivalConfig:
 
     """
 
-    def __init__(self, arrival_csv):
+    def __init__(self, arrival_csv, model_type="aggregate"):
         """Initialise ArrivalConfig.
 
         Parameters
@@ -96,10 +96,19 @@ class ArrivalConfig:
         arrival_csv : str | Path
             Path to CSV containing arrival counts by day of week and response
             category.
+        model_type : str
+            Controls which columns are required and which derived outputs
+            are produced.
 
         """
-        # Import arrivals dataframe
+        if model_type not in ["aggregate", "cycle"]:
+            raise ValueError("model_type must be aggregate or cycle.")
+
         self.arrival_df = pd.read_csv(arrival_csv, index_col=0)
+
+        if model_type == "cycle":
+            if self.arrival_df["conveyed"].isna().any():
+                raise ValueError("arrivals.csv 'conveyed' column incomplete or missing.")
 
         # Convert to proportion by response category for each day
         proportion_df = self.arrival_df.div(
