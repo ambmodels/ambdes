@@ -214,11 +214,11 @@ Implemented with synthetic data.
 
 #### Next steps
 
-* Add code to check assumption: travel to scene varies by response category.
-* Then would require on real data:
-    * Assess whether travel to scene time varies by response category.
-    * Input modelling of travel to scene time.
-    * Relevant parameters (e.g., mean, sd).
+On real data, need to:
+
+* Assess whether travel to scene time varies by response category (can see from mean and SD, but probably also want to check min, max, range).
+* Input modelling of travel to scene time.
+* Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -243,11 +243,11 @@ Implemented with synthetic data.
 
 #### Next steps
 
-* Add code to check assumption: on-scene time varies by response category.
-* Then would require on real data:
-    * Assess whether on-scene time varies by response category.
-    * Input modelling of on-scene time.
-    * Relevant parameters (e.g., mean, sd).
+On real data, need to:
+
+* Assess whether on-scene time varies by response category (can see from mean and SD, but probably also want to check min, max, range).
+* Input modelling of on-scene time.
+* Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -272,11 +272,11 @@ Implemented with synthetic data.
 
 #### Next steps
 
-* Add code to check assumption: travel to hospital varies by response category.
-* Then would require on real data:
-    * Assess whether travel to hospital varies by response category.
-    * Input modelling of travel to hospital.
-    * Relevant parameters (e.g., mean, sd).
+On real data, need to:
+
+* Assess whether travel to hospital varies by response category (can see from mean and SD, but probably also want to check min, max, range).
+* Input modelling of travel to hospital.
+* Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -301,11 +301,11 @@ Implemented with synthetic data.
 
 #### Next steps
 
-* Add code to check assumption: handover time varies by response category.
-* Then would require on real data:
-    * Assess whether handover time varies by response category.
-    * Input modelling of handover time.
-    * Relevant parameters (e.g., mean, sd).
+On real data, need to:
+
+* Assess whether handover time varies by response category (can see from mean and SD, but probably also want to check min, max, range).
+* Input modelling of handover time.
+* Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -330,11 +330,11 @@ Implemented with synthetic data.
 
 #### Next steps
 
-* Add code to check assumption: wrap-up time varies by response category.
-* Then would require on real data:
-    * Assess whether wrap-up time varies by response category.
-    * Input modelling of wrap-up time.
-    * Relevant parameters (e.g., mean, sd).
+On real data, need to:
+
+* Assess whether wrap-up time varies by response category (can see from mean and SD, but probably also want to check min, max, range).
+* Input modelling of wrap-up time.
+* Relevant parameters (e.g., mean, sd).
 
 :::
 
