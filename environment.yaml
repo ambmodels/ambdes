@@ -17,4 +17,5 @@ dependencies:
     - griffe==1.15.0
     - lintquarto==0.10.0
     - quartodoc==0.11.1
-    - sim-tools==1.1.0
+# Temporary local import while wait for Tom to merge
+#    - sim-tools==1.1.0

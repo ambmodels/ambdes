@@ -5,7 +5,7 @@ title: Code structure / infrastructure plans
 ## Core tools
 
 * Use **Python** (as ambulance team are familiar).
-* Use **uv** for environment management, as it handles Python versions and dependencies, with a simple configuration and a lock file.
+* Use **conda/mamba** for environment management, as it is familiar.
 * Use **SimPy** for DES (as it is popular, taught on HSMA, and also should be familiar).
 * Use **sim-tools** for distributions
 * Use **vidigi** for animation

@@ -9,9 +9,6 @@ website:
     - modeloverview.qmd
     - contents:
       - stage1/assumptions.qmd
-      - stage1/baseline.ipynb
-      - stage1/animate.ipynb
-      - stage1/warm_up.ipynb
       section: Stage 1
     - contents:
       - stage2/assumptions.qmd
@@ -28,6 +25,7 @@ website:
     - contents:
       - api/index.qmd
       - contents:
+        - api/ArrivalConfig.qmd
         - api/SimConfig.qmd
         - api/Model.qmd
         - api/Patient.qmd
@@ -35,7 +33,6 @@ website:
         - api/Runner.qmd
         section: Core classes
       - contents:
-        - api/lognormal_sd_from_mean_p90.qmd
         - api/generate_animation.qmd
         section: Top-level functions
       section: API reference

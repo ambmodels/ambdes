@@ -1,5 +1,7 @@
 project:
   type: website
+  render:
+    - "*.qmd"
 
 website:
   title: "Ambulance DES"
@@ -28,6 +30,7 @@ quartodoc:
     - title: "Core classes"
       desc: "Main classes used to build and run simulations."
       contents:
+        - ArrivalConfig
         - SimConfig
         - Model
         - Patient
@@ -36,7 +39,6 @@ quartodoc:
     - title: "Top-level functions"
       desc: "Common utility functions for calibration and configuration."
       contents:
-        - lognormal_sd_from_mean_p90
         - generate_animation
   sidebar:
     file: "_sidebar.yml"
@@ -51,9 +53,6 @@ quartodoc:
       - section: "Stage 1"
         contents:
           - stage1/assumptions.qmd
-          - stage1/baseline.ipynb
-          - stage1/animate.ipynb
-          - stage1/warm_up.ipynb
       - section: "Stage 2"
         contents:
           - stage2/assumptions.qmd
