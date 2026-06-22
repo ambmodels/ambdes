@@ -108,14 +108,10 @@ class ArrivalConfig:
     ----------
     arrival_df : pd.DataFrame
         Mean arrival counts by day of week and response category.
-    proportion_df : pd.DataFrame
-        Proportion of arrivals in each response category for each day.
     variation_df : pd.DataFrame
         Summary of variation in category proportions across days of the week.
     category_proportions : pd.Series
         Mean proportion of arrivals in each response category across the week.
-    arrivals_per_day : pd.Series
-        Total number of arrivals per day.
     nspp_df : pd.DataFrame
         Arrival schedule in the format required by `sim_tools` `NSPPThinning`.
 
@@ -137,27 +133,26 @@ class ArrivalConfig:
             self.arrival_df = arrival_df
 
         # Convert to proportion by response category for each day
-        self.proportion_df = self.arrival_df.div(
+        proportion_df = self.arrival_df.div(
             self.arrival_df.sum(axis=1), axis=0
         )
 
         # Summarise the variations in proportions by day of week
         self.variation_df = pd.DataFrame(
             {
-                "mean": self.proportion_df.mean(axis=0),
-                "min": self.proportion_df.min(axis=0),
-                "max": self.proportion_df.max(axis=0),
-                "range": self.proportion_df.max(axis=0)
-                - self.proportion_df.min(axis=0),
-                "sd": self.proportion_df.std(axis=0),
+                "mean": proportion_df.mean(axis=0),
+                "min": proportion_df.min(axis=0),
+                "max": proportion_df.max(axis=0),
+                "range": proportion_df.max(axis=0) - proportion_df.min(axis=0),
+                "sd": proportion_df.std(axis=0),
             }
         )
 
         # Get overall mean proportion by response category
-        self.category_proportions = self.proportion_df.mean(axis=0)
+        self.category_proportions = proportion_df.mean(axis=0)
 
         # Get count of total arrivals per day
-        self.arrivals_per_day = self.arrival_df.sum(axis=1)
+        arrivals_per_day = self.arrival_df.sum(axis=1)
 
         # Convert to format required by sim_tools NSPPThinning class
         # It requires a dataframe with columns "t" (timepoint when arrival
@@ -165,6 +160,6 @@ class ArrivalConfig:
         self.nspp_df = pd.DataFrame(
             {
                 "t": range(0, 7 * 1440, 1440),
-                "mean_iat": 1440 / self.arrivals_per_day.values,
+                "mean_iat": 1440 / arrivals_per_day.values,
             }
         )
