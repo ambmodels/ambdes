@@ -1,7 +1,7 @@
 # ArrivalConfig { #ambdes.ArrivalConfig }
 
 ```python
-ArrivalConfig(arrival_df)
+ArrivalConfig(arrival_csv)
 ```
 
 Prepare arrival inputs for the simulation.
@@ -11,8 +11,6 @@ Prepare arrival inputs for the simulation.
 | Name                 | Type         | Description                                                            |
 |----------------------|--------------|------------------------------------------------------------------------|
 | arrival_df           | pd.DataFrame | Mean arrival counts by day of week and response category.              |
-| proportion_df        | pd.DataFrame | Proportion of arrivals in each response category for each day.         |
 | variation_df         | pd.DataFrame | Summary of variation in category proportions across days of the week.  |
 | category_proportions | pd.Series    | Mean proportion of arrivals in each response category across the week. |
-| arrivals_per_day     | pd.Series    | Total number of arrivals per day.                                      |
 | nspp_df              | pd.DataFrame | Arrival schedule in the format required by `sim_tools` `NSPPThinning`. |

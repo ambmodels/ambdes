@@ -203,28 +203,17 @@ Discuss whether we want at this stage.
 
 ### Travel to scene
 
-**Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4
+**Distribution:** Lognormal \
+**Data:** Mean and SD by C1–C4
 
 ::: {.callout-warning title="Status and next steps" collapse="true"}
 
 #### Status
 
-As a placeholder until we receive internal data to support this, we are using estimates based on @roberts_focus_2014, which reports:
-
-- A **left-skewed distribution** of distances between home and emergency inpatient admission site in 2011/12 (Figure 3.2)
-- **Average 12.24 km (7.61 miles)** between home and hospital site in the South West
-
-No travel speed data was available, so an arbitrary speed of 45 mph is assumed:
-
-- `7.61 miles ÷ 45 mph = 0.169 hours`
-- `0.169 × 60 ≈ 10.1 minutes`
-
-A rough mean of **10 minutes** is used with an exponential distribution (left-skewed, single-parameter). Ideally, a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time to site).
+Implemented with synthetic data.
 
 #### Next steps
 
-* Change to synthetic data, lognormal, vary by C1 to C4.
 * Add code to check assumption: travel to scene varies by response category.
 * Then would require on real data:
     * Assess whether travel to scene time varies by response category.
@@ -243,24 +232,17 @@ A rough mean of **10 minutes** is used with an exponential distribution (left-sk
 
 ### On-scene time
 
-**Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4
+**Distribution:** Lognormal \
+**Data:** Mean and SD by C1–C4
 
 ::: {.callout-warning title="Status and next steps" collapse="true"}
 
 #### Status
 
-As a placeholder, have a deterministic time from @davis_what_2025, a London study reporting times from 2023:
-
-* Mean on-scene time: **44 minutes**
-* Median on-scene time: 46 minutes
-* Inter-quartile range (IQR) for on-scene time: 33 to 54 minutes
-
-On-scene time is currently deterministic. Ideally a lognormal distribution would be used (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which uses empirical or lognormal for time at scene).
+Implemented with synthetic data.
 
 #### Next steps
 
-* Change to synthetic data, lognormal, vary by C1 to C4.
 * Add code to check assumption: on-scene time varies by response category.
 * Then would require on real data:
     * Assess whether on-scene time varies by response category.
@@ -279,12 +261,22 @@ On-scene time is currently deterministic. Ideally a lognormal distribution would
 
 ### Travel to hospital
 
-**Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4
+**Distribution:** Lognormal \
+**Data:** Mean and SD by C1–C4
 
 ::: {.callout-warning title="Status and next steps" collapse="true"}
 
-Same as travel to scene.
+#### Status
+
+Implemented with synthetic data.
+
+#### Next steps
+
+* Add code to check assumption: travel to hospital varies by response category.
+* Then would require on real data:
+    * Assess whether travel to hospital varies by response category.
+    * Input modelling of travel to hospital.
+    * Relevant parameters (e.g., mean, sd).
 
 :::
 
@@ -298,22 +290,21 @@ Same as travel to scene.
 
 ### Handover
 
-**Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4
+**Distribution:** Lognormal \
+**Data:** Mean and SD by C1–C4
 
 ::: {.callout-warning title="Status and next steps" collapse="true"}
 
 #### Status
 
-Current placeholder is lognormal with mean and standard deviation based on AmbSYS data reporting mean and 90th percentile handover time by region and month (A142, A143).
+Implemented with synthetic data.
 
 #### Next steps
 
-* Change to synthetic data, lognormal, vary by C1 to C4.
-* Add code to check assumption: on-scene time varies by response category.
+* Add code to check assumption: handover time varies by response category.
 * Then would require on real data:
-    * Assess whether on-scene time varies by response category.
-    * Input modelling of on-scene time.
+    * Assess whether handover time varies by response category.
+    * Input modelling of handover time.
     * Relevant parameters (e.g., mean, sd).
 
 :::
@@ -328,26 +319,21 @@ Current placeholder is lognormal with mean and standard deviation based on AmbSY
 
 ### Wrap-up time
 
-**Distribution:** TBC \
-**Data:** Distribution parameters by C1–C4
+**Distribution:** Lognormal \
+**Data:** Mean and SD by C1–C4
 
 ::: {.callout-warning title="Status and next steps" collapse="true"}
 
 #### Status
 
-Current placeholder is determinstic from @davis_what_2025 (London, 2023):
-
-- Mean handover-to-clear time: **14 minutes**
-
-Wrap-up time is currently deterministic. A lognormal distribution would be preferable (as in [AmbModelOpen](https://github.com/nhsengland/AmbModelOpen/), which models time to clear (ttc) using empirical or lognormal distributions).
+Implemented with synthetic data.
 
 #### Next steps
 
-* Change to synthetic data, lognormal, vary by C1 to C4.
-* Add code to check assumption: on-scene time varies by response category.
+* Add code to check assumption: wrap-up time varies by response category.
 * Then would require on real data:
-    * Assess whether on-scene time varies by response category.
-    * Input modelling of on-scene time.
+    * Assess whether wrap-up time varies by response category.
+    * Input modelling of wrap-up time.
     * Relevant parameters (e.g., mean, sd).
 
 :::
