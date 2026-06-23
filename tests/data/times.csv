@@ -1,0 +1,11 @@
+time,type,C1,C2,C3,C4
+travel_to_scene,mean,8,10,12,12
+travel_to_scene,sd,5,5,5,5
+on_scene,mean,44,46,48,50
+on_scene,sd,5,5,5,5
+travel_to_hospital,mean,8,10,12,12
+travel_to_hospital,sd,5,5,5,5
+handover,mean,15,22,40,45
+handover,sd,5,5,5,5
+wrap_up,mean,5,5,5,5
+wrap_up,sd,2,2,2,2

@@ -7,7 +7,7 @@ __version__ = "0.1.0"
 
 from .animation import generate_animation
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
-from .config import ArrivalConfig, SimConfig
+from .config import ArrivalConfig, SimConfig, TimesConfig
 from .model import Model
 from .patient import Patient
 from .results import Results
@@ -23,5 +23,6 @@ __all__ = [
     "run_warm_up_audit",
     "Runner",
     "SimConfig",
+    "TimesConfig",
     "WarmUpAuditor",
 ]

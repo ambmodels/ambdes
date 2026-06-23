@@ -14,13 +14,8 @@ class SimConfig:
     def __init__(
         self,
         arrival_config,
+        times_config,
         resource_hours_per_week=52000,
-        mean_time_to_scene=10,
-        on_scene_time=44,
-        mean_time_to_hospital=10,
-        mean_handover_time=30,
-        sd_handover_time=11.4,
-        wrap_up_time=14,
         warm_up_period=100,
         data_collection_period=100,
         n_reps=5,
@@ -32,22 +27,10 @@ class SimConfig:
         arrival_config : ArrivalConfig
             Arrival input configuration containing the response category
             proportions and non-stationary arrival schedule.
+        times_config : TimesConfig
+            Time distribution configuration by response category.
         resource_hours_per_week : int
             Ambulance resource hours per week.
-        mean_time_to_scene : float
-            Mean time from ambulance assignment to arrival on scene in minutes.
-        on_scene_time : float
-            Fixed time in minutes spent on scene before transport.
-        mean_time_to_hospital : float
-            Mean time from leaving scene to arriving at hospital in minutes.
-        mean_handover_time : float
-            Mean time from arrival at hospital to handover in minutes.
-        sd_handover_time : float
-            Standard deviation of time from arrival at hospital to handover
-            in minutes.
-        wrap_up_time : float
-            Fixed time in minutes for post-handover wrap-up before the
-            ambulance becomes available again.
         warm_up_period : int
             Duration of the warm-up period in minutes.
         data_collection_period : int
@@ -70,21 +53,11 @@ class SimConfig:
                     "freq": arrival_config.category_proportions.values,
                 },
             },
-            "time_to_scene": {
-                "class_name": "Exponential",
-                "params": {"mean": mean_time_to_scene},
-            },
-            "handover_time": {
-                "class_name": "Lognormal",
-                "params": {
-                    "mean": mean_handover_time,
-                    "stdev": sd_handover_time,
-                },
-            },
-            "time_to_hospital": {
-                "class_name": "Exponential",
-                "params": {"mean": mean_time_to_hospital},
-            },
+            "time_to_scene": times_config.lognormal_config("travel_to_scene"),
+            "on_scene_time": times_config.lognormal_config("on_scene"),
+            "time_to_hospital": times_config.lognormal_config("travel_to_hospital"),
+            "handover_time": times_config.lognormal_config("handover"),
+            "wrap_up_time": times_config.lognormal_config("wrap_up"),
         }
 
         # Convert total weekly ambulance-hours into an equivalent constant
@@ -94,8 +67,6 @@ class SimConfig:
         # ambulances as resource_hours_per_week / 168.
         self.n_ambulances = round(resource_hours_per_week / 168)
 
-        self.on_scene_time = on_scene_time
-        self.wrap_up_time = wrap_up_time
         self.warm_up_period = warm_up_period
         self.data_collection_period = data_collection_period
         self.n_reps = n_reps
@@ -108,56 +79,49 @@ class ArrivalConfig:
     ----------
     arrival_df : pd.DataFrame
         Mean arrival counts by day of week and response category.
-    proportion_df : pd.DataFrame
-        Proportion of arrivals in each response category for each day.
     variation_df : pd.DataFrame
         Summary of variation in category proportions across days of the week.
     category_proportions : pd.Series
         Mean proportion of arrivals in each response category across the week.
-    arrivals_per_day : pd.Series
-        Total number of arrivals per day.
     nspp_df : pd.DataFrame
         Arrival schedule in the format required by `sim_tools` `NSPPThinning`.
 
     """
 
-    def __init__(self, arrival_df):
+    def __init__(self, arrival_csv):
         """Initialise ArrivalConfig.
 
         Parameters
         ----------
-        arrival_df : str | Path | pd.DataFrame
-            Arrival counts by day of week and response category.
+        arrival_csv : str | Path
+            Path to CSV containing arrival counts by day of week and response
+            category.
 
         """
         # Import arrivals dataframe
-        if isinstance(arrival_df, (str, Path)):
-            self.arrival_df = pd.read_csv(arrival_df, index_col=0)
-        else:
-            self.arrival_df = arrival_df
+        self.arrival_df = pd.read_csv(arrival_csv, index_col=0)
 
         # Convert to proportion by response category for each day
-        self.proportion_df = self.arrival_df.div(
+        proportion_df = self.arrival_df.div(
             self.arrival_df.sum(axis=1), axis=0
         )
 
         # Summarise the variations in proportions by day of week
         self.variation_df = pd.DataFrame(
             {
-                "mean": self.proportion_df.mean(axis=0),
-                "min": self.proportion_df.min(axis=0),
-                "max": self.proportion_df.max(axis=0),
-                "range": self.proportion_df.max(axis=0)
-                - self.proportion_df.min(axis=0),
-                "sd": self.proportion_df.std(axis=0),
+                "mean": proportion_df.mean(axis=0),
+                "min": proportion_df.min(axis=0),
+                "max": proportion_df.max(axis=0),
+                "range": proportion_df.max(axis=0) - proportion_df.min(axis=0),
+                "sd": proportion_df.std(axis=0),
             }
         )
 
         # Get overall mean proportion by response category
-        self.category_proportions = self.proportion_df.mean(axis=0)
+        self.category_proportions = proportion_df.mean(axis=0)
 
         # Get count of total arrivals per day
-        self.arrivals_per_day = self.arrival_df.sum(axis=1)
+        arrivals_per_day = self.arrival_df.sum(axis=1)
 
         # Convert to format required by sim_tools NSPPThinning class
         # It requires a dataframe with columns "t" (timepoint when arrival
@@ -165,6 +129,83 @@ class ArrivalConfig:
         self.nspp_df = pd.DataFrame(
             {
                 "t": range(0, 7 * 1440, 1440),
-                "mean_iat": 1440 / self.arrivals_per_day.values,
+                "mean_iat": 1440 / arrivals_per_day.values,
             }
         )
+
+
+class TimesConfig:
+    """Prepare time distribution inputs for the simulation.
+    
+    Attributes
+    ----------
+    times_df : pd.DataFrame
+        Raw time summary dataframe.
+    long_df : pd.DataFrame
+        Long-form dataframe with columns:
+        time, type, category, value.
+    """
+
+    def __init__(self, times_csv):
+        """Initialise TimesConfig.
+
+        Parameters
+        ----------
+        times_csv : str | Path
+            Path to CSV containing the mean and SD times by category.
+
+        """
+        # Import times dataframe
+        self.times_df = pd.read_csv(times_csv)
+
+        # Convert to long format
+        self.long_df = self.times_df.melt(
+            id_vars=["time", "type"],
+            value_vars=["C1", "C2", "C3", "C4"],
+            var_name="category",
+            value_name="value",
+        )
+
+        # Convert to tidy format
+        self.tidy_df = (
+            self.long_df.pivot(
+                index=["time", "category"],
+                columns="type",
+                values="value",
+            )
+            .reset_index()
+            .rename_axis(columns=None)
+        )
+
+    def lognormal_config(self, time_name):
+        """Create a Lognormal config dict.
+        
+        Parameters
+        ----------
+        time_name : str
+            Name of time type.
+
+        Returns
+        -------
+        dict of dict
+            Config suitable for sim-tools DistributionRegistry, with one
+            config dict per response category.
+        """
+        subset = self.tidy_df[self.tidy_df["time"] == time_name]
+
+        if subset.empty:
+                raise ValueError(
+                    f"time_name {time_name!r} not found in times config."
+                )
+
+        return {
+            row["category"]: {
+                "class_name": "Lognormal",
+                "params": {
+                    "mean": row["mean"],
+                    "stdev": row["sd"],
+                },
+            }
+            for _, row in subset.iterrows()
+        }
+

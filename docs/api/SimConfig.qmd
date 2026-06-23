@@ -3,13 +3,8 @@
 ```python
 SimConfig(
     arrival_config,
+    times_config,
     resource_hours_per_week=52000,
-    mean_time_to_scene=10,
-    on_scene_time=44,
-    mean_time_to_hospital=10,
-    mean_handover_time=30,
-    sd_handover_time=11.4,
-    wrap_up_time=14,
     warm_up_period=100,
     data_collection_period=100,
     n_reps=5,

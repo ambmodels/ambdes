@@ -1,20 +1,22 @@
 """Smoke tests - checks the model runs end-to-end without errors."""
 
-from ambdes import Model, SimConfig
-
-AMBSYS_DATA = {
-    "mean_iat_min": {"C1": 60.0, "C2": 30.0, "C3": 20.0, "C4": 15.0},
-    "mean_handover_time_min": 20.0,
-    "p90_handover_time_min": 45.0,
-    "sd_handover_time_min": 15.0,
-}
+from pathlib import Path
+from ambdes import ArrivalConfig, Model, SimConfig, TimesConfig
 
 
-def test_model_runs_without_error():
-    """Model completes a short run (with/without logs) successfully."""
+ARRIVALS = Path(__file__).parent.joinpath("data/arrivals.csv")
+TIMES = Path(__file__).parent.joinpath("data/times.csv")
+
+
+def test_model_runs():
+    """Model completes a short run successfully."""
+    arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
+    times_config = TimesConfig(times_csv=TIMES)
     config = SimConfig(
-        ambsys_data=AMBSYS_DATA, warm_up_period=0, data_collection_period=100
+        arrival_config=arrival_config,
+        times_config=times_config
     )
+    config.n_ambulances = 1
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0
