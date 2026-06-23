@@ -22,9 +22,6 @@ website:
         - api/Results.qmd
         - api/Runner.qmd
         section: Core classes
-      - contents:
-        - api/generate_animation.qmd
-        section: Top-level functions
       section: API reference
     - reuse.qmd
     id: api
