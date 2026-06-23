@@ -17,7 +17,7 @@ class SimConfig:
         times_config,
         resource_hours_per_week=52000,
         warm_up_period=100,
-        data_collection_period=100,
+        data_collection_period=500,
         n_reps=5,
     ):
         """Initialise simulation configuration.
@@ -79,6 +79,8 @@ class ArrivalConfig:
     ----------
     arrival_df : pd.DataFrame
         Mean arrival counts by day of week and response category.
+    proportion_df : pd.DataFrame
+        Proportion of arrivals in each response category by day of week.
     variation_df : pd.DataFrame
         Summary of variation in category proportions across days of the week.
     category_proportions : pd.Series
@@ -102,23 +104,23 @@ class ArrivalConfig:
         self.arrival_df = pd.read_csv(arrival_csv, index_col=0)
 
         # Convert to proportion by response category for each day
-        proportion_df = self.arrival_df.div(
+        self.proportion_df = self.arrival_df.div(
             self.arrival_df.sum(axis=1), axis=0
         )
 
         # Summarise the variations in proportions by day of week
         self.variation_df = pd.DataFrame(
             {
-                "mean": proportion_df.mean(axis=0),
-                "min": proportion_df.min(axis=0),
-                "max": proportion_df.max(axis=0),
-                "range": proportion_df.max(axis=0) - proportion_df.min(axis=0),
-                "sd": proportion_df.std(axis=0),
+                "mean": self.proportion_df.mean(axis=0),
+                "min": self.proportion_df.min(axis=0),
+                "max": self.proportion_df.max(axis=0),
+                "range": self.proportion_df.max(axis=0) - self.proportion_df.min(axis=0),
+                "sd": self.proportion_df.std(axis=0),
             }
         )
 
         # Get overall mean proportion by response category
-        self.category_proportions = proportion_df.mean(axis=0)
+        self.category_proportions = self.proportion_df.mean(axis=0)
 
         # Get count of total arrivals per day
         arrivals_per_day = self.arrival_df.sum(axis=1)
