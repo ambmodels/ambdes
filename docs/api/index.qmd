@@ -12,11 +12,3 @@ Main classes used to build and run simulations.
 | [Patient](Patient.qmd#ambdes.Patient) | Represents a patient who has called 999. |
 | [Results](Results.qmd#ambdes.Results) | Simulation output for a single model run. |
 | [Runner](Runner.qmd#ambdes.Runner) | Run the simulation for one or more replications. |
-
-## Top-level functions
-
-Common utility functions for calibration and configuration.
-
-| | |
-| --- | --- |
-| [generate_animation](generate_animation.qmd#ambdes.generate_animation) | Generate vidigi animation. |

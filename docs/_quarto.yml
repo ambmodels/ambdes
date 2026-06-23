@@ -36,10 +36,6 @@ quartodoc:
         - Patient
         - Results
         - Runner
-    - title: "Top-level functions"
-      desc: "Common utility functions for calibration and configuration."
-      contents:
-        - generate_animation
   sidebar:
     file: "_sidebar.yml"
     title: "Ambulance DES"
