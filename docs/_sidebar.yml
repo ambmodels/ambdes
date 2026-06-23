@@ -5,23 +5,13 @@ website:
     - href: index.qmd
       text: Home
     - literature.qmd
-    - code.qmd
     - modeloverview.qmd
-    - contents:
-      - stage1/assumptions.qmd
-      section: Stage 1
-    - contents:
-      - stage2/assumptions.qmd
-      section: Stage 2
     - contents:
       - verification.qmd
       - validation.qmd
       - criteria.qmd
       - qa.qmd
       section: Quality assurance
-    - contents:
-      - userguide.qmd
-      section: User guide
     - contents:
       - api/index.qmd
       - contents:
