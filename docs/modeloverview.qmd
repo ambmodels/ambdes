@@ -41,11 +41,11 @@ The DES (particularly those with similar parameters) should broadly agree with e
 
 ::::: {.panel-tabset}
 
-## Stage 1 (whole trust)
+## Aggregate model (`aggregate`)
 
 ::: {.overview_summary}
 
-This stage models the whole trust.
+This is the simplest model. It can be used to model the whole trust at once, or by county. Model structure is consistent between them - just change the input files.
 
 :::
 
@@ -53,7 +53,10 @@ This stage models the whole trust.
 
 *How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?*
 
+
 ::: {.callout-note appearance="simple" collapse="true" title="More details"}
+
+#### Whole trust
 
 In the current regression model, they change three things:
 
@@ -68,6 +71,14 @@ Even in this simplest stage, we can't just have one service time, as we need to 
 
 To begin with, we don't want to break down by whether patients are conveyed or not - that is only used when looking at job cycle times. For this question, we just want the overall category 2 mean response time.
 
+#### By county
+
+Historically demand planning was on a trust-level, but in recent years have been asked to do it on a county-level.
+
+This stage is equivalent to having one model instance with separate ambulance resources per county, as then you'd just be running each county in parallel to each other essentially, no interaction, so it's simpler to just use the single area model and run it for each county.
+
+Although the model doesn't capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
+
 :::
 
 ### Conceptual model
@@ -79,7 +90,7 @@ To begin with, we don't want to break down by whether patients are conveyed or n
 #### Arrival timing
 
 **Distribution:** Non-homogeneous Poisson \
-**Data:** Mean inter-arrival time by day of week (and potentially C1-C4, unless those are assigned after - see more details below)
+**Data:** Mean inter-arrival time by day of week
 
 #### Response category
 
@@ -345,35 +356,8 @@ Things like:
 
 Could add assumption confidence scale/scoring (sometimes part of an assumption audit framework) - every assumption gets a rating from 1 to 5 (e.g., 1 low confidence guesswork, 2 low confidence weak evidence maybe anecdotal, 3 moderate confidence some supporting data but gaps/uncertainty, 4 high confidence good quality data 5 very high confidence strong empirical evidence repeated validation well established). Other names may include assumption register/log, confidence weighting, model risk scoring. May be done in combination with impact scoring (how much assumption affects outcomes) and sensitivity analysis (what happens if the assumption is wrong). Was suggested in relation to another model by someone in a HaCORN meeting.
 
-## Stage 2 (county models)
 
-::: {.overview_summary}
-
-In this stage, the model structure remains completely unchanged, but the inputs are switched from being for the whole trust to **per county**.
-
-:::
-
-### Key question
-
-*If total vehicle hours change in a specific county, how do Category 2 response times and utilisation change within that county?*
-
-::: {.callout-note appearance="simple" collapse="true" title="More details"}
-
-Historically demand planning was on a trust-level, but in recent years have been asked to do it on a county-level.
-
-This stage is equivalent to having one model instance with separate ambulance resources per county, as then you'd just be running each county in parallel to each other essentially, no interaction, so it's simpler to just use the single area model and run it for each county.
-
-Although the model doesn't capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
-
-:::
-
-### Conceptual model
-
-Same structure, county-specific parameters.
-
-TBC which inputs county-specific and which not.
-
-## Stage 3 (job cycle)
+## Job cycle model (`jobcycle`)
 
 ::: {.overview_summary}
 
@@ -394,6 +378,27 @@ County-level of interest e.g., sometimes each county is given a different target
 ### Conceptual model
 
 Does job cycle need breaking down further? (a) mobilisation time (b) time to scene (c) on scene time (d) if conveyed, travel to hospital (e) handover queueing (f) wrap up.
+
+:::: {.overview_step .is_change}
+
+<div class="step_badge" title="Description of change">Change</div>
+
+### Incident arrives
+
+::::
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 :::: {.overview_step .is_same}
 
@@ -427,7 +432,7 @@ Does job cycle need breaking down further? (a) mobilisation time (b) time to sce
 
 ::::
 
-## Stage 4 (shifts)
+## Shift model (`shift`)
 
 ::: {.overview_summary}
 
@@ -479,7 +484,7 @@ Is it relevant to know proportion of crews going straight from one job to the ne
 * Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
 * Will also depends on whether close to break window or end of shift.
 
-## Stage 5 (geography)
+## Spatial model (`spatial`)
 
 ::: {.overview_summary}
 
@@ -625,7 +630,7 @@ Outcomes:
 
 :::
 
-## Stage 6 (stations)
+## Station-level model (`station`)
 
 ::: {.overview_summary}
 
