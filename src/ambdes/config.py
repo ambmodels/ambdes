@@ -15,28 +15,18 @@ class SimConfig:
         self,
         arrival_config,
         times_config,
-        resource_hours_per_week=52000,
-        warm_up_period=100,
-        data_collection_period=500,
-        n_reps=5,
+        model_config,
     ):
         """Initialise simulation configuration.
 
         Parameters
         ----------
         arrival_config : ArrivalConfig
-            Arrival input configuration containing the response category
-            proportions and non-stationary arrival schedule.
+            Arrival input configuration.
         times_config : TimesConfig
-            Time distribution configuration by response category.
-        resource_hours_per_week : int
-            Ambulance resource hours per week.
-        warm_up_period : int
-            Duration of the warm-up period in minutes.
-        data_collection_period : int
-            Duration of the data collection period in minutes.
-        n_reps : int
-            Number of replications to run.
+            Time distribution configuration.
+        model_config : ModelConfig
+            Model-level input parameters.
 
         """
         # Set up parameters for distributions in required format for
@@ -55,7 +45,9 @@ class SimConfig:
             },
             "time_to_scene": times_config.lognormal_config("travel_to_scene"),
             "on_scene_time": times_config.lognormal_config("on_scene"),
-            "time_to_hospital": times_config.lognormal_config("travel_to_hospital"),
+            "time_to_hospital": times_config.lognormal_config(
+                 "travel_to_hospital"
+            ),
             "handover_time": times_config.lognormal_config("handover"),
             "wrap_up_time": times_config.lognormal_config("wrap_up"),
         }
@@ -65,11 +57,11 @@ class SimConfig:
         # pattern. One always-available ambulance provides 168 hours of
         # capacity per week (24 × 7), so we approximate the number of
         # ambulances as resource_hours_per_week / 168.
-        self.n_ambulances = round(resource_hours_per_week / 168)
+        self.n_ambulances = round(model_config.resource_hours_per_week / 168)
 
-        self.warm_up_period = warm_up_period
-        self.data_collection_period = data_collection_period
-        self.n_reps = n_reps
+        self.warm_up_period = model_config.warm_up_period
+        self.data_collection_period = model_config.data_collection_period
+        self.n_reps = model_config.n_reps
 
 
 class ArrivalConfig:
@@ -114,7 +106,10 @@ class ArrivalConfig:
                 "mean": self.proportion_df.mean(axis=0),
                 "min": self.proportion_df.min(axis=0),
                 "max": self.proportion_df.max(axis=0),
-                "range": self.proportion_df.max(axis=0) - self.proportion_df.min(axis=0),
+                "range": (
+                     self.proportion_df.max(axis=0) -
+                     self.proportion_df.min(axis=0)
+                ),
                 "sd": self.proportion_df.std(axis=0),
             }
         )
@@ -138,7 +133,7 @@ class ArrivalConfig:
 
 class TimesConfig:
     """Prepare time distribution inputs for the simulation.
-    
+
     Attributes
     ----------
     times_df : pd.DataFrame
@@ -146,6 +141,7 @@ class TimesConfig:
     long_df : pd.DataFrame
         Long-form dataframe with columns:
         time, type, category, value.
+
     """
 
     def __init__(self, times_csv):
@@ -181,7 +177,7 @@ class TimesConfig:
 
     def lognormal_config(self, time_name):
         """Create a Lognormal config dict.
-        
+
         Parameters
         ----------
         time_name : str
@@ -192,6 +188,7 @@ class TimesConfig:
         dict of dict
             Config suitable for sim-tools DistributionRegistry, with one
             config dict per response category.
+
         """
         subset = self.tidy_df[self.tidy_df["time"] == time_name]
 
@@ -211,3 +208,38 @@ class TimesConfig:
             for _, row in subset.iterrows()
         }
 
+
+class ModelConfig:
+    """Prepare model-level inputs for the simulation.
+
+    Attributes
+    ----------
+    resource_hours_per_week : int
+        Ambulance resource hours per week.
+    warm_up_period : int
+        Duration of the warm-up period in minutes.
+    data_collection_period : int
+        Duration of the data collection period in minutes.
+    n_reps : int
+        Number of replications to run.
+
+    """
+
+    def __init__(self, param_csv):
+        """Initialise ModelConfig.
+
+        Parameters
+        ----------
+        param_csv : str | Path
+            Path to CSV containing model parameters.
+
+        """
+        # Import CSV and convert to dict
+        param_df = pd.read_csv(param_csv)
+        params = param_df.set_index("parameter")["value"].to_dict()
+
+        # Set as attributes
+        self.resource_hours_per_week = params["resource_hours_per_week"]
+        self.warm_up_period = params["warm_up_period"]
+        self.data_collection_period = params["data_collection_period"]
+        self.n_reps = params["n_reps"]
