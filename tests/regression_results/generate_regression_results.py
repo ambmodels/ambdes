@@ -33,17 +33,23 @@ config = SimConfig(
 # Single run using Model and Results
 model = Model(run_number=0, config=config)
 model.run()
-Results(model).patient_df().to_csv(OUTPUT / "model_patient_df.csv")
-Results(model).utilisation_df().to_csv(OUTPUT / "model_utilisation_df.csv")
-Results(model).summary_df().to_csv(OUTPUT / "model_summary_df.csv")
+Results(model).patient_df().to_csv(
+    OUTPUT / "model_patient_df.csv", index=False
+)
+Results(model).utilisation_df().to_csv(
+    OUTPUT / "model_utilisation_df.csv", index=False
+)
+Results(model).summary_df().to_csv(
+    OUTPUT / "model_summary_df.csv", index=False
+)
 
 # Multiple replications using Runner
 runner = Runner(config)
 results = runner.run_reps()
-results["patients"].to_csv(OUTPUT / "runner_patients.csv")
-results["run"].to_csv(OUTPUT / "runner_run.csv")
-results["overall"].to_csv(OUTPUT / "runner_overall.csv")
+results["patients"].to_csv(OUTPUT / "runner_patients.csv", index=False)
+results["run"].to_csv(OUTPUT / "runner_run.csv", index=False)
+results["overall"].to_csv(OUTPUT / "runner_overall.csv", index=False)
 
 # Warm-up audit
 audit = run_warm_up_audit(config=config, interval=30, n_reps=2)
-audit.to_csv(OUTPUT / "audit.csv")
+audit.to_csv(OUTPUT / "audit.csv", index=False)
