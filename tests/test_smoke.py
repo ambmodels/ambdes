@@ -4,9 +4,11 @@ from pathlib import Path
 
 from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig, TimesConfig
 
-ARRIVALS = Path(__file__).parent.joinpath("input_data/param_arrivals.csv")
-TIMES = Path(__file__).parent.joinpath("input_data/param_times.csv")
-MODEL = Path(__file__).parent.joinpath("input_data/param_model.csv")
+INPUT = Path(__file__).parent.joinpath("input_data")
+
+ARRIVALS = INPUT / "param_arrivals.csv"
+TIMES = INPUT / "param_times.csv"
+MODEL = INPUT / "param_model.csv"
 
 
 def test_model_runs():
