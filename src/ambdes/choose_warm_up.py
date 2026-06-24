@@ -1,6 +1,7 @@
 """Tools to support choosing the appropriate warm-up length."""
 
 import copy
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -188,9 +189,7 @@ def plot_warm_up(audit, metric, category=None):
         df = df[df["category"] == category]
 
     # Plot cumulative mean for each run
-    fig = px.line(
-        data_frame=df, x="time", y="value", line_group="run"
-    )
+    fig = px.line(data_frame=df, x="time", y="value", line_group="run")
     fig.update_traces(line_color="lightblue")
 
     # Compute overall cumulative mean and overlay on plot

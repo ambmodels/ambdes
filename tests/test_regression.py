@@ -1,7 +1,8 @@
 """Regression tests - results are consistent over time."""
 
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 from ambdes import (
     ArrivalConfig,
@@ -13,7 +14,6 @@ from ambdes import (
     TimesConfig,
     run_warm_up_audit,
 )
-
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 OUTPUT = Path(__file__).parent.joinpath("regression_results")

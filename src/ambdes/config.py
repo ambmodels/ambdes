@@ -1,6 +1,5 @@
 """Model configuration."""
 
-
 import pandas as pd
 
 

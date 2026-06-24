@@ -20,6 +20,7 @@ from ambdes import (
 INPUT = Path(__file__).parent.parent / "input_data"
 OUTPUT = Path(__file__).parent
 
+
 # Config
 def make_config():
     """Make SimConfig."""
@@ -31,6 +32,7 @@ def make_config():
         times_config=times_config,
         model_config=model_config,
     )
+
 
 # Single run using Model and Results
 model = Model(run_number=0, config=make_config())
