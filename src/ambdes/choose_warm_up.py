@@ -1,5 +1,6 @@
 """Tools to support choosing the appropriate warm-up length."""
 
+import copy
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -27,6 +28,9 @@ def run_warm_up_audit(config, interval, n_reps):
 
     """
     dfs = []
+
+    # Make a local copy so the caller's config is not modified
+    config = copy.copy(config)
 
     # Enforce warm_up_period == 0
     config.warm_up_period = 0
