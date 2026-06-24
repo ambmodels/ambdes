@@ -6,6 +6,8 @@ Documentation: <https://ambmodels.github.io/ambdes/>
 
 ## Setup
 
+An environment file is created, which can be used to set-up an environment with `conda` or `mamba`.
+
 ```
 mamba env create --file environment.yaml
 mamba activate ambdes
@@ -39,9 +41,12 @@ ruff check --fix src tests
 
 ## Tests
 
+There is presently just a simple smoke test, which performs a very short model run to see if it can run without error and at least one patient arrives.
+
+More tests will be added as part of verification of the model code.
+
 ```
 pytest
-pytest tests/test_smoke.py && pytest --ignore=tests/test_smoke.py
 ```
 
 ## Citation
