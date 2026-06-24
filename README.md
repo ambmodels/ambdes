@@ -43,7 +43,10 @@ ruff check --fix
 
 ## Tests
 
-There is presently just a simple smoke test, which performs a very short model run to see if it can run without error and at least one patient arrives.
+There is presently just two test files:
+
+* A simple smoke test, which performs a very short model run to see if it can run without error and at least one patient arrives.
+* Regression tests, which run the model and check results are consistent with those generated and saved previously.
 
 More tests will be added as part of verification of the model code.
 

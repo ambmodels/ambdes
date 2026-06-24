@@ -9,7 +9,7 @@ from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
 from .config import ArrivalConfig, ModelConfig, SimConfig, TimesConfig
 from .model import Model
 from .patient import Patient
-from .results import Results
+from .results import Results, UtilisationCalculator
 from .runner import Runner
 
 __all__ = [
@@ -24,4 +24,5 @@ __all__ = [
     "SimConfig",
     "TimesConfig",
     "WarmUpAuditor",
+    "UtilisationCalculator",
 ]
