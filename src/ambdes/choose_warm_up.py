@@ -30,7 +30,7 @@ def run_warm_up_audit(config, interval, n_reps):
     dfs = []
 
     # Make a local copy so the caller's config is not modified
-    config = copy.copy(config)
+    config = copy.deepcopy(config)
 
     # Enforce warm_up_period == 0
     config.warm_up_period = 0
