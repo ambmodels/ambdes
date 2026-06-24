@@ -7,6 +7,227 @@ Takes patient list from one Model run and returns tidy pandas DataFrames
 import pandas as pd
 
 
+class UtilisationCalculator:
+    """Compute time-weighted ambulance utilisation from an event log.
+
+    Attributes
+    ----------
+    log : pd.DataFrame
+        Event log from a vidigi EventLogger.
+    warm_up_period : float
+        Length of the warm-up period - observations before this time are
+        excluded.
+    data_collection_period : float
+        Length of the data collection period.
+    run_length : float
+        Total run length (including warm-up and data collection period).
+    capacity : int
+        Total number of ambulances.
+
+    """
+
+    def __init__(self, log, warm_up_period, data_collection_period, capacity):
+        """Initialise UtilisationCalculator.
+
+        Parameters
+        ----------
+        log : pd.DataFrame
+            Event log from a vidigi EventLogger.
+        warm_up_period : float
+            Length of the warm-up period - observations before this time are
+            excluded.
+        data_collection_period : float
+            Length of the data collection period.
+        capacity : int
+            Total number of ambulances.
+
+        """
+        self.log = log
+        self.warm_up_period = warm_up_period
+        self.data_collection_period = data_collection_period
+        self.run_length = warm_up_period + data_collection_period
+        self.capacity = capacity
+
+    @classmethod
+    def from_model(cls, model):
+        """Construct a UtilisationCalculator from a completed Model instance.
+
+        This "classmethod" makes it easier to set up the UtilisationCalculator
+        as you can just write UtilisationCalculator.from_model(model) instead
+        of manually passing all the arguments.
+
+        Parameters
+        ----------
+        model : Model
+            A model instance that has already been executed (model.run()).
+
+        Returns
+        -------
+        UtilisationCalculator
+
+        """
+        return cls(
+            log=model.logger.to_dataframe(),
+            warm_up_period=model.config.warm_up_period,
+            data_collection_period=model.config.data_collection_period,
+            capacity=model.config.n_ambulances,
+        )
+
+    @classmethod
+    def from_model_at_time(cls, model, current_time):
+        """Construct a UtilisationCalculator from a running Model, up to now.
+
+        Intended for use during warm-up audits, where the model has not
+        yet finished. warm_up_period is forced to 0 and run_length is set
+        to current_time so the full elapsed period is included.
+
+        This "classmethod" makes it easier to set up the UtilisationCalculator
+        as you can just write UtilisationCalculator.from_model_at_time(model)
+        instead of manually passing all the arguments.
+
+        Parameters
+        ----------
+        model : Model
+            A model instance that has been run up to current_time.
+        current_time : float
+            The simulation time to treat as the end of the observation
+            window.
+
+        Returns
+        -------
+        UtilisationCalculator
+
+        """
+        return cls(
+            log=model.logger.to_dataframe(),
+            warm_up_period=0,
+            data_collection_period=current_time,
+            capacity=model.config.n_ambulances,
+        )
+
+    def state_changes_df(self):
+        """Return the time-weighted ambulance utilisation intervals.
+
+        Returns
+        -------
+        state_changes : pd.DataFrame
+            Columns: time, busy, interval_duration, utilisation. One row per
+            state-change interval during the data collection period. `busy`
+            is the number of ambulances in use during that interval.
+
+        """
+        # Return empty of logger returned an empty DataFrame with no columns
+        if self.log.empty:
+            return pd.DataFrame(
+                columns=["time", "busy", "interval_duration", "utilisation"]
+            )
+
+        # Filter to events marking start and end of ambulance resource use
+        amb = self.log.loc[
+            self.log["event"].isin(
+                ["ambulance_assigned", "ambulance_available"]
+            ),
+            ["entity_id", "event_type", "time"],
+        ]
+
+        # Create two dataframes - one with start times and one with end times
+        starts = amb.loc[
+            amb["event_type"] == "resource_use", ["entity_id", "time"]
+        ].rename(columns={"time": "start_time"})
+        ends = amb.loc[
+            amb["event_type"] == "resource_use_end", ["entity_id", "time"]
+        ].rename(columns={"time": "end_time"})
+
+        # Combine these, so each patient has one row with start and end time
+        intervals = starts.merge(ends, on="entity_id", how="left")
+
+        # If end_time is NA, use end of observation window as end time
+        intervals["end_time"] = intervals["end_time"].fillna(self.run_length)
+
+        # Clip the intervals, so those entirely before warm-up are dropped,
+        # and those that span warm-up are trimmed so their start time is the
+        # start of the data collection period
+        intervals["start_time"] = intervals["start_time"].clip(
+            lower=self.warm_up_period
+        )
+        intervals["end_time"] = intervals["end_time"].clip(
+            lower=self.warm_up_period
+        )
+        # Drop those before warm-up (becomes [start, start])
+        intervals = intervals.loc[
+            intervals["end_time"] > intervals["start_time"]
+        ]
+
+        if intervals.empty:
+            return pd.DataFrame(
+                columns=["time", "busy", "interval_duration", "utilisation"]
+            )
+
+        # Convert intervals into event times: +1 when ambulance becomes busy
+        # and -1 when ambulance stops being busy
+        events = pd.concat(
+            [
+                intervals[["start_time"]]
+                .rename(columns={"start_time": "time"})
+                .assign(delta=1),
+                intervals[["end_time"]]
+                .rename(columns={"end_time": "time"})
+                .assign(delta=-1),
+            ],
+            ignore_index=True,
+        ).sort_values("time")
+
+        # Combine all changes that happen at the same simulation time, then
+        # take a cumulative sum to get the number of busy ambulances after
+        # each event time. Grouping by time is important because multiple
+        # ambulances may start/end at exactly the same timestamp.
+        state_changes = (
+            events.groupby("time", as_index=False)["delta"]
+            .sum()
+            .assign(busy=lambda df: df["delta"].cumsum())
+            .drop(columns="delta")
+        )
+
+        # The duration of each state is the gap until the next change in
+        # state. The final state runs until the end of the observation window.
+        state_changes["interval_duration"] = (
+            state_changes["time"].shift(-1).fillna(self.run_length)
+            - state_changes["time"]
+        )
+
+        # Drop any zero-length states, just to be safe
+        state_changes = state_changes.loc[
+            state_changes["interval_duration"] > 0
+        ]
+
+        # Convert busy ambulances into utilisation.
+        # Because capacity is fixed in this model, utilisation is simply
+        # busy/capacity.
+        state_changes["utilisation"] = state_changes["busy"] / self.capacity
+
+        return state_changes
+
+    def mean_utilisation(self):
+        """Return mean time-weighted ambulance utilisation.
+
+        Returns
+        -------
+        float
+            Mean time-weighted ambulance utilisation.
+
+        """
+        util_df = self.state_changes_df()
+
+        # If there is no observed utilisation interval, return 0
+        if util_df.empty or self.data_collection_period <= 0:
+            return 0
+
+        # Time-weighted mean utilisation
+        return (util_df["busy"] * util_df["interval_duration"]).sum() / (
+            self.capacity * self.data_collection_period
+        )
+
+
 class Results:
     """Simulation output for a single model run."""
 
@@ -52,105 +273,11 @@ class Results:
 
         Returns
         -------
-        state_changes : pd.DataFrame
-            Columns: time, busy, interval_duration, utilisation. One row per
-            state-change interval during the data collection period. `busy`
-            is the number of ambulances in use during that interval.
+        pd.DataFrame
+            Columns: time, busy, interval_duration, utilisation.
 
         """
-        log = self.model.logger.to_dataframe()
-        warm_up_period = self.model.config.warm_up_period
-        run_length = warm_up_period + self.model.config.data_collection_period
-        capacity = self.model.config.n_ambulances
-
-        # Return empty of logger returned an empty DataFrame with no columns
-        if log.empty:
-            return pd.DataFrame(
-                columns=["time", "busy", "interval_duration", "utilisation"]
-            )
-
-        # Filter to events marking start and end of ambulance resource use
-        amb = log.loc[
-            log["event"].isin(["ambulance_assigned", "ambulance_available"]),
-            ["entity_id", "event_type", "time"],
-        ]
-
-        # Create two dataframes - one with start times and one with end times
-        starts = amb.loc[
-            amb["event_type"] == "resource_use", ["entity_id", "time"]
-        ].rename(columns={"time": "start_time"})
-        ends = amb.loc[
-            amb["event_type"] == "resource_use_end", ["entity_id", "time"]
-        ].rename(columns={"time": "end_time"})
-
-        # Combine these, so each patient has one row with start and end time
-        intervals = starts.merge(ends, on="entity_id", how="left")
-
-        # If end_time is NA, use end of observation window as end time
-        intervals["end_time"] = intervals["end_time"].fillna(run_length)
-
-        # Clip the intervals, so those entirely before warm-up are dropped,
-        # and those that span warm-up are trimmed so their start time is the
-        # start of the data collection period
-        intervals["start_time"] = intervals["start_time"].clip(
-            lower=warm_up_period
-        )
-        intervals["end_time"] = intervals["end_time"].clip(
-            lower=warm_up_period
-        )
-        # Drop those before warm-up (becomes [start, start])
-        intervals = intervals.loc[
-            intervals["end_time"] > intervals["start_time"]
-        ]
-
-        if intervals.empty:
-            return pd.DataFrame(
-                columns=["time", "busy", "interval_duration", "utilisation"]
-            )
-
-        # Convert intervals into event times: +1 when ambulance becomes busy
-        # and -1 when ambulance stops being busy
-        events = pd.concat(
-            [
-                intervals[["start_time"]]
-                .rename(columns={"start_time": "time"})
-                .assign(delta=1),
-                intervals[["end_time"]]
-                .rename(columns={"end_time": "time"})
-                .assign(delta=-1),
-            ],
-            ignore_index=True,
-        ).sort_values("time")
-
-        # Combine all changes that happen at the same simulation time, then
-        # take a cumulative sum to get the number of busy ambulances after
-        # each event time. Grouping by time is important because multiple
-        # ambulances may start/end at exactly the same timestamp.
-        state_changes = (
-            events.groupby("time", as_index=False)["delta"]
-            .sum()
-            .assign(busy=lambda df: df["delta"].cumsum())
-            .drop(columns="delta")
-        )
-
-        # The duration of each state is the gap until the next change in
-        # state. The final state runs until the end of the observation window.
-        state_changes["interval_duration"] = (
-            state_changes["time"].shift(-1).fillna(run_length)
-            - state_changes["time"]
-        )
-
-        # Drop any zero-length states, just to be safe
-        state_changes = state_changes.loc[
-            state_changes["interval_duration"] > 0
-        ]
-
-        # Convert busy ambulances into utilisation.
-        # Because capacity is fixed in this model, utilisation is simply
-        # busy/capacity.
-        state_changes["utilisation"] = state_changes["busy"] / capacity
-
-        return state_changes
+        return UtilisationCalculator.from_model(self.model).state_changes_df()
 
     def utilisation(self):
         """Return mean time-weighted ambulance utilisation.
@@ -161,18 +288,7 @@ class Results:
             Mean time-weighted ambulance utilisation.
 
         """
-        util_df = self.utilisation_df()
-        data_collection_period = self.model.config.data_collection_period
-        capacity = self.model.config.n_ambulances
-
-        # If there is no observed utilisation interval, return 0
-        if util_df.empty:
-            return 0
-
-        # Time-weighted mean utilisation
-        return (util_df["busy"] * util_df["interval_duration"]).sum() / (
-            capacity * data_collection_period
-        )
+        return UtilisationCalculator.from_model(self.model).mean_utilisation()
 
     def summary_df(self):
         """Return run-level summary in long format.
