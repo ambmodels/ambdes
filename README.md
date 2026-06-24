@@ -34,9 +34,11 @@ make -C docs preview
 
 ## Linting and formatting
 
+This will run on all `.py` files and `.ipynb` notebooks.
+
 ```
-ruff format src tests
-ruff check --fix src tests
+ruff format
+ruff check --fix
 ```
 
 ## Tests

@@ -1,8 +1,8 @@
 """Smoke tests - checks the model runs end-to-end without errors."""
 
 from pathlib import Path
-from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig, TimesConfig
 
+from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig, TimesConfig
 
 ARRIVALS = Path(__file__).parent.joinpath("data/param_arrivals.csv")
 TIMES = Path(__file__).parent.joinpath("data/param_times.csv")

@@ -1,6 +1,5 @@
 """Model configuration."""
 
-from pathlib import Path
 
 import pandas as pd
 
@@ -46,7 +45,7 @@ class SimConfig:
             "time_to_scene": times_config.lognormal_config("travel_to_scene"),
             "on_scene_time": times_config.lognormal_config("on_scene"),
             "time_to_hospital": times_config.lognormal_config(
-                 "travel_to_hospital"
+                "travel_to_hospital"
             ),
             "handover_time": times_config.lognormal_config("handover"),
             "wrap_up_time": times_config.lognormal_config("wrap_up"),
@@ -107,8 +106,8 @@ class ArrivalConfig:
                 "min": self.proportion_df.min(axis=0),
                 "max": self.proportion_df.max(axis=0),
                 "range": (
-                     self.proportion_df.max(axis=0) -
-                     self.proportion_df.min(axis=0)
+                    self.proportion_df.max(axis=0)
+                    - self.proportion_df.min(axis=0)
                 ),
                 "sd": self.proportion_df.std(axis=0),
             }
@@ -193,9 +192,9 @@ class TimesConfig:
         subset = self.tidy_df[self.tidy_df["time"] == time_name]
 
         if subset.empty:
-                raise ValueError(
-                    f"time_name {time_name!r} not found in times config."
-                )
+            raise ValueError(
+                f"time_name {time_name!r} not found in times config."
+            )
 
         return {
             row["category"]: {
