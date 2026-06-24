@@ -31,13 +31,9 @@ class SimConfig:
         # Set up parameters for distributions in required format for
         # sim-tools DistributionsRegistry
         self.dist_config = {
-            #"call_arrival": {
-            #    "class_name": "NSPPThinning",
-            #    "params": {"data": arrival_config.nspp_df},
-            #},
             "call_arrival": {
-                "class_name": "Exponential",
-                "params": {"mean": 3}
+                "class_name": "NSPPThinning",
+                "params": {"data": arrival_config.nspp_df},
             },
             "call_category": {
                 "class_name": "DiscreteEmpirical",

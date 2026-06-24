@@ -60,10 +60,9 @@ class Model:
         """Generate patients."""
         while True:
             # Sample and pass time to next call
-            iat = self.dists["call_arrival"].sample()
-            #iat = self.dists["call_arrival"].sample(
-            #    simulation_time=self.env.now
-            #)
+            iat = self.dists["call_arrival"].sample(
+                simulation_time=self.env.now
+            )
             yield self.env.timeout(iat)
 
             # Sample call type
