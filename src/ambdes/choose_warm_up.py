@@ -5,6 +5,7 @@ import pandas as pd
 import plotly.express as px
 
 from .model import Model
+from .results import UtilisationCalculator
 
 
 def run_warm_up_audit(config, interval, n_reps):
@@ -22,7 +23,7 @@ def run_warm_up_audit(config, interval, n_reps):
     Returns
     -------
     pd.DataFrame
-        Audit results with one row per run, time, and category.
+        Audit results with one row per run, time, category and metric.
 
     """
     dfs = []
@@ -79,15 +80,26 @@ class WarmUpAuditor:
     def _audit_model(self):
         """Audit the model at specified intervals."""
         while True:
+            # Response time (by category)
             response_times = self._get_response_times()
             for category, value in response_times.items():
                 self.audit_results.append(
                     {
                         "time": self.model.env.now,
                         "category": category,
-                        "response_time": value,
+                        "metric": "response_time",
+                        "value": value,
                     }
                 )
+            # Mean utilisation (overall - not category-specific)
+            self.audit_results.append(
+                {
+                    "time": self.model.env.now,
+                    "category": "all",
+                    "metric": "utilisation",
+                    "value": self._get_utilisation(),
+                }
+            )
             yield self.model.env.timeout(self.interval)
 
     def _get_response_times(self):
@@ -112,6 +124,19 @@ class WarmUpAuditor:
 
         return results
 
+    def _get_utilisation(self):
+        """Compute cumulative mean utilisation up to current time.
+
+        Returns
+        -------
+        float
+            Mean utilisation.
+
+        """
+        return UtilisationCalculator.from_model_at_time(
+            self.model, self.model.env.now
+        ).mean_utilisation()
+
     def run(self):
         """Run auditor alongside simulation model."""
         self.model.env.process(self._audit_model())
@@ -131,7 +156,7 @@ class WarmUpAuditor:
         return df
 
 
-def plot_warm_up(audit, metric, category):
+def plot_warm_up(audit, metric, category=None):
     """Plot warm-up trajectories for one metric and response category.
 
     Shows one line per run for the cumulative mean trajectories, and overlays
@@ -154,18 +179,20 @@ def plot_warm_up(audit, metric, category):
 
     """
     # Filter to specified response category
-    audit_results = audit[audit["category"] == category]
+    df = audit[audit["metric"] == metric].copy()
+    if category is not None:
+        df = df[df["category"] == category]
 
     # Plot cumulative mean for each run
     fig = px.line(
-        data_frame=audit_results, x="time", y=metric, line_group="run"
+        data_frame=df, x="time", y="value", line_group="run"
     )
     fig.update_traces(line_color="lightblue")
 
     # Compute overall cumulative mean and overlay on plot
-    df = audit_results.groupby("time")[metric].mean().reset_index()
-    df["overall_cumulative"] = df[metric].expanding().mean()
-    overall_fig = px.line(df, x="time", y="overall_cumulative")
+    overall = df.groupby("time", as_index=False)["value"].mean()
+    overall["overall_cumulative"] = overall["value"].expanding().mean()
+    overall_fig = px.line(overall, x="time", y="overall_cumulative")
     fig.add_traces(list(overall_fig.select_traces()))
 
     # Axis labels and layout
