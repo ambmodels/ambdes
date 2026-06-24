@@ -202,8 +202,6 @@ class Results:
                 {
                     "run": self.model.run_number,
                     "category": "all",
-                    "n_patients": pd.NA,
-                    "mean_response_time": pd.NA,
                     "mean_utilisation": self.utilisation(),
                 }
             ]
