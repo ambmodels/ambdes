@@ -36,10 +36,6 @@ quartodoc:
         - Patient
         - Results
         - Runner
-    - title: "Top-level functions"
-      desc: "Common utility functions for calibration and configuration."
-      contents:
-        - generate_animation
   sidebar:
     file: "_sidebar.yml"
     title: "Ambulance DES"
@@ -48,23 +44,13 @@ quartodoc:
       - text: Home
         href: index.qmd
       - literature.qmd
-      - code.qmd
       - modeloverview.qmd
-      - section: "Stage 1"
-        contents:
-          - stage1/assumptions.qmd
-      - section: "Stage 2"
-        contents:
-          - stage2/assumptions.qmd
       - section: "Quality assurance"
         contents:
           - verification.qmd
           - validation.qmd
           - criteria.qmd
           - qa.qmd
-      - section: "User guide"
-        contents:
-          - userguide.qmd
       - section: "API reference"
         contents:
           - "{{ contents }}"
@@ -78,9 +64,9 @@ format:
   html:
     theme:
       - minty
-      - css/theme.scss
+      - theme/theme.scss
     css:
-      - css/styles.css
+      - theme/styles.css
     lightbox: true
     toc: true
     execute:

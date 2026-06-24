@@ -106,26 +106,36 @@ class Model:
             )
 
             # Sample travel to scene
-            time_to_scene = self.dists["time_to_scene"][patient.category].sample()
+            time_to_scene = self.dists["time_to_scene"][
+                patient.category
+            ].sample()
             yield self.env.timeout(time_to_scene)
 
             # Record response time (queue + time to scene)
             patient.response_time = self.env.now - patient.call_timestamp
 
             # On-scene time
-            on_scene_time = self.dists["on_scene_time"][patient.category].sample()
+            on_scene_time = self.dists["on_scene_time"][
+                patient.category
+            ].sample()
             yield self.env.timeout(on_scene_time)
 
             # Sample travel to hospital
-            time_to_hospital = self.dists["time_to_hospital"][patient.category].sample()
+            time_to_hospital = self.dists["time_to_hospital"][
+                patient.category
+            ].sample()
             yield self.env.timeout(time_to_hospital)
 
             # Handover time
-            handover_time = self.dists["handover_time"][patient.category].sample()
+            handover_time = self.dists["handover_time"][
+                patient.category
+            ].sample()
             yield self.env.timeout(handover_time)
 
             # Wrap up time
-            wrap_up_time = self.dists["wrap_up_time"][patient.category].sample()
+            wrap_up_time = self.dists["wrap_up_time"][
+                patient.category
+            ].sample()
             yield self.env.timeout(wrap_up_time)
 
             self.logger.log_resource_use_end(
