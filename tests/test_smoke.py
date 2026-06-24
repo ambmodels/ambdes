@@ -14,7 +14,9 @@ def test_model_runs():
     times_config = TimesConfig(times_csv=TIMES)
     config = SimConfig(
         arrival_config=arrival_config,
-        times_config=times_config
+        times_config=times_config,
+        warm_up_period=100,
+        data_collection_period=100,
     )
     config.n_ambulances = 1
     model = Model(run_number=0, config=config)
