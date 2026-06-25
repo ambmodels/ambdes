@@ -71,6 +71,6 @@ Return time-weighted ambulance utilisation intervals.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name          | Type         | Description                                                                                                                                                                               |
-|---------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| state_changes | pd.DataFrame | Columns: time, busy, interval_duration, utilisation. One row per state-change interval during the data collection period. `busy` is the number of ambulances in use during that interval. |
+| Name   | Type         | Description                                          |
+|--------|--------------|------------------------------------------------------|
+|        | pd.DataFrame | Columns: time, busy, interval_duration, utilisation. |

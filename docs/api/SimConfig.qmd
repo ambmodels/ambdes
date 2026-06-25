@@ -1,14 +1,7 @@
 # SimConfig { #ambdes.SimConfig }
 
 ```python
-SimConfig(
-    arrival_config,
-    times_config,
-    resource_hours_per_week=52000,
-    warm_up_period=100,
-    data_collection_period=500,
-    n_reps=5,
-)
+SimConfig(arrival_config, times_config, model_config)
 ```
 
 Configuration for a simulation run.
