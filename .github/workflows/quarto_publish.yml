@@ -22,14 +22,6 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Set up Conda environment
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-activate-base: false
-          activate-environment: ambdes
-          environment-file: environment.yaml
-          channels: conda-forge
-
       - name: Render site
         run: make -C docs execute
 
