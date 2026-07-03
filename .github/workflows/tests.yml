@@ -1,58 +1,41 @@
 name: tests
 
 on:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      operating_systems:
-        description: 'Operating systems to test on'
-        type: choice
-        default: 'all'
-        options:
-          - all
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
 
 jobs:
-  setup-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Set matrix
-        id: set-matrix
-        run: |
-          if [[ "${{ inputs.operating_systems }}" == "all" || "${{ github.event_name }}" == "push" ]]; then
-            echo 'matrix=["ubuntu-latest", "windows-latest", "macos-latest"]' >> $GITHUB_OUTPUT
-          else
-            echo 'matrix=["${{ inputs.operating_systems }}"]' >> $GITHUB_OUTPUT
-          fi
-
   tests:
     permissions:
       contents: write
-    needs: setup-matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -el {0}
     strategy:
       matrix:
-        os: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
-    
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Conda environment
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v7
         with:
-          auto-activate-base: false
-          activate-environment: ambdes
-          environment-file: environment.yaml
-          channels: conda-forge
+          python-version: "3.13.13"
+          enable-cache: true
+
+      - name: Create uv virtualenv
+        run: uv venv
+
+      - name: Install dependencies
+        run: |
+          uv pip install --upgrade pip
+          uv pip install -e .
 
       - name: Run tests
-        run: pytest
+        run: uv run pytest

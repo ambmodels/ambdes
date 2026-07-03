@@ -6,11 +6,48 @@ Documentation: <https://ambmodels.github.io/ambdes/>
 
 ## Setup
 
-An environment file is created, which can be used to set-up an environment with `conda` or `mamba`.
+Dependencies are pinned in `pyproject.toml`. These can be installed using Python 3.13 and your preferred environment manager.
 
-```
-mamba env create --file environment.yaml
+### Mamba
+
+```bash
+mamba create -n ambdes python=3.13.13
 mamba activate ambdes
+pip install -e .
+```
+
+### venv
+
+On Windows:
+
+```bash
+py -3.13 -m venv .venv
+.\venv\Scripts\activate
+pip install -e .
+```
+
+On Linux or macOS:
+
+```bash
+python3.13 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+### Poetry
+
+```bash
+poetry env use 3.13
+poetry install
+poetry shell
+```
+
+### uv
+
+```bash
+uv venv --python 3.13
+source .venv/bin/activate
+pip install -e .
 ```
 
 ## Repository structure
