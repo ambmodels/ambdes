@@ -17,15 +17,20 @@ jobs:
         - name: Check out repository
           uses: actions/checkout@v4
 
-        - name: Set up Conda environment
-          uses: conda-incubator/setup-miniconda@v3
+        - name: Install uv and Python
+          uses: astral-sh/setup-uv@v7
           with:
-            auto-activate-base: false
-            activate-environment: ambdes
-            environment-file: environment.yaml
-            channels: conda-forge
+            python-version: "3.13"
+            enable-cache: true
+
+        - name: Create uv virtualenv
+          run: uv venv
+
+        - name: Install dependencies from pyproject.toml
+          run: |
+            uv pip install -e .
 
         - name: Lint
           run: |
-            ruff check src tests
-            ruff format --check src tests
+            uv run ruff check src tests
+            uv run ruff format --check src tests

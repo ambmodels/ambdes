@@ -1,8 +1,8 @@
 name: tests
 
 on:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       operating_systems:
@@ -46,13 +46,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Conda environment
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v7
         with:
-          auto-activate-base: false
-          activate-environment: ambdes
-          environment-file: environment.yaml
-          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create uv virtualenv
+        run: uv venv
+
+      - name: Install dependencies
+        run: |
+          uv pip install --upgrade pip
+          uv pip install -e .
 
       - name: Run tests
-        run: pytest
+        run: uv run pytest
