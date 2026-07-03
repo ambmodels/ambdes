@@ -4,48 +4,21 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      operating_systems:
-        description: 'Operating systems to test on'
-        type: choice
-        default: 'all'
-        options:
-          - all
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
 
 jobs:
-  setup-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Set matrix
-        id: set-matrix
-        run: echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
-        env:
-          MATRIX: >-
-            ${{ 
-              github.event_name == 'workflow_dispatch' && inputs.operating_systems != 'all'
-              ? format('["{0}"]', inputs.operating_systems)
-              : '["ubuntu-latest", "windows-latest", "macos-latest"]'
-            }}
-
   tests:
     permissions:
       contents: write
-    needs: setup-matrix
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -el {0}
     strategy:
       matrix:
-        os: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
-    
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -53,7 +26,8 @@ jobs:
       - name: Install uv and Python
         uses: astral-sh/setup-uv@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13.13"
+          enable-cache: true
 
       - name: Create uv virtualenv
         run: uv venv
