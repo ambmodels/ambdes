@@ -6,7 +6,7 @@ Documentation: <https://ambmodels.github.io/ambdes/>
 
 ## Setup
 
-Dependencies are pinned in `pyproject.toml`. These can be installed using an environment manager of your choosing.
+Dependencies are pinned in `pyproject.toml`. These can be installed using Python 3.13 and your preferred environment manager.
 
 ### Mamba
 
