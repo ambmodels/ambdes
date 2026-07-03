@@ -25,12 +25,14 @@ jobs:
     steps:
       - name: Set matrix
         id: set-matrix
-        run: |
-          if [[ "${{ inputs.operating_systems }}" == "all" || "${{ github.event_name }}" == "push" ]]; then
-            echo 'matrix=["ubuntu-latest", "windows-latest", "macos-latest"]' >> $GITHUB_OUTPUT
-          else
-            echo 'matrix=["${{ inputs.operating_systems }}"]' >> $GITHUB_OUTPUT
-          fi
+        run: echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
+        env:
+          MATRIX: >-
+            ${{ 
+              github.event_name == 'workflow_dispatch' && inputs.operating_systems != 'all'
+              ? format('["{0}"]', inputs.operating_systems)
+              : '["ubuntu-latest", "windows-latest", "macos-latest"]'
+            }}
 
   tests:
     permissions:
