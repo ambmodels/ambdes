@@ -41,6 +41,7 @@ class SimConfig:
                     "freq": arrival_config.category_proportions.values,
                 },
             },
+            "mobilisation_time": times_config.lognormal_config("mobilisation"),
             "time_to_scene": times_config.lognormal_config("travel_to_scene"),
             "on_scene_time": times_config.lognormal_config("on_scene"),
             "time_to_hospital": times_config.lognormal_config(

@@ -105,6 +105,12 @@ class Model:
                 resource_id=vehicle.id_attribute,
             )
 
+            # Sample mobilisation time
+            mobilisation_time = self.dists["mobilisation_time"][
+                patient.category
+            ].sample()
+            yield self.env.timeout(mobilisation_time)
+
             # Sample travel to scene
             time_to_scene = self.dists["time_to_scene"][
                 patient.category
