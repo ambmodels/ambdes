@@ -1,5 +1,0 @@
-parameter,value
-resource_hours_per_week,52000
-warm_up_period,500
-data_collection_period,10080
-n_reps,5
