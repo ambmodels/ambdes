@@ -7,6 +7,7 @@ __version__ = "0.1.0"
 
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
 from .config import ArrivalConfig, ModelConfig, SimConfig, TimesConfig
+from .input_modelling import fit_config, plot_metric_kde
 from .model import Model
 from .patient import Patient
 from .results import Results, UtilisationCalculator
@@ -14,9 +15,11 @@ from .runner import Runner
 
 __all__ = [
     "ArrivalConfig",
+    "fit_config",
     "Model",
     "ModelConfig",
     "Patient",
+    "plot_metric_kde",
     "plot_warm_up",
     "Results",
     "run_warm_up_audit",
