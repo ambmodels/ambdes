@@ -259,13 +259,15 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     plt.show()
 
 
-def fit_config(time_data, metric_config):
+def fit_config(time_data, time_data_unit, metric_config):
     """Fit distributions for each metric and category from raw time data.
 
     Parameters
     ----------
     time_data : pd.DataFrame
         Raw time data.
+    time_data_unit : str
+        Whether the provided raw data is in seconds ("s") or minutes ("m").
     metric_config : dict
         Dictionary where keys are the times, then sub dict, has dist sim-tools
         name and column mapping to column in raw time data for that time.
@@ -277,6 +279,11 @@ def fit_config(time_data, metric_config):
         with generated parameters for dists by category etc.
 
     """
+    if time_data_unit not in ["s", "m"]:
+        raise ValueError(
+            f"Invalid time data unit: {time_data_unit}. Must be 's' or 'm'."
+        )
+
     config = {}
 
     for metric_name, info in metric_config.items():
@@ -285,10 +292,17 @@ def fit_config(time_data, metric_config):
         config[metric_name] = {}
 
         for cat_number in [1, 2, 3, 4]:
+
+            # Filter to relevant response category and metric
             cat = f"Category {cat_number}"
             cat_sample = time_data.loc[
                 time_data["ResponseCategoryGroupLevel2"] == cat, column
             ].dropna()
+
+            # If provided data is in seconds, convert to minutes (as the
+            # simulation model time unit is minutes)
+            if time_data_unit == "s":
+                cat_sample = cat_sample / 60
 
             # Shift to avoid zeroes for strictly positive distributions
             if dist in ("Weibull", "Gamma") and (cat_sample <= 0).any():
@@ -339,7 +353,7 @@ def plot_metric_kde(metric, registry, size=10_000):
         samples = registry[metric][cat].sample(size=size)
         sns.kdeplot(samples, lw=2, label=cat, ax=ax)
 
-    ax.set_xlabel(metric)
+    ax.set_xlabel(f"{metric} (minutes)")
     ax.set_ylabel("Density")
     ax.legend(title="Category")
     ax.grid(alpha=0.3)
