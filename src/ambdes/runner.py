@@ -8,7 +8,7 @@ import pandas as pd
 from joblib import Parallel, cpu_count, delayed
 
 from .model import Model
-from .results import Results
+from .results import Results, combine_run_results
 
 
 class Runner:
@@ -55,7 +55,7 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with two DataFrames:
+            Dictionary with three DataFrames:
             - "patients": concatenated per-patient results across runs.
             - "run": summary of results for each run by response category.
             - "overall": summary of results across runs by response category.
@@ -79,21 +79,4 @@ class Runner:
             )
 
         # Create results dataframes
-        patients = pd.concat(
-            [r["patients"] for r in all_runs], ignore_index=True
-        )
-        run = pd.concat([r["run"] for r in all_runs], ignore_index=True)
-        overall = (
-            run.drop(columns=["run"], errors="ignore")
-            .groupby("category", dropna=False)
-            .mean()
-            .rename(
-                columns=lambda c: c if c.startswith("mean_") else f"mean_{c}"
-            )
-            .reset_index()
-        )
-        return {
-            "patients": patients,
-            "run": run,
-            "overall": overall,
-        }
+        return combine_run_results(all_runs)

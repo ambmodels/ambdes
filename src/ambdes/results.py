@@ -1,9 +1,6 @@
-"""Convert model output into results tables.
+"""Calculate simulation results."""
 
-Takes patient list from one Model run and returns tidy pandas DataFrames
-(per-patient and run-level summaries).
-"""
-
+import statsmodels.stats.api as sms
 import pandas as pd
 
 
@@ -305,8 +302,7 @@ class Results:
         summary = (
             df.groupby("category", dropna=False)
             .agg(
-                n_patients=("patient_id", "count"),
-                mean_response_time=("response_time", "mean"),
+                response_time_mean=("response_time", "mean"),
             )
             .reset_index()
             .assign(run=self.model.run_number)
@@ -318,9 +314,67 @@ class Results:
                 {
                     "run": self.model.run_number,
                     "category": "all",
-                    "mean_utilisation": self.utilisation(),
+                    "utilisation_mean": self.utilisation(),
                 }
             ]
         )
 
         return pd.concat([summary, utilisation], ignore_index=True)
+
+
+def combine_run_results(results_list):
+    """Combine per-run results into patient, run, and overall DataFrames.
+
+    Parameters
+    ----------
+    results_list : list of dict
+        Each element is the output of Runner.run_single(), with keys
+        "patients" and "run".
+
+    Returns
+    -------
+    dict
+        Dictionary with three DataFrames:
+        - "patients": concatenated per-patient results across runs.
+        - "run": summary of results for each run by response category.
+        - "overall": summary of results across runs by response category.
+
+    """
+    # Per-patient results across runs
+    patients = pd.concat(
+        [r["patients"] for r in results_list], ignore_index=True
+    )
+
+    # Average results for each run by response category
+    run = pd.concat([r["run"] for r in results_list], ignore_index=True)
+
+    # Summary of results across runs by response category
+    metrics = [c for c in run.columns if c not in ("run", "category")]
+    records = []
+    # Group the results by response category (C1-C4)
+    for category, group in run.groupby("category", dropna=False):
+        row = {"category": category}
+        # Filter to each metric for that group, ignoring NA
+        for col in metrics:
+            values = group[col].dropna()
+            # If too few runs with results, don't return confidence intervals
+            if len(values) < 2:
+                mean = values.mean() if len(values) else float("nan")
+                lower, upper = float("nan"), float("nan")
+            # Otherwise, return mean and confidence intervals
+            else:
+                mean = values.mean()
+                lower, upper = (
+                    sms.DescrStatsW(values).tconfint_mean(alpha=0.05)
+                )
+            row[f"{col}"] = mean
+            row[f"{col}_ci_lower"] = lower
+            row[f"{col}_ci_upper"] = upper
+        records.append(row)
+    overall = pd.DataFrame(records)
+
+    return {
+        "patients": patients,
+        "run": run,
+        "overall": overall,
+    }
