@@ -52,7 +52,7 @@ pip install -e .
 
 ## Pre-commit
 
-This repository includes a pre-commit hook that checks for the filename of real (private) data, which should never be used here. That analysis belongs in a separate, private repository. If you've accidentally referenced the real data file name in a stage file, the hook will detect it and block the commit, prompting you to removing it before processing.
+This repository includes a pre-commit hook that checks for the filename of real (private) data, which should never be used here. That analysis belongs in a separate, private repository. If you've accidentally referenced the real data file name in a staged file, the hook will detect it and block the commit, prompting you to remove it before processing.
 
 To activate this hook after cloning this repository, run:
 
@@ -75,8 +75,8 @@ After setting up the environment, open and run the notebooks in `notebooks/`.
 ## Documentation (local build)
 
 ```
-make -C docs render
-make -C docs preview
+great-docs build
+great-docs preview
 ```
 
 ## Linting and formatting
