@@ -1,9 +1,0 @@
-# SimConfig { #ambdes.SimConfig }
-
-```python
-SimConfig(arrival_config, times_config, model_config)
-```
-
-Configuration for a simulation run.
-
-Stores input data and run settings used by the model.

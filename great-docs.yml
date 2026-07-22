@@ -1,11 +1,22 @@
 # Great Docs Configuration
 # See https://posit-dev.github.io/great-docs/user-guide/configuration.html
 
-# Module Name (optional)
-# ----------------------
-# Set this if your importable module name differs from the project name.
-# Example: project 'py-yaml12' with module name 'yaml12'
-# module: yaml12
+# Author Information
+# ------------------
+# Rich author metadata for display in the landing page sidebar
+authors:
+  - name: Amy Heather
+    orcid: 0000-0002-6596-3479
+    affiliation: University of Exeter
+    github: amyheather
+  - name: Lee Coulson
+    affiliation: South Western Ambulance Service NHS Foundation Trust
+  - name: Irene Irungu
+    affiliation: South Western Ambulance Service NHS Foundation Trust
+  - name: Thomas Monks
+    orcid: 0000-0003-2631-4481
+    affiliation: University of Exeter
+    github: TomMonks
 
 # Docstring Parser
 # ----------------
@@ -28,7 +39,7 @@ dynamic: true
 # Logo & Favicon
 # ---------------
 # Point to a single logo file (replaces the text title in the navbar):
-# logo: assets/logo.svg
+logo: assets/images/pixelambulance.png
 #
 # For light/dark variants:
 # logo:
@@ -36,6 +47,19 @@ dynamic: true
 #   dark: assets/logo-dark.svg
 #
 # To show the text title alongside the logo, add: show_title: true
+
+# Navbar Style
+# ------------
+# Animated gradient preset for the top navigation bar.
+# Available presets: sky, peach, prism, lilac, slate, honey, dusk, mint
+navbar_style: sky
+
+# Content Style
+# -------------
+# Subtle radial gradient glow at the top of the main content area.
+# Available presets: sky, peach, prism, lilac, slate, honey, dusk, mint
+# Use a string for all pages, or dict with pages: "homepage" to limit scope.
+content_style: sky
 
 # Funding / Copyright Holder
 # --------------------------
@@ -90,12 +114,17 @@ reference:
 
 # Site Settings
 # -------------
-# site:
-#   theme: flatly              # Quarto theme (default: flatly)
-#   toc: true                  # Show table of contents (default: true)
-#   toc-depth: 2               # TOC heading depth (default: 2)
-#   toc-title: On this page    # TOC title (default: "On this page")
+site:
+  css:
+    - assets/style/styles.css
+  toc: true
+  lightbox: true
 
+announcement:
+  dismissable: true
+  content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="/reuse.qmd">Learn more about appropriate reuse</a>.
+  style: slate
+  
 # Jupyter Kernel
 # --------------
 # Jupyter kernel to use for executing code cells in .qmd files.
