@@ -27,7 +27,7 @@ def make_config():
     model_config = ModelConfig(param_csv=INPUT / "param_model.csv")
     return SimConfig(
         arrival_config=arrival_config,
-        times_json=INPUT / "param_times.json" ,
+        times_json=INPUT / "param_times.json",
         model_config=model_config,
     )
 
