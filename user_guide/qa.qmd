@@ -10,12 +10,12 @@ title: Quality assurance
 
 ### Quality assurance when scoping the project and designing the analysis
 
-We are documenting what we want to do publicly within this Quarto site - e.g., [Conceptual modelling](conceptual.qmd) page. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.
+We are documenting what we want to do publicly within this Quarto site. This ensures are aims are clear and transparent, and means we can check against plans later in V&V.
 
 We will plan and document how the analysis will work, and how it will be checked. This includes:
 
-* Our design decisions and analytical approach - methods, data, software, assumptions - see [Code structure/infrastructure plans](code.qmd) page and [Conceptual modelling](conceptual.qmd) page.
-* Decide on our verification and validation strategy before writing code - see [Verification](verification.qmd) page and [Validation](validation.qmd) page.
+* Our design decisions and analytical approach - methods, data, software, assumptions.
+* Our verification and validation strategy.
 
 <br>
 

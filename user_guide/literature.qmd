@@ -1,7 +1,7 @@
 ---
 title: Literature
-bibliography: references.bib
-include-before-body: theme/callout-toggle.html
+bibliography: ../assets/references.bib
+include-before-body: ../assets/style/callout-toggle.html
 ---
 
 <br>

@@ -22,7 +22,7 @@ If you are planning to adapt the model and would like to discuss this, please do
 If you reuse this model, please cite us!
 
 ```{.txt}
-{{< include ../CITATION.cff >}}
+{{< include ../../CITATION.cff >}}
 ```
 
 ## Knowledge for reuse

@@ -27,7 +27,7 @@ STRESS-DES is a reporting checklist for discrete-event simulation studies. It he
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/stressdes.md >}}
+{{< include ../assets/checklists/stressdes.md >}}
 ```
 
 :::
@@ -53,7 +53,7 @@ These recommendations focus on making simulations **reproducible**, derived from
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/stars_reproducibility.md >}}
+{{< include ../assets/checklists/stars_reproducibility.md >}}
 ```
 
 :::
@@ -79,7 +79,7 @@ This framework focuses on making DES models more **reusable**.
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/stars_reuse.md >}}
+{{< include ../assets/checklists/stars_reuse.md >}}
 ```
 
 :::
@@ -103,7 +103,7 @@ This framework provides a staged path for NHS teams to implement RAPs into their
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/nhs_levels_of_rap.md >}}
+{{< include ../assets/checklists/nhs_levels_of_rap.md >}}
 ```
 
 :::
@@ -127,7 +127,7 @@ This checklist translates verification and validation guidance from the simulati
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/vv.md >}}
+{{< include ../assets/checklists/vv.md >}}
 ```
 
 :::
@@ -151,7 +151,7 @@ This staged checklist provides guidance for deciding whether a DES model is read
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/hsma_model_readiness.md >}}
+{{< include ../assets/checklists/hsma_model_readiness.md >}}
 ```
 
 :::
@@ -175,7 +175,7 @@ PyOpenSci is a volunteer-led organisation that conducts peer review of scientifi
 ::: {.callout-note title="View blank checklist" collapse="true"}
 
 ```markdown
-{{< include checklists/pyopensci.md >}}
+{{< include ../assets/checklists/pyopensci.md >}}
 ```
 
 :::

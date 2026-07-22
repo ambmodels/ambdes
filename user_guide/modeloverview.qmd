@@ -1,7 +1,7 @@
 ---
 title: Model overview
-bibliography: references.bib
-include-before-body: theme/callout-toggle.html
+bibliography: ../assets/references.bib
+include-before-body: ../assets/style/callout-toggle.html
 format: 
   html:
     page-layout: full
