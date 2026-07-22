@@ -6,7 +6,7 @@ __version__ = "0.1.0"
 # rather than `from ambdes.model import Model`.
 
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
-from .config import ArrivalConfig, ModelConfig, SimConfig, TimesConfig
+from .config import ArrivalConfig, ModelConfig, SimConfig
 from .input_modelling import (
     DISTRIBUTIONS,
     FitDist,
@@ -34,7 +34,6 @@ __all__ = [
     "run_warm_up_audit",
     "Runner",
     "SimConfig",
-    "TimesConfig",
     "WarmUpAuditor",
     "UtilisationCalculator",
 ]

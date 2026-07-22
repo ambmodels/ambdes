@@ -1,5 +1,7 @@
 """Model configuration."""
 
+import json
+
 import pandas as pd
 
 
@@ -12,7 +14,7 @@ class SimConfig:
     def __init__(
         self,
         arrival_config,
-        times_config,
+        times_json,
         model_config,
     ):
         """Initialise simulation configuration.
@@ -21,12 +23,16 @@ class SimConfig:
         ----------
         arrival_config : ArrivalConfig
             Arrival input configuration.
-        times_config : TimesConfig
-            Time distribution configuration.
+        times_json : str | Path
+            Path to JSON file containing time distribution configuration.
         model_config : ModelConfig
             Model-level input parameters.
 
         """
+        # Load ready-made time distribution config from JSON
+        with open(times_json, encoding="utf-8") as f:
+            times_config = json.load(f)
+
         # Set up parameters for distributions in required format for
         # sim-tools DistributionsRegistry
         self.dist_config = {
@@ -41,14 +47,7 @@ class SimConfig:
                     "freq": arrival_config.category_proportions.values,
                 },
             },
-            "mobilisation_time": times_config.lognormal_config("mobilisation"),
-            "time_to_scene": times_config.lognormal_config("travel_to_scene"),
-            "on_scene_time": times_config.lognormal_config("on_scene"),
-            "time_to_hospital": times_config.lognormal_config(
-                "travel_to_hospital"
-            ),
-            "handover_time": times_config.lognormal_config("handover"),
-            "wrap_up_time": times_config.lognormal_config("wrap_up"),
+            **times_config,
         }
 
         # Convert total weekly ambulance-hours into an equivalent constant
@@ -128,84 +127,6 @@ class ArrivalConfig:
                 "mean_iat": 1440 / arrivals_per_day.values,
             }
         )
-
-
-class TimesConfig:
-    """Prepare time distribution inputs for the simulation.
-
-    Attributes
-    ----------
-    times_df : pd.DataFrame
-        Raw time summary dataframe.
-    long_df : pd.DataFrame
-        Long-form dataframe with columns:
-        time, type, category, value.
-
-    """
-
-    def __init__(self, times_csv):
-        """Initialise TimesConfig.
-
-        Parameters
-        ----------
-        times_csv : str | Path
-            Path to CSV containing the mean and SD times by category.
-
-        """
-        # Import times dataframe
-        self.times_df = pd.read_csv(times_csv)
-
-        # Convert to long format
-        self.long_df = self.times_df.melt(
-            id_vars=["time", "type"],
-            value_vars=["C1", "C2", "C3", "C4"],
-            var_name="category",
-            value_name="value",
-        )
-
-        # Convert to tidy format
-        self.tidy_df = (
-            self.long_df.pivot(
-                index=["time", "category"],
-                columns="type",
-                values="value",
-            )
-            .reset_index()
-            .rename_axis(columns=None)
-        )
-
-    def lognormal_config(self, time_name):
-        """Create a Lognormal config dict.
-
-        Parameters
-        ----------
-        time_name : str
-            Name of time type.
-
-        Returns
-        -------
-        dict of dict
-            Config suitable for sim-tools DistributionRegistry, with one
-            config dict per response category.
-
-        """
-        subset = self.tidy_df[self.tidy_df["time"] == time_name]
-
-        if subset.empty:
-            raise ValueError(
-                f"time_name {time_name!r} not found in times config."
-            )
-
-        return {
-            row["category"]: {
-                "class_name": "Lognormal",
-                "params": {
-                    "mean": row["mean"],
-                    "stdev": row["sd"],
-                },
-            }
-            for _, row in subset.iterrows()
-        }
 
 
 class ModelConfig:
