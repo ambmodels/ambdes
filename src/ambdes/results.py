@@ -1,7 +1,7 @@
 """Calculate simulation results."""
 
-import statsmodels.stats.api as sms
 import pandas as pd
+import statsmodels.stats.api as sms
 
 
 class UtilisationCalculator:
@@ -364,8 +364,8 @@ def combine_run_results(results_list):
             # Otherwise, return mean and confidence intervals
             else:
                 mean = values.mean()
-                lower, upper = (
-                    sms.DescrStatsW(values).tconfint_mean(alpha=0.05)
+                lower, upper = sms.DescrStatsW(values).tconfint_mean(
+                    alpha=0.05
                 )
             row[f"{col}"] = mean
             row[f"{col}_ci_lower"] = lower

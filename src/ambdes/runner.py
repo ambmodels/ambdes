@@ -4,7 +4,6 @@ Executes the Model for one or more runs and uses Results to build and
 concatenate per-run DataFrames.
 """
 
-import pandas as pd
 from joblib import Parallel, cpu_count, delayed
 
 from .model import Model
