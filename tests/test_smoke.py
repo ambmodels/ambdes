@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig
+from ambdes import ArrivalConfig, Model, ModelConfig, Runner, SimConfig
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 
@@ -24,3 +24,22 @@ def test_model_runs():
     model = Model(run_number=0, config=config)
     model.run()
     assert len(model.patients) > 0
+
+
+def test_runner_parallel():
+    """Check some short runs in parallel via Runner are successful."""
+    arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
+    model_config = ModelConfig(param_csv=MODEL)
+    config = SimConfig(
+        arrival_config=arrival_config,
+        times_json=TIMES,
+        model_config=model_config,
+    )
+    config.n_ambulances = 1
+
+    # Set to run in parallel
+    config.cores = -1
+
+    runner = Runner(config=config)
+    results = runner.run_reps()
+    assert len(results["patients"]) > 0
