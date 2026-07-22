@@ -5,6 +5,7 @@ concatenate per-run DataFrames.
 """
 
 import pandas as pd
+from joblib import Parallel, cpu_count, delayed
 
 from .model import Model
 from .results import Results
@@ -35,8 +36,7 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with model instance and two DataFrames:
-            - "model": model instance (useful for development/debugging).
+            Dictionary with two DataFrames:
             - "patients": per-patient results for the run.
             - "run": summary of results for run by response category.
 
@@ -45,7 +45,6 @@ class Runner:
         model.run()
         results = Results(model=model)
         return {
-            "model": model,
             "patients": results.patient_df(),
             "run": results.summary_df(),
         }
@@ -62,7 +61,24 @@ class Runner:
             - "overall": summary of results across runs by response category.
 
         """
-        all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
+        # Sequential execution
+        if self.config.cores == 1:
+            all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
+        # Parallel execution
+        else:
+            # Check the requested number of cores is possible on machine
+            valid_cores = [-1] + list(range(1, cpu_count()))
+            if self.config.cores not in valid_cores:
+                raise ValueError(
+                    f"Invalid cores: {self.config.cores}. Must be one of: "
+                    + f"{valid_cores}."
+                )
+            # Execute replications in parallel
+            all_runs = Parallel(n_jobs=self.config.cores)(
+                delayed(self.run_single)(i) for i in range(self.config.n_reps)
+            )
+
+        # Create results dataframes
         patients = pd.concat(
             [r["patients"] for r in all_runs], ignore_index=True
         )

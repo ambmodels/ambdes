@@ -292,7 +292,6 @@ def fit_config(time_data, time_data_unit, metric_config):
         config[metric_name] = {}
 
         for cat_number in [1, 2, 3, 4]:
-
             # Filter to relevant response category and metric
             cat = f"Category {cat_number}"
             cat_sample = time_data.loc[
