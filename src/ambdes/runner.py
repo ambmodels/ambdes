@@ -4,10 +4,10 @@ Executes the Model for one or more runs and uses Results to build and
 concatenate per-run DataFrames.
 """
 
-import pandas as pd
+from joblib import Parallel, cpu_count, delayed
 
 from .model import Model
-from .results import Results
+from .results import Results, combine_run_results
 
 
 class Runner:
@@ -35,8 +35,7 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with model instance and two DataFrames:
-            - "model": model instance (useful for development/debugging).
+            Dictionary with two DataFrames:
             - "patients": per-patient results for the run.
             - "run": summary of results for run by response category.
 
@@ -45,7 +44,6 @@ class Runner:
         model.run()
         results = Results(model=model)
         return {
-            "model": model,
             "patients": results.patient_df(),
             "run": results.summary_df(),
         }
@@ -56,28 +54,28 @@ class Runner:
         Returns
         -------
         dict
-            Dictionary with two DataFrames:
+            Dictionary with three DataFrames:
             - "patients": concatenated per-patient results across runs.
             - "run": summary of results for each run by response category.
             - "overall": summary of results across runs by response category.
 
         """
-        all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
-        patients = pd.concat(
-            [r["patients"] for r in all_runs], ignore_index=True
-        )
-        run = pd.concat([r["run"] for r in all_runs], ignore_index=True)
-        overall = (
-            run.drop(columns=["run"], errors="ignore")
-            .groupby("category", dropna=False)
-            .mean()
-            .rename(
-                columns=lambda c: c if c.startswith("mean_") else f"mean_{c}"
+        # Sequential execution
+        if self.config.cores == 1:
+            all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
+        # Parallel execution
+        else:
+            # Check the requested number of cores is possible on machine
+            valid_cores = [-1] + list(range(1, cpu_count()))
+            if self.config.cores not in valid_cores:
+                raise ValueError(
+                    f"Invalid cores: {self.config.cores}. Must be one of: "
+                    + f"{valid_cores}."
+                )
+            # Execute replications in parallel
+            all_runs = Parallel(n_jobs=self.config.cores)(
+                delayed(self.run_single)(i) for i in range(self.config.n_reps)
             )
-            .reset_index()
-        )
-        return {
-            "patients": patients,
-            "run": run,
-            "overall": overall,
-        }
+
+        # Create results dataframes
+        return combine_run_results(all_runs)

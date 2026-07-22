@@ -60,6 +60,7 @@ class SimConfig:
         self.warm_up_period = model_config.warm_up_period
         self.data_collection_period = model_config.data_collection_period
         self.n_reps = model_config.n_reps
+        self.cores = model_config.cores
 
 
 class ArrivalConfig:
@@ -142,6 +143,9 @@ class ModelConfig:
         Duration of the data collection period in minutes.
     n_reps : int
         Number of replications to run.
+    cores : int
+        Number of CPU cores to use for parallel execution. To use all
+        available cores, set to -1. For sequential execution, set to -1.
 
     """
 
@@ -163,3 +167,4 @@ class ModelConfig:
         self.warm_up_period = params["warm_up_period"]
         self.data_collection_period = params["data_collection_period"]
         self.n_reps = params["n_reps"]
+        self.cores = params["cores"]

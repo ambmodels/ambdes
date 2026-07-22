@@ -8,7 +8,7 @@ manage replications.
 import simpy
 from sim_tools.distributions import DistributionRegistry
 from vidigi.logging import EventLogger
-from vidigi.resources import VidigiStore
+from vidigi.resources import VidigiPriorityStore
 
 from .patient import Patient
 
@@ -38,7 +38,7 @@ class Model:
         self.env = simpy.Environment()
 
         # Set up ambulance resource
-        self.ambulance = VidigiStore(
+        self.ambulance = VidigiPriorityStore(
             self.env, num_resources=self.config.n_ambulances
         )
 
@@ -95,7 +95,7 @@ class Model:
         self.logger.log_queue(
             entity_id=patient.patient_id, event="ambulance_wait_begins"
         )
-        with self.ambulance.request() as req:
+        with self.ambulance.request(priority=patient.priority) as req:
             vehicle = yield req
 
             # Record when patient was assigned as ambulance
