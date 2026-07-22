@@ -11,6 +11,7 @@ dependencies = [
     "nbconvert==7.17.1",
     "nbformat==5.10.4",
     "pip==26.0.1",
+    "pre-commit==4.6.1",
     "pytest==9.0.3",
     "pyyaml==6.0.3",
     "quartodoc==0.11.1",
