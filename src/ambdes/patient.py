@@ -17,6 +17,8 @@ class Patient:
 
     """
 
+    PRIORITY_MAP = {"C1": 1, "C2": 2, "C3": 3, "C4": 4}
+
     def __init__(self, patient_id, category, call_timestamp):
         """Create instance of Patient.
 
@@ -34,3 +36,8 @@ class Patient:
         self.category = category
         self.call_timestamp = call_timestamp
         self.response_time = None
+
+    @property
+    def priority(self):
+        """Numeric priority for resource requests (lower = more urgent)."""
+        return self.PRIORITY_MAP[self.category]
