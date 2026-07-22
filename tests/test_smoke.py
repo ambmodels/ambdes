@@ -2,23 +2,22 @@
 
 from pathlib import Path
 
-from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig, TimesConfig
+from ambdes import ArrivalConfig, Model, ModelConfig, SimConfig
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 
 ARRIVALS = INPUT / "param_arrivals.csv"
-TIMES = INPUT / "param_times.csv"
+TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 
 
 def test_model_runs():
     """Model completes a short run successfully."""
     arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
-    times_config = TimesConfig(times_csv=TIMES)
     model_config = ModelConfig(param_csv=MODEL)
     config = SimConfig(
         arrival_config=arrival_config,
-        times_config=times_config,
+        times_json=TIMES,
         model_config=model_config,
     )
     config.n_ambulances = 1
