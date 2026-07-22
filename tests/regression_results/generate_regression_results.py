@@ -12,7 +12,6 @@ from ambdes import (
     Results,
     Runner,
     SimConfig,
-    TimesConfig,
     run_warm_up_audit,
 )
 
@@ -25,11 +24,10 @@ OUTPUT = Path(__file__).parent
 def make_config():
     """Make SimConfig."""
     arrival_config = ArrivalConfig(arrival_csv=INPUT / "param_arrivals.csv")
-    times_config = TimesConfig(times_csv=INPUT / "param_times.csv")
     model_config = ModelConfig(param_csv=INPUT / "param_model.csv")
     return SimConfig(
         arrival_config=arrival_config,
-        times_config=times_config,
+        times_json=INPUT / "param_times.json" ,
         model_config=model_config,
     )
 

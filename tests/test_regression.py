@@ -11,7 +11,6 @@ from ambdes import (
     Results,
     Runner,
     SimConfig,
-    TimesConfig,
     run_warm_up_audit,
 )
 
@@ -19,7 +18,7 @@ INPUT = Path(__file__).parent.joinpath("input_data")
 OUTPUT = Path(__file__).parent.joinpath("regression_results")
 
 ARRIVALS = INPUT / "param_arrivals.csv"
-TIMES = INPUT / "param_times.csv"
+TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 
 MODEL_PATIENT = OUTPUT / "model_patient_df.csv"
@@ -34,11 +33,10 @@ AUDIT = OUTPUT / "audit.csv"
 def make_config():
     """Create a standard simulation config for regression tests."""
     arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
-    times_config = TimesConfig(times_csv=TIMES)
     model_config = ModelConfig(param_csv=MODEL)
     return SimConfig(
         arrival_config=arrival_config,
-        times_config=times_config,
+        times_json=TIMES,
         model_config=model_config,
     )
 
