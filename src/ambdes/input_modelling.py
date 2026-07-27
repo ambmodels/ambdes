@@ -30,8 +30,8 @@ DISTRIBUTIONS = [
 
 CONVEY_COL = "C0660_CallOutcomeDetail"
 CONVEY_LABELS = {
-    "convey": ["See & Convey ED", "See & Convey non ED"],
-    "not_convey": ["See & Treat"],
+    "see_and_convey": ["See & Convey ED", "See & Convey non ED"],
+    "see_and_treat": ["See & Treat"],
 }
 
 CAT_COLORS = {
@@ -355,8 +355,8 @@ def fit_config(
     for metric_name, info in metric_config.items():
         config[metric_name] = {}
 
-        # Check if the distribution is split by conveyance status or not
-        split = "convey" in info and "not_convey" in info
+        # Check if the distribution is split by call outcome
+        split = "see_and_convey" in info and "see_and_treat" in info
 
         for cat_number in [1, 2, 3, 4]:
             cat = f"Category {cat_number}"
@@ -412,10 +412,10 @@ def plot_metric_kde(metric, registry, size=10_000):
     fig, ax = plt.subplots(figsize=(8, 5))
 
     cats = ["C1", "C2", "C3", "C4"]
-    linestyles = {"convey": "-", "not_convey": "--"}
+    linestyles = {"see_and_convey": "-", "see_and_treat": "--"}
     is_split = isinstance(registry[metric][cats[0]], dict)
 
-    # Draw convey (C1-C4) first, then not_convey (C1-C4), so the
+    # Draw see_and_convey (C1-C4) first, then see_and_treat (C1-C4), so the
     # legend groups by conveyance status rather than by category
     if is_split:
         sub_labels = list(registry[metric]["C1"].keys())
