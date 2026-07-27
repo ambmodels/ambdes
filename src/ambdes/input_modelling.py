@@ -28,6 +28,19 @@ DISTRIBUTIONS = [
     "weibull",
 ]
 
+CONVEY_COL = "C0660_CallOutcomeDetail"
+CONVEY_LABELS = {
+    "see_and_convey": ["See & Convey ED", "See & Convey non ED"],
+    "see_and_treat": ["See & Treat"],
+}
+
+CAT_COLORS = {
+    "C1": "tab:blue",
+    "C2": "tab:orange",
+    "C3": "tab:green",
+    "C4": "tab:red",
+}
+
 
 class FitDist:
     """Fit distributions using sim-tools and compare samples to real data.
@@ -259,8 +272,56 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     plt.show()
 
 
+def fit_dist(dist, data, time_data_unit):
+    """Generate the required parameters for the chosen distribution.
+
+    Parameters
+    ----------
+    dist : str
+        Name of distribution to use, as named in sim-tools.
+    data : pd.Series
+        Time series data sample to get parameters for.
+    time_data_unit : str
+        Whether the provided raw data is in seconds ("s") or minutes ("m").
+
+    Returns
+    -------
+    dict
+        Dictionary in format suitable for sim-tools distribution registry.
+
+    """
+    # If provided data is in seconds, convert to minutes (as the
+    # simulation model time unit is minutes)
+    if time_data_unit == "s":
+        data = data / 60
+
+    # Shift to avoid zeroes for strictly positive distributions
+    if dist in ("Weibull", "Gamma") and (data <= 0).any():
+        epsilon = 1e-6
+        data = data.clip(lower=epsilon)
+
+    if dist == "Weibull":
+        shape, loc, scale = weibull_min.fit(data, floc=0)
+        params = {"alpha": shape, "beta": scale}
+
+    elif dist == "Gamma":
+        shape, loc, scale = gamma.fit(data, floc=0)
+        params = {"alpha": shape, "beta": scale}
+
+    elif dist in ("Erlang", "Lognormal"):
+        params = {
+            "mean": data.mean(),
+            "stdev": data.std(),
+        }
+
+    return {"class_name": dist, "params": params}
+
+
 def fit_config(time_data, time_data_unit, metric_config):
     """Fit distributions for each metric and category from raw time data.
+
+    If specified in `metric_config`, times may be additional split depending
+    on whether patients were conveyed (see & convey) or not (see & treat).
 
     Parameters
     ----------
@@ -286,46 +347,43 @@ def fit_config(time_data, time_data_unit, metric_config):
 
     config = {}
 
+    # Loop through the config dictionary
     for metric_name, info in metric_config.items():
-        dist = info["dist"]
-        column = info["column"]
         config[metric_name] = {}
 
+        # Check if the distribution is split by call outcome
+        split = "see_and_convey" in info and "see_and_treat" in info
+
         for cat_number in [1, 2, 3, 4]:
-            # Filter to relevant response category and metric
             cat = f"Category {cat_number}"
-            cat_sample = time_data.loc[
-                time_data["ResponseCategoryGroupLevel2"] == cat, column
-            ].dropna()
+            key = f"C{cat_number}"
+            cat_mask = time_data["ResponseCategoryGroupLevel2"] == cat
 
-            # If provided data is in seconds, convert to minutes (as the
-            # simulation model time unit is minutes)
-            if time_data_unit == "s":
-                cat_sample = cat_sample / 60
-
-            # Shift to avoid zeroes for strictly positive distributions
-            if dist in ("Weibull", "Gamma") and (cat_sample <= 0).any():
-                epsilon = 1e-6
-                cat_sample = cat_sample.clip(lower=epsilon)
-
-            if dist == "Weibull":
-                shape, loc, scale = weibull_min.fit(cat_sample, floc=0)
-                params = {"alpha": shape, "beta": scale}
-
-            elif dist == "Gamma":
-                shape, loc, scale = gamma.fit(cat_sample, floc=0)
-                params = {"alpha": shape, "beta": scale}
-
-            elif dist in ("Erlang", "Lognormal"):
-                params = {
-                    "mean": cat_sample.mean(),
-                    "stdev": cat_sample.std(),
-                }
-
-            config[metric_name][f"C{cat_number}"] = {
-                "class_name": dist,
-                "params": params,
-            }
+            # Distributions are fit separately by conveyance status
+            if split:
+                config[metric_name][key] = {}
+                for label, sub_info in info.items():
+                    # Get the relevant distribution, column and labels
+                    dist = sub_info["dist"]
+                    column = sub_info["column"]
+                    outcomes = CONVEY_LABELS[label]
+                    # Filter to that column + that conveyance status
+                    sample = time_data.loc[
+                        cat_mask & time_data[CONVEY_COL].isin(outcomes), column
+                    ].dropna()
+                    # Get distribution parameters
+                    config[metric_name][key][label] = fit_dist(
+                        dist=dist, data=sample, time_data_unit=time_data_unit
+                    )
+            # For other metrics, just one distribution, regardless of whether
+            # patient was conveyed or not
+            else:
+                dist = info["dist"]
+                column = info["column"]
+                sample = time_data.loc[cat_mask, column].dropna()
+                config[metric_name][key] = fit_dist(
+                    dist=dist, data=sample, time_data_unit=time_data_unit
+                )
 
     return config
 
@@ -334,7 +392,7 @@ def plot_metric_kde(metric, registry, size=10_000):
     """Plot KDE curve by category (C1-C4).
 
     Sample from the fitted distribution stored in the registry for the given
-    metric.
+    metric. Will split by conveyance status if nested.
 
     Parameters
     ----------
@@ -348,9 +406,30 @@ def plot_metric_kde(metric, registry, size=10_000):
     """
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    for cat in ["C1", "C2", "C3", "C4"]:
-        samples = registry[metric][cat].sample(size=size)
-        sns.kdeplot(samples, lw=2, label=cat, ax=ax)
+    cats = ["C1", "C2", "C3", "C4"]
+    linestyles = {"see_and_convey": "-", "see_and_treat": "--"}
+    is_split = isinstance(registry[metric][cats[0]], dict)
+
+    # Draw see_and_convey (C1-C4) first, then see_and_treat (C1-C4), so the
+    # legend groups by conveyance status rather than by category
+    if is_split:
+        sub_labels = list(registry[metric]["C1"].keys())
+        for label in sub_labels:
+            for cat in cats:
+                dist = registry[metric][cat][label]
+                samples = dist.sample(size=size)
+                sns.kdeplot(
+                    samples,
+                    lw=2,
+                    color=CAT_COLORS[cat],
+                    linestyle=linestyles.get(label, "-"),
+                    label=f"{cat} ({label})",
+                    ax=ax,
+                )
+    else:
+        for cat in cats:
+            samples = registry[metric][cat].sample(size=size)
+            sns.kdeplot(samples, lw=2, color=CAT_COLORS[cat], label=cat, ax=ax)
 
     ax.set_xlabel(f"{metric} (minutes)")
     ax.set_ylabel("Density")

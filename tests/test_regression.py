@@ -17,7 +17,7 @@ from ambdes import (
 INPUT = Path(__file__).parent.joinpath("input_data")
 OUTPUT = Path(__file__).parent.joinpath("regression_results")
 
-ARRIVALS = INPUT / "param_arrivals.csv"
+ARRIVALS = INPUT / "arrivals.csv"
 TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 

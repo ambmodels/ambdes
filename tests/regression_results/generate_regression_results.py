@@ -23,7 +23,7 @@ OUTPUT = Path(__file__).parent
 # Config
 def make_config():
     """Make SimConfig."""
-    arrival_config = ArrivalConfig(arrival_csv=INPUT / "param_arrivals.csv")
+    arrival_config = ArrivalConfig(arrival_csv=INPUT / "arrivals.csv")
     model_config = ModelConfig(param_csv=INPUT / "param_model.csv")
     return SimConfig(
         arrival_config=arrival_config,

@@ -6,7 +6,7 @@ from ambdes import ArrivalConfig, Model, ModelConfig, Runner, SimConfig
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 
-ARRIVALS = INPUT / "param_arrivals.csv"
+ARRIVALS = INPUT / "arrivals.csv"
 TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 

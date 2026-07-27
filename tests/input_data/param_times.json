@@ -61,31 +61,67 @@
   },
   "on_scene_time": {
     "C1": {
-      "class_name": "Lognormal",
-      "params": {
-        "mean": 40,
-        "stdev": 20
+      "see_and_convey": {
+        "class_name": "Lognormal",
+        "params": {
+          "mean": 40,
+          "stdev": 20
+        }
+      },
+      "see_and_treat": {
+        "class_name": "Erlang",
+        "params": {
+          "mean": 80,
+          "stdev": 20
+        }
       }
     },
     "C2": {
-      "class_name": "Lognormal",
-      "params": {
-        "mean": 45,
-        "stdev": 20
+      "see_and_convey": {
+        "class_name": "Lognormal",
+        "params": {
+          "mean": 45,
+          "stdev": 20
+        }
+      },
+      "see_and_treat": {
+        "class_name": "Erlang",
+        "params": {
+          "mean": 90,
+          "stdev": 20
+        }
       }
     },
     "C3": {
-      "class_name": "Lognormal",
-      "params": {
-        "mean": 50,
-        "stdev": 20
+      "see_and_convey": {
+        "class_name": "Lognormal",
+        "params": {
+          "mean": 50,
+          "stdev": 20
+        }
+      },
+      "see_and_treat": {
+        "class_name": "Erlang",
+        "params": {
+          "mean": 100,
+          "stdev": 20
+        }
       }
     },
     "C4": {
-      "class_name": "Lognormal",
-      "params": {
-        "mean": 55,
-        "stdev": 20
+      "see_and_convey": {
+        "class_name": "Lognormal",
+        "params": {
+          "mean": 55,
+          "stdev": 20
+        }
+      },
+      "see_and_treat": {
+        "class_name": "Erlang",
+        "params": {
+          "mean": 110,
+          "stdev": 20
+        }
       }
     }
   },

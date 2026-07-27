@@ -10,6 +10,8 @@ class Patient:
         Unique identifier for the patient.
     category : str
         Ambulance response category ("C1", "C2", "C3" or "C4").
+    outcome : str
+        Call outcome ("see_and_convey" or "see_and_treat").
     call_timestamp : float
         Time at which patient called 999.
     response_time : float
@@ -19,7 +21,7 @@ class Patient:
 
     PRIORITY_MAP = {"C1": 1, "C2": 2, "C3": 3, "C4": 4}
 
-    def __init__(self, patient_id, category, call_timestamp):
+    def __init__(self, patient_id, category, outcome, call_timestamp):
         """Create instance of Patient.
 
         Parameters
@@ -28,12 +30,15 @@ class Patient:
             Unique identifier for the patient.
         category : str
             Ambulance response category ("C1", "C2", "C3" or "C4").
+        outcome : str
+            Call outcome ("see_and_convey" or "see_and_treat").
         call_timestamp : float
             Time at which patient called 999.
 
         """
         self.patient_id = patient_id
         self.category = category
+        self.outcome = outcome
         self.call_timestamp = call_timestamp
         self.response_time = None
 
