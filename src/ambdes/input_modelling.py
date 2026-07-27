@@ -34,6 +34,13 @@ CONVEY_LABELS = {
     "not_convey": ["See & Treat"],
 }
 
+CAT_COLORS = {
+    "C1": "tab:blue",
+    "C2": "tab:orange",
+    "C3": "tab:green",
+    "C4": "tab:red",
+}
+
 
 class FitDist:
     """Fit distributions using sim-tools and compare samples to real data.
@@ -390,7 +397,7 @@ def plot_metric_kde(metric, registry, size=10_000):
     """Plot KDE curve by category (C1-C4).
 
     Sample from the fitted distribution stored in the registry for the given
-    metric.
+    metric. Will split by conveyance status if nested.
 
     Parameters
     ----------
@@ -404,19 +411,30 @@ def plot_metric_kde(metric, registry, size=10_000):
     """
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    for cat in ["C1", "C2", "C3", "C4"]:
-        # Filter to the dictionary entry for that metric and category
-        cat_entry = registry[metric][cat]
+    cats = ["C1", "C2", "C3", "C4"]
+    linestyles = {"convey": "-", "not_convey": "--"}
+    is_split = isinstance(registry[metric][cats[0]], dict)
 
-        # Split by sub-category (i.e., convey / not convey)
-        if isinstance(cat_entry, dict):
-            for label, dist in cat_entry.items():
+    # Draw convey (C1-C4) first, then not_convey (C1-C4), so the
+    # legend groups by conveyance status rather than by category
+    if is_split:
+        sub_labels = list(registry[metric]["C1"].keys())
+        for label in sub_labels:
+            for cat in cats:
+                dist = registry[metric][cat][label]
                 samples = dist.sample(size=size)
-                sns.kdeplot(samples, lw=2, label=f"{cat} ({label})", ax=ax)
-        # If not, just sample directly
-        else:
-            samples = cat_entry.sample(size=size)
-            sns.kdeplot(samples, lw=2, label=cat, ax=ax)
+                sns.kdeplot(
+                    samples,
+                    lw=2,
+                    color=CAT_COLORS[cat],
+                    linestyle=linestyles.get(label, "-"),
+                    label=f"{cat} ({label})",
+                    ax=ax,
+                )
+    else:
+        for cat in cats:
+            samples = registry[metric][cat].sample(size=size)
+            sns.kdeplot(samples, lw=2, color=CAT_COLORS[cat], label=cat, ax=ax)
 
     ax.set_xlabel(f"{metric} (minutes)")
     ax.set_ylabel("Density")
