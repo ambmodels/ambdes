@@ -130,17 +130,18 @@ class Model:
             ].sample()
             yield self.env.timeout(on_scene_time)
 
-            # Sample travel to hospital
-            time_to_hospital = self.dists["time_to_hospital"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(time_to_hospital)
+            if patient.outcome == "see_and_convey":
+                # Sample travel to hospital
+                time_to_hospital = self.dists["time_to_hospital"][
+                    patient.category
+                ].sample()
+                yield self.env.timeout(time_to_hospital)
 
-            # Handover time
-            handover_time = self.dists["handover_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(handover_time)
+                # Handover time
+                handover_time = self.dists["handover_time"][
+                    patient.category
+                ].sample()
+                yield self.env.timeout(handover_time)
 
             # Wrap up time
             wrap_up_time = self.dists["wrap_up_time"][
