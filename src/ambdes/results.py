@@ -258,6 +258,7 @@ class Results:
                     "run": self.model.run_number,
                     "patient_id": p.patient_id,
                     "category": p.category,
+                    "outcome": p.outcome,
                     "call_timestamp": p.call_timestamp,
                     "response_time": p.response_time,
                 }
@@ -298,14 +299,24 @@ class Results:
         """
         df = self.patient_df()
 
-        # Per category summaries for response time
-        summary = (
+        # Mean response time by response category
+        by_category = (
             df.groupby("category", dropna=False)
-            .agg(
-                response_time_mean=("response_time", "mean"),
-            )
+            .agg(response_time_mean=("response_time", "mean"))
+            .reset_index()
+            .assign(outcome="all", run=self.model.run_number)
+        )
+
+        # Mean response time by category and outcome
+        by_category_outcome = (
+            df.groupby(["category", "outcome"], dropna=False)
+            .agg(response_time_mean=("response_time", "mean"))
             .reset_index()
             .assign(run=self.model.run_number)
+        )
+
+        summary = pd.concat(
+            [by_category, by_category_outcome], ignore_index=True
         )
 
         # Overall utilisation
@@ -314,6 +325,7 @@ class Results:
                 {
                     "run": self.model.run_number,
                     "category": "all",
+                    "outcome": "all",
                     "utilisation_mean": self.utilisation(),
                 }
             ]
@@ -336,8 +348,8 @@ def combine_run_results(results_list):
     dict
         Dictionary with three DataFrames:
         - "patients": concatenated per-patient results across runs.
-        - "run": summary of results for each run by response category.
-        - "overall": summary of results across runs by response category.
+        - "run": summary of results for each run by category and outcome.
+        - "overall": summary of results across runs by category and outcome.
 
     """
     # Per-patient results across runs
@@ -349,11 +361,15 @@ def combine_run_results(results_list):
     run = pd.concat([r["run"] for r in results_list], ignore_index=True)
 
     # Summary of results across runs by response category
-    metrics = [c for c in run.columns if c not in ("run", "category")]
+    metrics = [
+        c for c in run.columns if c not in ("run", "category", "outcome")
+    ]
     records = []
-    # Group the results by response category (C1-C4)
-    for category, group in run.groupby("category", dropna=False):
-        row = {"category": category}
+    # Group the results by response category (C1-C4) and outcome
+    for (category, outcome), group in run.groupby(
+        ["category", "outcome"], dropna=False
+    ):
+        row = {"category": category, "outcome": outcome}
         # Filter to each metric for that group, ignoring NA
         for col in metrics:
             values = group[col].dropna()
