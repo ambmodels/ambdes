@@ -317,11 +317,7 @@ def fit_dist(dist, data, time_data_unit):
     return {"class_name": dist, "params": params}
 
 
-def fit_config(
-    time_data,
-    time_data_unit,
-    metric_config
-):
+def fit_config(time_data, time_data_unit, metric_config):
     """Fit distributions for each metric and category from raw time data.
 
     If specified in `metric_config`, times may be additional split depending
@@ -373,8 +369,7 @@ def fit_config(
                     outcomes = CONVEY_LABELS[label]
                     # Filter to that column + that conveyance status
                     sample = time_data.loc[
-                        cat_mask & time_data[CONVEY_COL].isin(outcomes),
-                        column
+                        cat_mask & time_data[CONVEY_COL].isin(outcomes), column
                     ].dropna()
                     # Get distribution parameters
                     config[metric_name][key][label] = fit_dist(
