@@ -68,10 +68,14 @@ class Model:
             # Sample call type
             category = self.dists["call_category"].sample()
 
+            # Sample whether patient is conveyed or not
+            outcome = self.dists["call_outcome"][category].sample()
+
             # Create a new patient
             patient = Patient(
                 patient_id=len(self.patients) + 1,
                 category=category,
+                outcome=outcome,
                 call_timestamp=self.env.now,
             )
             self.patients.append(patient)
@@ -121,8 +125,8 @@ class Model:
             patient.response_time = self.env.now - patient.call_timestamp
 
             # On-scene time
-            on_scene_time = self.dists["on_scene_time"][
-                patient.category
+            on_scene_time = self.dists["on_scene_time"][patient.category][
+                patient.outcome
             ].sample()
             yield self.env.timeout(on_scene_time)
 

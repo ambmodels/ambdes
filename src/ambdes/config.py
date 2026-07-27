@@ -47,6 +47,18 @@ class SimConfig:
                     "freq": arrival_config.category_proportions.values,
                 },
             },
+            "call_outcome": {
+                cat: {
+                    "class_name": "DiscreteEmpirical",
+                    "params": {
+                        "values": arrival_config.outcome_proportions.columns,
+                        "freq": (
+                            arrival_config.outcome_proportions.loc[cat].values
+                        ),
+                    },
+                }
+                for cat in arrival_config.outcome_proportions.index
+            },
             **times_config,
         }
 
@@ -78,6 +90,9 @@ class ArrivalConfig:
         Mean proportion of arrivals in each response category across the week.
     nspp_df : pd.DataFrame
         Arrival schedule in the format required by `sim_tools` `NSPPThinning`.
+    outcome_proportions : pd.DataFrame
+        Mean proportion of see & treat v.s., see & convey, by response
+        category.
 
     """
 
@@ -87,14 +102,31 @@ class ArrivalConfig:
         Parameters
         ----------
         arrival_csv : str | Path
-            Path to CSV containing arrival counts by day of week and response
-            category.
+            Path to CSV containing arrival counts by day of week, response
+            category (C1-C4) and call outcome (see & treat or see & convey).
 
         """
         # Import arrivals dataframe
-        self.arrival_df = pd.read_csv(arrival_csv, index_col=0)
+        long_df = pd.read_csv(arrival_csv)
 
-        # Convert to proportion by response category for each day
+        # Category counts by response category for each day
+        days = [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        self.arrival_df = pd.crosstab(
+            long_df["day_of_week"],
+            long_df["category"],
+            values=long_df["count"],
+            aggfunc="sum",
+        ).loc[days]
+
+        # Proportions by response category for each day
         self.proportion_df = self.arrival_df.div(
             self.arrival_df.sum(axis=1), axis=0
         )
@@ -105,10 +137,8 @@ class ArrivalConfig:
                 "mean": self.proportion_df.mean(axis=0),
                 "min": self.proportion_df.min(axis=0),
                 "max": self.proportion_df.max(axis=0),
-                "range": (
-                    self.proportion_df.max(axis=0)
-                    - self.proportion_df.min(axis=0)
-                ),
+                "range": self.proportion_df.max(axis=0)
+                - self.proportion_df.min(axis=0),
                 "sd": self.proportion_df.std(axis=0),
             }
         )
@@ -127,6 +157,17 @@ class ArrivalConfig:
                 "t": range(0, 7 * 1440, 1440),
                 "mean_iat": 1440 / arrivals_per_day.values,
             }
+        )
+
+        # Overall see & convey v.s., see & treat split, varying by response
+        # category but pooled across days of week
+        outcome_by_category = (
+            long_df.groupby(["category", "outcome"])["count"]
+            .sum()
+            .unstack("outcome")
+        )
+        self.outcome_proportions = outcome_by_category.div(
+            outcome_by_category.sum(axis=1), axis=0
         )
 
 
