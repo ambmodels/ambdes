@@ -16,6 +16,7 @@ from sim_tools.distributions import (
     Uniform,
     Weibull,
 )
+from statsmodels.graphics.gofplots import qqplot_2samples
 
 DISTRIBUTIONS = [
     "beta",
@@ -24,8 +25,8 @@ DISTRIBUTIONS = [
     "gamma",
     "lognormal",
     "normal",
-    "triangular",
-    "uniform",
+#    "triangular",
+#    "uniform",
     "weibull",
 ]
 
@@ -227,6 +228,7 @@ class FitDist:
         # Plot in the same sorted order
         to_plot = dict(islice(sorted_results.items(), n_plots))
         for _, v in to_plot.items():
+            # Histogram of samples from observed v.s., fitted distribution
             plot_observed_fitted(
                 data=self.data,
                 sample=v["sample"],
@@ -236,6 +238,14 @@ class FitDist:
                     f"{self.metric_name}: {v['fitted']}"
                     if self.metric_name else v["fitted"]
                 ),
+            )
+            # Q-Q plot
+            qqplot_2samples(
+                data1=self.data,
+                data2=v["sample"],
+                xlabel="Observed",
+                ylabel="Fitted",
+                line="45",
             )
 
 
