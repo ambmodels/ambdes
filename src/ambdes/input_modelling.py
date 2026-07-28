@@ -1,5 +1,6 @@
 """Input modelling."""
 
+from itertools import islice
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -49,6 +50,8 @@ class FitDist:
     ----------
     data : pd.Series
         Time data to fit distribution to.
+    metric_name : str
+        Name of metric, used for plot titles.
     mean : float
         Mean of `data`.
     stdev : float
@@ -62,19 +65,21 @@ class FitDist:
 
     """
 
-    def __init__(self, metric, df):
+    def __init__(self, data, metric_name):
         """Create instance of FitDist.
 
         Parameters
         ----------
-        metric : str
-            Name of metric.
-        df : pd.DataFrame
-            Time data.
+        data : pd.Series
+            Time data to fit distribution to.
+        metric_name : str
+            Name of metric, used for plot titles.
 
         """
-        self.data = df[metric].dropna()
+        self.data = data
+        self.metric_name = metric_name
 
+        # Calculate mean, standard deviation, minimum and maximum
         self.mean = self.data.mean()
         self.stdev = self.data.std()
         self.min = self.data.min()
@@ -161,6 +166,7 @@ class FitDist:
         dists=DISTRIBUTIONS,
         xmax=200,
         seed=42,
+        n_plots=None,
     ):
         """Fit distributions and compare.
 
@@ -172,8 +178,20 @@ class FitDist:
             Max for x axis in plot to help view easier with long tails.
         seed : int
             Random seed.
+        n_plots : int
+            Number of plots to show (e.g., if 3, will show plots for top 3
+            distributions). If none specified, will show all.
 
         """
+        n_dists = len(dists)
+        if n_plots is None:
+            n_plots = n_dists
+        if n_plots > n_dists:
+            raise ValueError(
+                f"n_plots ({n_plots}) cannot be greater than number of " +
+                f"distributions tested ({n_dists})"
+            )
+
         if isinstance(dists, str):
             dists = [dists]
 
@@ -207,13 +225,17 @@ class FitDist:
         print(ks_table)
 
         # Plot in the same sorted order
-        for _, v in sorted_results.items():
+        to_plot = dict(islice(sorted_results.items(), n_plots))
+        for _, v in to_plot.items():
             plot_observed_fitted(
                 data=self.data,
                 sample=v["sample"],
                 kind="hist",
                 xmax=xmax,
-                title=v["fitted"],
+                title=(
+                    f"{self.metric_name}: {v['fitted']}"
+                    if self.metric_name else v["fitted"]
+                ),
             )
 
 
