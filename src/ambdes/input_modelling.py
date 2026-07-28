@@ -127,6 +127,12 @@ class FitDist:
             )
 
         if dist == "erlang":
+            k = round((self.mean / self.stdev) ** 2)
+            if k < 1:
+                raise ValueError(
+                    f"Erlang not viable: shape parameter rounds to {k} "
+                    f"(mean={self.mean:.2f}, stdev={self.stdev:.2f})"
+                )
             return Erlang(mean=self.mean, stdev=self.stdev, random_seed=seed)
 
         # Gamma and Weibull are stricly positive distributions, so we shift
@@ -200,14 +206,19 @@ class FitDist:
 
         # Fit distribution, take sample, and calculate Kolmogorov-Smirnov
         for dist_name in dists:
-            fitted = self.fit(dist_name, seed=seed)
-            sample = fitted.sample(size=len(self.data))
-            ks_statistic = ks_2samp(self.data, sample).statistic
-            results[dist_name] = {
-                "fitted": fitted,
-                "sample": sample,
-                "ks_statistic": ks_statistic,
-            }
+            try:
+                fitted = self.fit(dist_name, seed=seed)
+                sample = fitted.sample(size=len(self.data))
+                ks_statistic = ks_2samp(self.data, sample).statistic
+                results[dist_name] = {
+                    "fitted": fitted,
+                    "sample": sample,
+                    "ks_statistic": ks_statistic,
+                    "observed_max": max(self.data),
+                    "fitted_max": max(sample)
+                }
+            except (ValueError, ZeroDivisionError) as e:
+                print(f"Skipping {dist_name}: {e}")
 
         # Sort dict items by ks_statistic (ascending: best fit first)
         sorted_results = dict(
@@ -220,6 +231,12 @@ class FitDist:
                 "Distribution": list(sorted_results.keys()),
                 "ks_statistic": [
                     v["ks_statistic"] for v in sorted_results.values()
+                ],
+                "observed_max": [
+                    v["observed_max"] for v in sorted_results.values()
+                ],
+                "fitted_max": [
+                    v["fitted_max"] for v in sorted_results.values()
                 ],
             }
         )
