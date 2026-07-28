@@ -4,6 +4,8 @@ This repository contains a discrete-event simulation (DES) model of ambulance op
 
 Documentation: <https://ambmodels.github.io/ambdes/>
 
+![Model structure](assets/images/ambdes_aggregate.drawio.png)
+
 ## Setup
 
 Dependencies are pinned in `pyproject.toml`. These can be installed using Python 3.13 and your preferred environment manager.
