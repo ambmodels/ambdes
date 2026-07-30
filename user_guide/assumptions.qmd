@@ -1,0 +1,28 @@
+---
+title: Assumptions and simplifications
+---
+
+As defined by [Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/):
+
+* **Assumption** - arises from incomplete knowledge - you do not know exactly how something works, so you use the best available information.
+* **Simplification** - deliberate design choice - you could model something in more detail, but you opt for a simple representation.
+
+## Assumptions
+
+Rough notes!
+
+* Times: Choices around cropping any times when input modelling (e.g., extreme values - 0 or very high).
+
+## Simplifications
+
+Rough notes!
+
+* Queueing - simplified - priority sorting.
+* They tend to take events out of the times data.
+* Vehicles -
+    * Only one resource per patient - not multiple.
+    * Just one vehicle type - not multiple.
+    * Just one fixed pool of resources - no shifts and changes in availability across week.
+* Arrivals - just vary by day of week.
+* Excluding hear-and-treat.
+* Excluding out-of-area activity.
