@@ -211,6 +211,15 @@ class FitDist:
             Number of plots to show (e.g., if 3, will show plots for top 3
             distributions). If none specified, will show all.
 
+        Returns
+        -------
+        figs : list of matplotlib.figure.Figure
+            Figures generated for the top `n_plots` distributions (histogram
+            and Q-Q plot pairs).
+        ks_table : pd.DataFrame
+            Table of KS statistics and percentile/max comparisons, sorted by
+            best fit first.
+
         """
         n_dists = len(dists)
         if n_plots is None:
@@ -270,9 +279,9 @@ class FitDist:
                 ],
             }
         )
-        display(ks_table)
 
         # Plot in the same sorted order
+        figs = []
         to_plot = dict(islice(sorted_results.items(), n_plots))
         for _, v in to_plot.items():
             title = (
@@ -280,24 +289,28 @@ class FitDist:
                 if self.metric_name
                 else v["fitted"]
             )
+
             # Histogram of samples from observed v.s., fitted distribution
-            plot_observed_fitted(
+            hist_fig = plot_observed_fitted(
                 data=self.data,
                 sample=v["sample"],
                 kind="hist",
                 xmax=xmax,
                 title=title,
             )
+            figs.append(hist_fig)
+
             # Q-Q plot
-            fig = qqplot_2samples(
+            qq_fig = qqplot_2samples(
                 data1=self.data,
                 data2=v["sample"],
                 xlabel="Observed (minutes)",
                 ylabel="Fitted (minutes)",
                 line="45",
             )
-            fig.suptitle(title)
-            plt.show()
+            qq_fig.suptitle(title)
+            figs.append(qq_fig)
+        return figs, ks_table
 
 
 def snap_bins_to_seconds(xmax, target_bins=200, min_seconds=1):
@@ -344,6 +357,10 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     title : str
         Title.
 
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        Figure with two sets of overlaid histograms (one standard, one cropped).
     """
     df_plot = pd.concat(
         [
@@ -385,7 +402,7 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     fig.suptitle(title)
 
     fig.tight_layout()
-    plt.show()
+    return fig
 
 
 def fit_dist(dist, data, time_data_unit):
