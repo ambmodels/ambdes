@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from IPython.display import display
 from scipy.stats import beta, betaprime, gamma, invgamma, ks_2samp, weibull_min
 from sim_tools.distributions import (
     Beta,
@@ -360,7 +359,9 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     Returns
     -------
     fig : matplotlib.figure.Figure
-        Figure with two sets of overlaid histograms (one standard, one cropped).
+        Figure with two sets of overlaid histograms (one standard, one
+        cropped).
+
     """
     df_plot = pd.concat(
         [
