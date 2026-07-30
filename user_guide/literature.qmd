@@ -360,10 +360,10 @@ e. **Resource** (time from ED arrival to handover emerging as ED modelled as ser
 | @wu_using_2009 | On-scene time and In-hospital time | Lognormal | Call type (4 types) and responder (2 skill levels) |
 | @fonseca_discrete_2025 | Time from allocation to mobilise, time at scene, and time to clear | Empirical or lognormal | - |
 | @aboueljinane_reducing_2012 | Regulation time, preparation time, on site time, DTR time, drop off time | Empirical | Call type (2) and priority level (4) |
-| @kergosien_generic_2015 | Time at scene, discharge time at hospital, and call processing times | Gamma | - |
-| @wei_lam_reducing_2014 | Empirical | Dispatch time and time on scene | Patient emergency status and conveyance status |
-| @wei_lam_reducing_2014 | Empirical | Handover delay | Patient emergency status |
-| @wang_discrete-event_2025 | Exponential | Ambulance preparation delay, on-site delay, and unloading delay | - |
+| @kergosien_generic_2015 | Gamma | Time at scene, discharge time at hospital, and call processing times | - |
+| @wei_lam_reducing_2014 | Dispatch time and time on scene | Empirical | Patient emergency status and conveyance status |
+| @wei_lam_reducing_2014 | Handover delay | Empirical | Patient emergency status |
+| @wang_discrete-event_2025 | Ambulance preparation delay, on-site delay, and unloading delay | Exponential | - |
 
 **(e) Resource**
 

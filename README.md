@@ -1,8 +1,14 @@
 # ambdes: open reproducible discrete-event simulation of ambulance operations
 
+![](assets/images/hospital.png)
+
 This repository contains a discrete-event simulation (DES) model of ambulance operations, with supporting notebooks and documentation.
 
 Documentation: <https://ambmodels.github.io/ambdes/>
+
+## Model structure
+
+![Model structure](assets/images/ambdes_aggregate.drawio.png)
 
 ## Setup
 

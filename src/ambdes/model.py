@@ -102,7 +102,7 @@ class Model:
         with self.ambulance.request(priority=patient.priority) as req:
             vehicle = yield req
 
-            # Record when patient was assigned as ambulance
+            # Record when patient was assigned an ambulance
             self.logger.log_resource_use_start(
                 entity_id=patient.patient_id,
                 event="ambulance_assigned",
@@ -121,7 +121,7 @@ class Model:
             ].sample()
             yield self.env.timeout(time_to_scene)
 
-            # Record response time (queue + time to scene)
+            # Record response time
             patient.response_time = self.env.now - patient.call_timestamp
 
             # On-scene time

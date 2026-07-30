@@ -1,9 +1,12 @@
 """Input modelling."""
 
+from itertools import islice
+
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
-from scipy.stats import beta, gamma, ks_2samp, weibull_min
+from scipy.stats import beta, betaprime, gamma, invgamma, ks_2samp, weibull_min
 from sim_tools.distributions import (
     Beta,
     Erlang,
@@ -11,11 +14,17 @@ from sim_tools.distributions import (
     Gamma,
     Lognormal,
     Normal,
+    PearsonV,
+    PearsonVI,
     Triangular,
     Uniform,
     Weibull,
 )
+from statsmodels.graphics.gofplots import qqplot_2samples
 
+# No hyperexponential as don't know how to fit
+# Excluded uniform (won't ever be good fit) and triangular (designed for when
+# you only know e.g., mean, mode, instead of when you have full sample)
 DISTRIBUTIONS = [
     "beta",
     "erlang",
@@ -23,8 +32,10 @@ DISTRIBUTIONS = [
     "gamma",
     "lognormal",
     "normal",
-    "triangular",
-    "uniform",
+    "pearsonv",
+    "pearsonvi",
+    #    "triangular",
+    #    "uniform",
     "weibull",
 ]
 
@@ -49,6 +60,8 @@ class FitDist:
     ----------
     data : pd.Series
         Time data to fit distribution to.
+    metric_name : str
+        Name of metric, used for plot titles.
     mean : float
         Mean of `data`.
     stdev : float
@@ -62,19 +75,21 @@ class FitDist:
 
     """
 
-    def __init__(self, metric, df):
+    def __init__(self, data, metric_name):
         """Create instance of FitDist.
 
         Parameters
         ----------
-        metric : str
-            Name of metric.
-        df : pd.DataFrame
-            Time data.
+        data : pd.Series
+            Time data to fit distribution to.
+        metric_name : str
+            Name of metric, used for plot titles.
 
         """
-        self.data = df[metric].dropna()
+        self.data = data
+        self.metric_name = metric_name
 
+        # Calculate mean, standard deviation, minimum and maximum
         self.mean = self.data.mean()
         self.stdev = self.data.std()
         self.min = self.data.min()
@@ -121,6 +136,12 @@ class FitDist:
             )
 
         if dist == "erlang":
+            k = round((self.mean / self.stdev) ** 2)
+            if k < 1:
+                raise ValueError(
+                    f"Erlang not viable: shape parameter rounds to {k} "
+                    f"(mean={self.mean:.2f}, stdev={self.stdev:.2f})"
+                )
             return Erlang(mean=self.mean, stdev=self.stdev, random_seed=seed)
 
         # Gamma and Weibull are stricly positive distributions, so we shift
@@ -152,6 +173,18 @@ class FitDist:
                 random_seed=seed,
             )
 
+        # Pearson Type V is also known as inverse Gamma
+        # In invgamma docs, we can see it returns (a, loc, scale)
+        if dist == "pearsonv":
+            a, loc, scale = invgamma.fit(self.data, floc=0)
+            return PearsonV(alpha=a, beta=scale, random_seed=seed)
+
+        # Pearson Type VI is also known as inverted beta or beta prime
+        # In betaprime docs, we can see it returns (a, b, loc, scale)
+        if dist == "pearsonvi":
+            a, b, loc, scale = betaprime.fit(self.data, floc=0)
+            return PearsonVI(alpha1=a, alpha2=b, beta=scale, random_seed=seed)
+
         raise ValueError(
             f"Unable to fit {dist} - not supported in FitDist code."
         )
@@ -161,6 +194,7 @@ class FitDist:
         dists=DISTRIBUTIONS,
         xmax=200,
         seed=42,
+        n_plots=None,
     ):
         """Fit distributions and compare.
 
@@ -172,8 +206,29 @@ class FitDist:
             Max for x axis in plot to help view easier with long tails.
         seed : int
             Random seed.
+        n_plots : int
+            Number of plots to show (e.g., if 3, will show plots for top 3
+            distributions). If none specified, will show all.
+
+        Returns
+        -------
+        figs : list of matplotlib.figure.Figure
+            Figures generated for the top `n_plots` distributions (histogram
+            and Q-Q plot pairs).
+        ks_table : pd.DataFrame
+            Table of KS statistics and percentile/max comparisons, sorted by
+            best fit first.
 
         """
+        n_dists = len(dists)
+        if n_plots is None:
+            n_plots = n_dists
+        if n_plots > n_dists:
+            raise ValueError(
+                f"n_plots ({n_plots}) cannot be greater than number of "
+                + f"distributions tested ({n_dists})"
+            )
+
         if isinstance(dists, str):
             dists = [dists]
 
@@ -181,40 +236,108 @@ class FitDist:
 
         # Fit distribution, take sample, and calculate Kolmogorov-Smirnov
         for dist_name in dists:
-            fitted = self.fit(dist_name, seed=seed)
-            sample = fitted.sample(size=len(self.data))
-            ks_statistic = ks_2samp(self.data, sample).statistic
-            results[dist_name] = {
-                "fitted": fitted,
-                "sample": sample,
-                "ks_statistic": ks_statistic,
-            }
+            try:
+                fitted = self.fit(dist_name, seed=seed)
+                sample = fitted.sample(size=len(self.data))
+                ks_statistic = ks_2samp(self.data, sample).statistic
+                results[dist_name] = {
+                    "fitted": fitted,
+                    "sample": sample,
+                    "ks_statistic": ks_statistic,
+                    "observed_p999": round(np.percentile(self.data, 99.9)),
+                    "observed_max": round(max(self.data)),
+                    "fitted_p999": round(np.percentile(sample, 99.9)),
+                    "fitted_max": round(max(sample)),
+                }
+            except (ValueError, ZeroDivisionError) as e:
+                print(f"Skipping {dist_name}: {e}")
 
         # Sort dict items by ks_statistic (ascending: best fit first)
         sorted_results = dict(
             sorted(results.items(), key=lambda item: item[1]["ks_statistic"])
         )
 
-        # Create dataframe with KS statistics
+        # Create dataframe with statistics
         ks_table = pd.DataFrame(
             {
                 "Distribution": list(sorted_results.keys()),
                 "ks_statistic": [
                     v["ks_statistic"] for v in sorted_results.values()
                 ],
+                "observed_p999": [
+                    v["observed_p999"] for v in sorted_results.values()
+                ],
+                "observed_max": [
+                    v["observed_max"] for v in sorted_results.values()
+                ],
+                "fitted_p999": [
+                    v["fitted_p999"] for v in sorted_results.values()
+                ],
+                "fitted_max": [
+                    v["fitted_max"] for v in sorted_results.values()
+                ],
             }
         )
-        print(ks_table)
 
         # Plot in the same sorted order
-        for _, v in sorted_results.items():
-            plot_observed_fitted(
+        figs = []
+        to_plot = dict(islice(sorted_results.items(), n_plots))
+        for _, v in to_plot.items():
+            title = (
+                f"{self.metric_name}: {v['fitted']}"
+                if self.metric_name
+                else v["fitted"]
+            )
+
+            # Histogram of samples from observed v.s., fitted distribution
+            hist_fig = plot_observed_fitted(
                 data=self.data,
                 sample=v["sample"],
                 kind="hist",
                 xmax=xmax,
-                title=v["fitted"],
+                title=title,
             )
+            figs.append(hist_fig)
+
+            # Q-Q plot
+            qq_fig = qqplot_2samples(
+                data1=self.data,
+                data2=v["sample"],
+                xlabel="Observed (minutes)",
+                ylabel="Fitted (minutes)",
+                line="45",
+            )
+            qq_fig.suptitle(title)
+            figs.append(qq_fig)
+        return figs, ks_table
+
+
+def snap_bins_to_seconds(xmax, target_bins=200, min_seconds=1):
+    """Compute bin edges so bin width is a whole number of seconds.
+
+    Parameters
+    ----------
+    xmax : float
+        Upper limit of range, in minutes.
+    target_bins : int
+        Desired approximate number of bins.
+    min_seconds : int
+        Minimum allowed bin width in seconds.
+
+    Returns
+    -------
+    np.ndarray
+        Bin edges in minutes, spaced by a whole number of seconds.
+
+    """
+    ideal_width_minutes = xmax / target_bins
+    ideal_width_seconds = ideal_width_minutes * 60
+    width_seconds = max(min_seconds, round(ideal_width_seconds))
+    width_minutes = width_seconds / 60
+
+    n_bins = int(np.ceil(xmax / width_minutes))
+    edges = np.arange(0, n_bins + 1) * width_minutes
+    return edges
 
 
 def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
@@ -233,6 +356,12 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     title : str
         Title.
 
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        Figure with two sets of overlaid histograms (one standard, one
+        cropped).
+
     """
     df_plot = pd.concat(
         [
@@ -247,29 +376,34 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
     if kind == "kde":
         plot_kwargs["common_norm"] = False
     if kind == "hist":
-        plot_kwargs["bins"] = 100
+        full_xmax = df_plot["value"].max()
+        full_edges = snap_bins_to_seconds(full_xmax, target_bins=200)
+        plot_kwargs["bins"] = full_edges
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
     plot_fn(**plot_kwargs, ax=axes[0])
     axes[0].set_title("Full range")
+    axes[0].set_xlabel("Minutes")
     axes[0].set_ylabel("Count" if kind == "hist" else "Density")
 
     cropped_kwargs = dict(plot_kwargs)
     if kind == "hist":
-        cropped_kwargs["bins"] = min(xmax, 100)
-        cropped_kwargs["binrange"] = (0, xmax)
+        edges = snap_bins_to_seconds(xmax, target_bins=200)
+        cropped_kwargs["bins"] = edges
+        cropped_kwargs.pop("binrange", None)
     plot_fn(**cropped_kwargs, ax=axes[1])
     axes[1].set_xlim(0, xmax)
     axes[1].relim()
     axes[1].autoscale_view(scalex=False, scaley=True)
     axes[1].set_title(f"Cropped to 0-{xmax}")
+    axes[1].set_xlabel("Minutes")
     axes[1].set_ylabel("Count" if kind == "hist" else "Density")
 
     fig.suptitle(title)
 
     fig.tight_layout()
-    plt.show()
+    return fig
 
 
 def fit_dist(dist, data, time_data_unit):
