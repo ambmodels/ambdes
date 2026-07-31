@@ -571,3 +571,103 @@ def plot_metric_kde(metric, registry, size=10_000):
     ax.grid(alpha=0.3)
     sns.despine()
     fig.tight_layout()
+
+
+def build_arrival_config(arrivals):
+    """Determine arrival parameters and create config dict.
+
+    Parameters
+    ----------
+    arrivals : pd.DataFrame
+        Count of arrivals by weekday, response category and outcome.
+
+    Returns
+    -------
+    dict
+        Dictionary containing the configuration dictionary, as well as other
+        tables and outputs from processing, that can be used to help check
+        assumptions in the arrival modelling.
+    """
+    # Aggregate to counts by response category only
+    # Producing dataframe where weekday is index and columns are category
+    arrival_df = pd.crosstab(
+        arrivals["weekday"], arrivals["category"],
+        values=arrivals["count"], aggfunc="sum",
+    ).reindex(range(7))
+
+    # Convert from counts to proportions of each category on each day
+    proportion_df = arrival_df.div(arrival_df.sum(axis=1), axis=0)
+
+    # Summarise the variations in proportions by day of week
+    variation_df = pd.DataFrame(
+        {
+            "mean": proportion_df.mean(axis=0),
+            "min": proportion_df.min(axis=0),
+            "max": proportion_df.max(axis=0),
+            "range": proportion_df.max(axis=0)
+            - proportion_df.min(axis=0),
+            "sd": proportion_df.std(axis=0),
+        }
+    )
+
+    # Get overall mean proportion by response category
+    category_proportions = proportion_df.mean(axis=0)
+
+    # Get count of total arrivals per day
+    arrivals_per_day = arrival_df.sum(axis=1)
+
+    # Convert to format required by sim_tools NSPPThinning class
+    # It requires "t" (timepoint when arrival rate changes) and "mean_iat"
+    # (mean inter-arrival time).
+    nspp_df = pd.DataFrame({
+        "t": range(0, 7 * 1440, 1440),
+        "mean_iat": 1440 / arrivals_per_day.values,
+    })
+
+    # Overall see & convey v.s., see & treat split, varying by response
+    # category but pooled across days of week
+    outcome_by_category = (
+        arrivals.groupby(["category", "outcome"])["count"]
+        .sum()
+        .unstack("outcome")
+    )
+    outcome_proportions = outcome_by_category.div(
+        outcome_by_category.sum(axis=1), axis=0
+    )
+
+    # Create dictionary in format suitable for sim-tools distribution registry
+    dist_config = {
+        "call_arrival": {
+            "class_name": "NSPPThinning",
+            "params": {
+                "t": list(nspp_df["t"]),
+                "mean_iat": list(nspp_df["mean_iat"]),
+            },
+        },
+        "call_category": {
+            "class_name": "DiscreteEmpirical",
+            "params": {
+                "values": list(category_proportions.index),
+                "freq": list(category_proportions.values),
+            },
+        },
+        "call_outcome": {
+            cat: {
+                "class_name": "DiscreteEmpirical",
+                "params": {
+                    "values": list(outcome_proportions.columns),
+                    "freq": list(
+                        outcome_proportions.loc[cat].values
+                    ),
+                },
+            }
+            for cat in outcome_proportions.index
+        },
+    }
+
+    # Return the config dictionary, plus some tables used for assumption checks
+    return {
+        "proportion_df": proportion_df,
+        "variation_df": variation_df,
+        "dist_config": dist_config
+    }
