@@ -2,9 +2,10 @@
 
 import copy
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
+from matplotlib.lines import Line2D
 
 from .model import Model
 from .results import UtilisationCalculator
@@ -178,9 +179,11 @@ def plot_warm_up(audit, metric, category=None):
 
     Returns
     -------
-    fig : plotly.graph_objects.Figure
-        A Plotly Figure object containing cumulative mean trajectories for
+    fig : matplotlib.figure.Figure
+        A Matplotlib Figure containing cumulative mean trajectories for
         each run and the overall cumulative mean.
+    ax : matplotlib.axes.Axes
+        The Matplotlib Axes object.
 
     """
     # Filter to specified response category
@@ -188,20 +191,43 @@ def plot_warm_up(audit, metric, category=None):
     if category is not None:
         df = df[df["category"] == category]
 
+    fig, ax = plt.subplots()
+
     # Plot cumulative mean for each run
-    fig = px.line(data_frame=df, x="time", y="value", line_group="run")
-    fig.update_traces(line_color="lightblue")
+    for _, run_df in df.groupby("run"):
+        ax.plot(
+            run_df["time"],
+            run_df["value"],
+            color="lightblue",
+            alpha=0.8,
+        )
 
     # Compute overall cumulative mean and overlay on plot
     overall = df.groupby("time", as_index=False)["value"].mean()
     overall["overall_cumulative"] = overall["value"].expanding().mean()
-    overall_fig = px.line(overall, x="time", y="overall_cumulative")
-    fig.add_traces(list(overall_fig.select_traces()))
+
+    ax.plot(
+        overall["time"],
+        overall["overall_cumulative"],
+        color="C0",
+        linewidth=2,
+        label="Overall cumulative mean",
+    )
 
     # Axis labels and layout
-    fig.update_layout(
-        xaxis_title="Run time (minutes)",
-        yaxis_title=f"cumulative_mean_{metric}",
-        template="plotly_white",
-    )
-    return fig
+    ax.set_xlabel("Run time (minutes)")
+    ax.set_ylabel(f"cumulative_mean_{metric}_{category}")
+    legend_handles = [
+        Line2D(
+            [0],
+            [0],
+            color="lightblue",
+            lw=2,
+            label="Cumulative mean from individual runs",
+        ),
+        Line2D([0], [0], color="C0", lw=2, label="Overall cumulative mean"),
+    ]
+    ax.legend(handles=legend_handles)
+    fig.tight_layout()
+
+    return fig, ax
