@@ -6,13 +6,37 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
+from joblib import Parallel, cpu_count, delayed
 
 from .model import Model
 from .results import UtilisationCalculator
 
 
+def run_single_audit(config, interval, run_number):
+    """Run warm-up audit for a single replication.
+
+    Parameters
+    ----------
+    config : object
+        Configuration object containing model parameters.
+    interval : int
+        Audit frequency in minutes.
+    run_number : int
+        Run number.
+
+    Returns
+    -------
+    pd.DataFrame
+        Audit results with one row per time, category and metric.
+    """
+    model = Model(run_number=run_number, config=config)
+    auditor = WarmUpAuditor(model=model, interval=interval)
+    auditor.run()
+    return auditor.to_df()
+
+
 def run_warm_up_audit(config, interval, n_reps):
-    """Run warm-up audit for one or more replications.
+    """Run warm-up audit for one or more replications (can run in parallel).
 
     Parameters
     ----------
@@ -29,19 +53,30 @@ def run_warm_up_audit(config, interval, n_reps):
         Audit results with one row per run, time, category and metric.
 
     """
-    dfs = []
-
     # Make a local copy so the caller's config is not modified
     config = copy.deepcopy(config)
 
     # Enforce warm_up_period == 0
     config.warm_up_period = 0
 
-    for run_number in range(n_reps):
-        model = Model(run_number=run_number, config=config)
-        auditor = WarmUpAuditor(model=model, interval=interval)
-        auditor.run()
-        dfs.append(auditor.to_df())
+    if config.cores == 1:
+        dfs = [
+            run_single_audit(config, interval, i)
+            for i in range(n_reps)
+        ]
+    else:
+        # Check the requested number of cores is possible on machine
+        valid_cores = [-1] + list(range(1, cpu_count()))
+        if config.cores not in valid_cores:
+            raise ValueError(
+                f"Invalid cores: {config.cores}. Must be one of: "
+                + f"{valid_cores}."
+            )
+        # Execute warm-up audit in parallel
+        dfs = Parallel(n_jobs=config.cores)(
+            delayed(run_single_audit)(config, interval, i)
+            for i in range(n_reps)
+        )
 
     return pd.concat(dfs, ignore_index=True)
 
@@ -193,6 +228,9 @@ def plot_warm_up(audit, metric, category=None):
 
     fig, ax = plt.subplots()
 
+    # Convert time to days
+    df["time"] = df["time"] / 1440
+
     # Plot cumulative mean for each run
     for _, run_df in df.groupby("run"):
         ax.plot(
@@ -215,7 +253,7 @@ def plot_warm_up(audit, metric, category=None):
     )
 
     # Axis labels and layout
-    ax.set_xlabel("Run time (minutes)")
+    ax.set_xlabel("Run time (days)")
     ax.set_ylabel(f"cumulative_mean_{metric}_{category}")
     legend_handles = [
         Line2D(
