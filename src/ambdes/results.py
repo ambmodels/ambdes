@@ -135,6 +135,17 @@ class UtilisationCalculator:
             amb["event_type"] == "resource_use_end", ["entity_id", "time"]
         ].rename(columns={"time": "end_time"})
 
+        # Defensive check: each ID should only correspond to one start
+        dup_starts = starts.loc[starts["entity_id"].duplicated(), "entity_id"]
+        dup_ends = ends.loc[ends["entity_id"].duplicated(), "entity_id"]
+        dup_id = set(dup_starts) | set(dup_ends)
+        if dup_id:
+            raise ValueError(
+                "Duplicate entity_id values found in ambulance event log ",
+                f"(n={len(dup_id)}). Each entity_id must only appear once ",
+                "for one arrival and one departure."
+            )
+
         # Combine these, so each patient has one row with start and end time
         intervals = starts.merge(ends, on="entity_id", how="left")
 
