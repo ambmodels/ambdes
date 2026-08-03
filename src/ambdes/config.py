@@ -25,7 +25,7 @@ class SimConfig:
         Number of replications to run.
     cores : int
         Number of CPU cores to use for parallel execution. To use all
-        available cores, set to -1. For sequential execution, set to -1.
+        available cores, set to -1. For sequential execution, set to 1.
 
     """
 
@@ -84,5 +84,5 @@ class SimConfig:
         # Set the other model parameters as attributes
         self.warm_up_period = params["warm_up_period"]
         self.data_collection_period = params["data_collection_period"]
-        self.n_reps = params["n_reps"]
-        self.cores = params["cores"]
+        self.n_reps = int(params["n_reps"])
+        self.cores = int(params["cores"])
