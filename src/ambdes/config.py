@@ -26,6 +26,7 @@ class SimConfig:
     cores : int
         Number of CPU cores to use for parallel execution. To use all
         available cores, set to -1. For sequential execution, set to -1.
+
     """
 
     def __init__(
@@ -55,10 +56,14 @@ class SimConfig:
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
         # (as sim-tools requires a dataframe, but had to use lists for JSON)
         arrivals_config["call_arrival"]["params"] = {
-            "data": pd.DataFrame({
-                "t": arrivals_config["call_arrival"]["params"]["t"],
-                "mean_iat": arrivals_config["call_arrival"]["params"]["mean_iat"],
-            })
+            "data": pd.DataFrame(
+                {
+                    "t": arrivals_config["call_arrival"]["params"]["t"],
+                    "mean_iat": arrivals_config["call_arrival"]["params"][
+                        "mean_iat"
+                    ],
+                }
+            )
         }
         self.dist_config = {
             **arrivals_config,

@@ -43,7 +43,6 @@ def test_model_consistent():
     model.run()
 
     # Extract results from model
-    patients = Results(model).patient_df()
     util = Results(model).utilisation_df()
     summary = Results(model).summary_df()
 

@@ -176,6 +176,7 @@ MEAN_SERVICE = 25.0
 # Simulation run functions
 # ---------------------------------------------------------------------------
 
+
 class StubConfig:
     """Minimal config stub satisfying the Results interface."""
 

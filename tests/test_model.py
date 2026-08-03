@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from ambdes import Model, SimConfig, Results
+from ambdes import Model, Results, SimConfig
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 
@@ -34,7 +34,7 @@ def test_no_duplicate_patient_ids():
     n_unique = len(entity_id.unique())
     assert n_total == n_unique, (
         "Each ID should only correspond to 1 arrival, but there are ",
-        f"{n_total - n_unique} ID corresponding to 2+ arrivals."
+        f"{n_total - n_unique} ID corresponding to 2+ arrivals.",
     )
 
     # When entity IDs are reused, we might then see unusual utilisation
@@ -44,6 +44,6 @@ def test_no_duplicate_patient_ids():
         f"Minimum utilisation must be between 0 and 1, but is: {util_min}"
     )
     util_max = util_col.max()
-    assert util_max >=0 and util_max <= 1, (
+    assert util_max >= 0 and util_max <= 1, (
         f"Minimum utilisation must be between 0 and 1, but is: {util_max}"
     )

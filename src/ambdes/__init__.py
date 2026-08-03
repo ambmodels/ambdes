@@ -8,9 +8,9 @@ __version__ = "0.1.0"
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
 from .config import SimConfig
 from .input_modelling import (
-    build_arrival_config,
     DISTRIBUTIONS,
     FitDist,
+    build_arrival_config,
     fit_config,
     plot_metric_kde,
     plot_observed_fitted,

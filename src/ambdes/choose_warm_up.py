@@ -5,8 +5,8 @@ import copy
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.lines import Line2D
 from joblib import Parallel, cpu_count, delayed
+from matplotlib.lines import Line2D
 
 from .model import Model
 from .results import UtilisationCalculator
@@ -28,6 +28,7 @@ def run_single_audit(config, interval, run_number):
     -------
     pd.DataFrame
         Audit results with one row per time, category and metric.
+
     """
     model = Model(run_number=run_number, config=config)
     auditor = WarmUpAuditor(model=model, interval=interval)
@@ -60,10 +61,7 @@ def run_warm_up_audit(config, interval, n_reps):
     config.warm_up_period = 0
 
     if config.cores == 1:
-        dfs = [
-            run_single_audit(config, interval, i)
-            for i in range(n_reps)
-        ]
+        dfs = [run_single_audit(config, interval, i) for i in range(n_reps)]
     else:
         # Check the requested number of cores is possible on machine
         valid_cores = [-1] + list(range(1, cpu_count()))

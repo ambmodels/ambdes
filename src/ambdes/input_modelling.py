@@ -587,12 +587,15 @@ def build_arrival_config(arrivals):
         Dictionary containing the configuration dictionary, as well as other
         tables and outputs from processing, that can be used to help check
         assumptions in the arrival modelling.
+
     """
     # Aggregate to counts by response category only
     # Producing dataframe where weekday is index and columns are category
     arrival_df = pd.crosstab(
-        arrivals["weekday"], arrivals["category"],
-        values=arrivals["count"], aggfunc="sum",
+        arrivals["weekday"],
+        arrivals["category"],
+        values=arrivals["count"],
+        aggfunc="sum",
     ).reindex(range(7))
 
     # Convert from counts to proportions of each category on each day
@@ -604,8 +607,7 @@ def build_arrival_config(arrivals):
             "mean": proportion_df.mean(axis=0),
             "min": proportion_df.min(axis=0),
             "max": proportion_df.max(axis=0),
-            "range": proportion_df.max(axis=0)
-            - proportion_df.min(axis=0),
+            "range": proportion_df.max(axis=0) - proportion_df.min(axis=0),
             "sd": proportion_df.std(axis=0),
         }
     )
@@ -619,10 +621,12 @@ def build_arrival_config(arrivals):
     # Convert to format required by sim_tools NSPPThinning class
     # It requires "t" (timepoint when arrival rate changes) and "mean_iat"
     # (mean inter-arrival time).
-    nspp_df = pd.DataFrame({
-        "t": range(0, 7 * 1440, 1440),
-        "mean_iat": 1440 / arrivals_per_day.values,
-    })
+    nspp_df = pd.DataFrame(
+        {
+            "t": range(0, 7 * 1440, 1440),
+            "mean_iat": 1440 / arrivals_per_day.values,
+        }
+    )
 
     # Overall see & convey v.s., see & treat split, varying by response
     # category but pooled across days of week
@@ -656,9 +660,7 @@ def build_arrival_config(arrivals):
                 "class_name": "DiscreteEmpirical",
                 "params": {
                     "values": list(outcome_proportions.columns),
-                    "freq": list(
-                        outcome_proportions.loc[cat].values
-                    ),
+                    "freq": list(outcome_proportions.loc[cat].values),
                 },
             }
             for cat in outcome_proportions.index
@@ -669,5 +671,5 @@ def build_arrival_config(arrivals):
     return {
         "proportion_df": proportion_df,
         "variation_df": variation_df,
-        "dist_config": dist_config
+        "dist_config": dist_config,
     }
