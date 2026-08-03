@@ -12,11 +12,15 @@ As defined by [Robinson 2024](https://www.bloomsbury.com/uk/simulation-978135044
 Rough notes!
 
 * Times: Choices around cropping any times when input modelling (e.g., extreme values - 0 or very high).
+* Arrivals...
+    * In the model, the number of arrivals vary by day of week.
+    * The arrivals are assigned a response category and a response outcome. These are assumed to not vary by day of week. We check this assumption by looking at the proportion on each day of the week of C1 v.s., C2 v.s., C3 v.s., C4 and likewise by see and convey v.s., see and treat.
 
 ## Simplifications
 
 Rough notes!
 
+* Grouped 'See & Convey non ED' and 'See & Convey ED' into a single 'see & convey' group.
 * Queueing - simplified - priority sorting.
 * They tend to take events out of the times data.
 * Vehicles -
