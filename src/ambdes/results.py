@@ -413,10 +413,10 @@ def combine_run_results(results_list):
     # Average results for each run by response category
     run = pd.concat([r["run"] for r in results_list], ignore_index=True)
 
-    # Summary of results across runs by category, outcome, metric
+    # Summary of results across runs by metric, category, outcome
     records = []
-    for (category, outcome, metric), group in run.groupby(
-        ["category", "outcome", "metric"], dropna=False
+    for (metric, category, outcome), group in run.groupby(
+        ["metric", "category", "outcome"], dropna=False
     ):
         values = group["value"].dropna()
         # If too few runs with results, don't return confidence intervals
@@ -429,9 +429,9 @@ def combine_run_results(results_list):
             lower, upper = sms.DescrStatsW(values).tconfint_mean(alpha=0.05)
         records.append(
             {
-                "metric": metric,
                 "category": category,
                 "outcome": outcome,
+                "metric": metric,
                 "mean": mean,
                 "ci_lower": lower,
                 "ci_upper": upper,
