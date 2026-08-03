@@ -96,6 +96,8 @@ site:
   toc: true
   lightbox: true
 
+hero: false
+
 announcement:
   dismissable: true
   content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="/user-guide/reuse.html">Learn more about appropriate reuse</a>.
