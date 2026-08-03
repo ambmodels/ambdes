@@ -9,175 +9,14 @@ class SimConfig:
     """Configuration for a simulation run.
 
     Stores input data and run settings used by the model.
-    """
-
-    def __init__(
-        self,
-        arrival_config,
-        times_json,
-        model_config,
-    ):
-        """Initialise simulation configuration.
-
-        Parameters
-        ----------
-        arrival_config : ArrivalConfig
-            Arrival input configuration.
-        times_json : str | Path
-            Path to JSON file containing time distribution configuration.
-        model_config : ModelConfig
-            Model-level input parameters.
-
-        """
-        # Load ready-made time distribution config from JSON
-        with open(times_json, encoding="utf-8") as f:
-            times_config = json.load(f)
-
-        # Set up parameters for distributions in required format for
-        # sim-tools DistributionsRegistry
-        self.dist_config = {
-            "call_arrival": {
-                "class_name": "NSPPThinning",
-                "params": {"data": arrival_config.nspp_df},
-            },
-            "call_category": {
-                "class_name": "DiscreteEmpirical",
-                "params": {
-                    "values": arrival_config.category_proportions.index,
-                    "freq": arrival_config.category_proportions.values,
-                },
-            },
-            "call_outcome": {
-                cat: {
-                    "class_name": "DiscreteEmpirical",
-                    "params": {
-                        "values": arrival_config.outcome_proportions.columns,
-                        "freq": (
-                            arrival_config.outcome_proportions.loc[cat].values
-                        ),
-                    },
-                }
-                for cat in arrival_config.outcome_proportions.index
-            },
-            **times_config,
-        }
-
-        # Convert total weekly ambulance-hours into an equivalent constant
-        # fleet size, assuming a fixed 24/7 resource pool with no shift
-        # pattern. One always-available ambulance provides 168 hours of
-        # capacity per week (24 × 7), so we approximate the number of
-        # ambulances as resource_hours_per_week / 168.
-        self.n_ambulances = round(model_config.resource_hours_per_week / 168)
-
-        self.warm_up_period = model_config.warm_up_period
-        self.data_collection_period = model_config.data_collection_period
-        self.n_reps = model_config.n_reps
-        self.cores = model_config.cores
-
-
-class ArrivalConfig:
-    """Prepare arrival inputs for the simulation.
 
     Attributes
     ----------
-    arrival_df : pd.DataFrame
-        Mean arrival counts by day of week and response category.
-    proportion_df : pd.DataFrame
-        Proportion of arrivals in each response category by day of week.
-    variation_df : pd.DataFrame
-        Summary of variation in category proportions across days of the week.
-    category_proportions : pd.Series
-        Mean proportion of arrivals in each response category across the week.
-    nspp_df : pd.DataFrame
-        Arrival schedule in the format required by `sim_tools` `NSPPThinning`.
-    outcome_proportions : pd.DataFrame
-        Mean proportion of see & treat v.s., see & convey, by response
-        category.
-
-    """
-
-    def __init__(self, arrival_csv):
-        """Initialise ArrivalConfig.
-
-        Parameters
-        ----------
-        arrival_csv : str | Path
-            Path to CSV containing arrival counts by day of week, response
-            category (C1-C4) and call outcome (see & treat or see & convey).
-
-        """
-        # Import arrivals dataframe
-        long_df = pd.read_csv(arrival_csv)
-
-        # Category counts by response category for each day
-        days = [
-            "monday",
-            "tuesday",
-            "wednesday",
-            "thursday",
-            "friday",
-            "saturday",
-            "sunday",
-        ]
-        self.arrival_df = pd.crosstab(
-            long_df["day_of_week"],
-            long_df["category"],
-            values=long_df["count"],
-            aggfunc="sum",
-        ).loc[days]
-
-        # Proportions by response category for each day
-        self.proportion_df = self.arrival_df.div(
-            self.arrival_df.sum(axis=1), axis=0
-        )
-
-        # Summarise the variations in proportions by day of week
-        self.variation_df = pd.DataFrame(
-            {
-                "mean": self.proportion_df.mean(axis=0),
-                "min": self.proportion_df.min(axis=0),
-                "max": self.proportion_df.max(axis=0),
-                "range": self.proportion_df.max(axis=0)
-                - self.proportion_df.min(axis=0),
-                "sd": self.proportion_df.std(axis=0),
-            }
-        )
-
-        # Get overall mean proportion by response category
-        self.category_proportions = self.proportion_df.mean(axis=0)
-
-        # Get count of total arrivals per day
-        arrivals_per_day = self.arrival_df.sum(axis=1)
-
-        # Convert to format required by sim_tools NSPPThinning class
-        # It requires a dataframe with columns "t" (timepoint when arrival
-        # rate changes) and "mean_iat" (mean inter-arrival time)
-        self.nspp_df = pd.DataFrame(
-            {
-                "t": range(0, 7 * 1440, 1440),
-                "mean_iat": 1440 / arrivals_per_day.values,
-            }
-        )
-
-        # Overall see & convey v.s., see & treat split, varying by response
-        # category but pooled across days of week
-        outcome_by_category = (
-            long_df.groupby(["category", "outcome"])["count"]
-            .sum()
-            .unstack("outcome")
-        )
-        self.outcome_proportions = outcome_by_category.div(
-            outcome_by_category.sum(axis=1), axis=0
-        )
-
-
-class ModelConfig:
-    """Prepare model-level inputs for the simulation.
-
-    Attributes
-    ----------
-    resource_hours_per_week : int
-        Ambulance resource hours per week.
+    dist_config : dict
+        Dictionary with all distribution settings, in required format for
+        sim-tools DistributionRegistry.
+    n_ambulances : int
+        Size of ambulance resource pool.
     warm_up_period : int
         Duration of the warm-up period in minutes.
     data_collection_period : int
@@ -186,26 +25,64 @@ class ModelConfig:
         Number of replications to run.
     cores : int
         Number of CPU cores to use for parallel execution. To use all
-        available cores, set to -1. For sequential execution, set to -1.
+        available cores, set to -1. For sequential execution, set to 1.
 
     """
 
-    def __init__(self, param_csv):
-        """Initialise ModelConfig.
+    def __init__(
+        self,
+        arrivals_json,
+        times_json,
+        param_csv,
+    ):
+        """Initialise simulation configuration.
 
         Parameters
         ----------
+        arrivals_json : str | Path
+            Path to JSON file containing arrival distribution configuration.
+        times_json : str | Path
+            Path to JSON file containing time distribution configuration.
         param_csv : str | Path
             Path to CSV containing model parameters.
 
         """
-        # Import CSV and convert to dict
+        # Load ready-made distribution configs from JSON
+        with open(arrivals_json, encoding="utf-8") as f:
+            arrivals_config = json.load(f)
+        with open(times_json, encoding="utf-8") as f:
+            times_config = json.load(f)
+
+        # Convert the call_arrival NSPPThinning parameters into a DataFrame
+        # (as sim-tools requires a dataframe, but had to use lists for JSON)
+        arrivals_config["call_arrival"]["params"] = {
+            "data": pd.DataFrame(
+                {
+                    "t": arrivals_config["call_arrival"]["params"]["t"],
+                    "mean_iat": arrivals_config["call_arrival"]["params"][
+                        "mean_iat"
+                    ],
+                }
+            )
+        }
+        self.dist_config = {
+            **arrivals_config,
+            **times_config,
+        }
+
+        # Import model parameter CSV and convert to dict
         param_df = pd.read_csv(param_csv)
         params = param_df.set_index("parameter")["value"].to_dict()
 
-        # Set as attributes
-        self.resource_hours_per_week = params["resource_hours_per_week"]
+        # Convert total weekly ambulance-hours into an equivalent constant
+        # fleet size, assuming a fixed 24/7 resource pool with no shift
+        # pattern. One always-available ambulance provides 168 hours of
+        # capacity per week (24 × 7), so we approximate the number of
+        # ambulances as resource_hours_per_week / 168.
+        self.n_ambulances = round(params["resource_hours_per_week"] / 168)
+
+        # Set the other model parameters as attributes
         self.warm_up_period = params["warm_up_period"]
         self.data_collection_period = params["data_collection_period"]
-        self.n_reps = params["n_reps"]
-        self.cores = params["cores"]
+        self.n_reps = int(params["n_reps"])
+        self.cores = int(params["cores"])

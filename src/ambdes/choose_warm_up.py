@@ -2,16 +2,42 @@
 
 import copy
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
+from joblib import Parallel, cpu_count, delayed
+from matplotlib.lines import Line2D
 
 from .model import Model
 from .results import UtilisationCalculator
 
 
+def run_single_audit(config, interval, run_number):
+    """Run warm-up audit for a single replication.
+
+    Parameters
+    ----------
+    config : object
+        Configuration object containing model parameters.
+    interval : int
+        Audit frequency in minutes.
+    run_number : int
+        Run number.
+
+    Returns
+    -------
+    pd.DataFrame
+        Audit results with one row per time, category and metric.
+
+    """
+    model = Model(run_number=run_number, config=config)
+    auditor = WarmUpAuditor(model=model, interval=interval)
+    auditor.run()
+    return auditor.to_df()
+
+
 def run_warm_up_audit(config, interval, n_reps):
-    """Run warm-up audit for one or more replications.
+    """Run warm-up audit for one or more replications (can run in parallel).
 
     Parameters
     ----------
@@ -28,19 +54,27 @@ def run_warm_up_audit(config, interval, n_reps):
         Audit results with one row per run, time, category and metric.
 
     """
-    dfs = []
-
     # Make a local copy so the caller's config is not modified
     config = copy.deepcopy(config)
 
     # Enforce warm_up_period == 0
     config.warm_up_period = 0
 
-    for run_number in range(n_reps):
-        model = Model(run_number=run_number, config=config)
-        auditor = WarmUpAuditor(model=model, interval=interval)
-        auditor.run()
-        dfs.append(auditor.to_df())
+    if config.cores == 1:
+        dfs = [run_single_audit(config, interval, i) for i in range(n_reps)]
+    else:
+        # Check the requested number of cores is possible on machine
+        valid_cores = [-1] + list(range(1, cpu_count()))
+        if config.cores not in valid_cores:
+            raise ValueError(
+                f"Invalid cores: {config.cores}. Must be one of: "
+                + f"{valid_cores}."
+            )
+        # Execute warm-up audit in parallel
+        dfs = Parallel(n_jobs=config.cores)(
+            delayed(run_single_audit)(config, interval, i)
+            for i in range(n_reps)
+        )
 
     return pd.concat(dfs, ignore_index=True)
 
@@ -178,9 +212,11 @@ def plot_warm_up(audit, metric, category=None):
 
     Returns
     -------
-    fig : plotly.graph_objects.Figure
-        A Plotly Figure object containing cumulative mean trajectories for
+    fig : matplotlib.figure.Figure
+        A Matplotlib Figure containing cumulative mean trajectories for
         each run and the overall cumulative mean.
+    ax : matplotlib.axes.Axes
+        The Matplotlib Axes object.
 
     """
     # Filter to specified response category
@@ -188,20 +224,46 @@ def plot_warm_up(audit, metric, category=None):
     if category is not None:
         df = df[df["category"] == category]
 
+    fig, ax = plt.subplots()
+
+    # Convert time to days
+    df["time"] = df["time"] / 1440
+
     # Plot cumulative mean for each run
-    fig = px.line(data_frame=df, x="time", y="value", line_group="run")
-    fig.update_traces(line_color="lightblue")
+    for _, run_df in df.groupby("run"):
+        ax.plot(
+            run_df["time"],
+            run_df["value"],
+            color="lightblue",
+            alpha=0.8,
+        )
 
     # Compute overall cumulative mean and overlay on plot
     overall = df.groupby("time", as_index=False)["value"].mean()
     overall["overall_cumulative"] = overall["value"].expanding().mean()
-    overall_fig = px.line(overall, x="time", y="overall_cumulative")
-    fig.add_traces(list(overall_fig.select_traces()))
+
+    ax.plot(
+        overall["time"],
+        overall["overall_cumulative"],
+        color="C0",
+        linewidth=2,
+        label="Overall cumulative mean",
+    )
 
     # Axis labels and layout
-    fig.update_layout(
-        xaxis_title="Run time (minutes)",
-        yaxis_title=f"cumulative_mean_{metric}",
-        template="plotly_white",
-    )
-    return fig
+    ax.set_xlabel("Run time (days)")
+    ax.set_ylabel(f"cumulative_mean_{metric}_{category}")
+    legend_handles = [
+        Line2D(
+            [0],
+            [0],
+            color="lightblue",
+            lw=2,
+            label="Cumulative mean from individual runs",
+        ),
+        Line2D([0], [0], color="C0", lw=2, label="Overall cumulative mean"),
+    ]
+    ax.legend(handles=legend_handles)
+    fig.tight_layout()
+
+    return fig, ax

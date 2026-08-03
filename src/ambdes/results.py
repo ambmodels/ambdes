@@ -135,6 +135,17 @@ class UtilisationCalculator:
             amb["event_type"] == "resource_use_end", ["entity_id", "time"]
         ].rename(columns={"time": "end_time"})
 
+        # Defensive check: each ID should only correspond to one start
+        dup_starts = starts.loc[starts["entity_id"].duplicated(), "entity_id"]
+        dup_ends = ends.loc[ends["entity_id"].duplicated(), "entity_id"]
+        dup_id = set(dup_starts) | set(dup_ends)
+        if dup_id:
+            raise ValueError(
+                "Duplicate entity_id values found in ambulance event log ",
+                f"(n={len(dup_id)}). Each entity_id must only appear once ",
+                "for one arrival and one departure.",
+            )
+
         # Combine these, so each patient has one row with start and end time
         intervals = starts.merge(ends, on="entity_id", how="left")
 
@@ -249,22 +260,12 @@ class Results:
         Returns
         -------
         pd.DataFrame
-            Columns: run, patient_id, category, call_timestamp, response_time.
+            Dataframe with patient-level results.
 
         """
-        return pd.DataFrame(
-            [
-                {
-                    "run": self.model.run_number,
-                    "patient_id": p.patient_id,
-                    "category": p.category,
-                    "outcome": p.outcome,
-                    "call_timestamp": p.call_timestamp,
-                    "response_time": p.response_time,
-                }
-                for p in self.model.patients
-            ]
-        )
+        df = pd.DataFrame([vars(p) for p in self.model.patients])
+        df.insert(0, "run", self.model.run_number)
+        return df
 
     def utilisation_df(self):
         """Return time-weighted ambulance utilisation intervals.
@@ -288,6 +289,41 @@ class Results:
         """
         return UtilisationCalculator.from_model(self.model).mean_utilisation()
 
+    def mean_by_category(self, df, col, name):
+        """Find mean of metric by response category, and then also by outcome.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Patient-level dataframe.
+        col : str
+            Column to aggregate.
+        name : str
+            Name to assign in the metric column.
+
+        Returns
+        -------
+        pd.DataFrame
+            Long-format dataframe with aggregated results.
+
+        """
+        # Aggregate by response category
+        by_category = (
+            df.groupby("category", dropna=False)[col]
+            .mean()
+            .reset_index(name="value")
+            .assign(outcome="all", run=self.model.run_number, metric=name)
+        )
+        # Aggregate by response category and response outcome
+        by_category_outcome = (
+            df.groupby(["category", "outcome"], dropna=False)[col]
+            .mean()
+            .reset_index(name="value")
+            .assign(run=self.model.run_number, metric=name)
+        )
+        # Return a single dataframe
+        return pd.concat([by_category, by_category_outcome], ignore_index=True)
+
     def summary_df(self):
         """Return run-level summary in long format.
 
@@ -299,24 +335,46 @@ class Results:
         """
         df = self.patient_df()
 
-        # Mean response time by response category
-        by_category = (
-            df.groupby("category", dropna=False)
-            .agg(response_time_mean=("response_time", "mean"))
-            .reset_index()
-            .assign(outcome="all", run=self.model.run_number)
+        # Minutes 0-1439 -> day 1, 1440-2879 -> day 2, etc.
+        df["day"] = (df["call_timestamp"] // 1440).astype(int) + 1
+
+        # Mean response time and mean wait time for ambulance assignment by
+        # response category, and by response category and outcome
+        response_time = self.mean_by_category(
+            df=df,
+            col="response_time",
+            name="response_time_mean",
+        )
+        wait_for_assignment = self.mean_by_category(
+            df=df,
+            col="wait_for_assignment",
+            name="wait_for_assignment_mean",
         )
 
-        # Mean response time by category and outcome
-        by_category_outcome = (
-            df.groupby(["category", "outcome"], dropna=False)
-            .agg(response_time_mean=("response_time", "mean"))
-            .reset_index()
-            .assign(run=self.model.run_number)
+        # Mean arrivals per day by response category
+        arrivals_by_category = (
+            df.groupby(["category", "day"], dropna=False)
+            .size()
+            .reset_index(name="n_arrivals")
+            .groupby("category")["n_arrivals"]
+            .mean()
+            .reset_index(name="value")
+            .assign(
+                outcome="all",
+                run=self.model.run_number,
+                metric="arrivals_per_day_mean",
+            )
         )
 
-        summary = pd.concat(
-            [by_category, by_category_outcome], ignore_index=True
+        # Mean arrivals per day by response category and outcome
+        arrivals_by_category_outcome = (
+            df.groupby(["category", "outcome", "day"], dropna=False)
+            .size()
+            .reset_index(name="n_arrivals")
+            .groupby(["category", "outcome"])["n_arrivals"]
+            .mean()
+            .reset_index(name="value")
+            .assign(run=self.model.run_number, metric="arrivals_per_day_mean")
         )
 
         # Overall utilisation
@@ -326,12 +384,22 @@ class Results:
                     "run": self.model.run_number,
                     "category": "all",
                     "outcome": "all",
-                    "utilisation_mean": self.utilisation(),
+                    "metric": "utilisation_mean",
+                    "value": self.utilisation(),
                 }
             ]
         )
 
-        return pd.concat([summary, utilisation], ignore_index=True)
+        return pd.concat(
+            [
+                response_time,
+                wait_for_assignment,
+                arrivals_by_category,
+                arrivals_by_category_outcome,
+                utilisation,
+            ],
+            ignore_index=True,
+        )[["run", "category", "outcome", "metric", "value"]]
 
 
 def combine_run_results(results_list):
@@ -360,33 +428,30 @@ def combine_run_results(results_list):
     # Average results for each run by response category
     run = pd.concat([r["run"] for r in results_list], ignore_index=True)
 
-    # Summary of results across runs by response category
-    metrics = [
-        c for c in run.columns if c not in ("run", "category", "outcome")
-    ]
+    # Summary of results across runs by metric, category, outcome
     records = []
-    # Group the results by response category (C1-C4) and outcome
-    for (category, outcome), group in run.groupby(
-        ["category", "outcome"], dropna=False
+    for (metric, category, outcome), group in run.groupby(
+        ["metric", "category", "outcome"], dropna=False
     ):
-        row = {"category": category, "outcome": outcome}
-        # Filter to each metric for that group, ignoring NA
-        for col in metrics:
-            values = group[col].dropna()
-            # If too few runs with results, don't return confidence intervals
-            if len(values) < 2:
-                mean = values.mean() if len(values) else float("nan")
-                lower, upper = float("nan"), float("nan")
-            # Otherwise, return mean and confidence intervals
-            else:
-                mean = values.mean()
-                lower, upper = sms.DescrStatsW(values).tconfint_mean(
-                    alpha=0.05
-                )
-            row[f"{col}"] = mean
-            row[f"{col}_ci_lower"] = lower
-            row[f"{col}_ci_upper"] = upper
-        records.append(row)
+        values = group["value"].dropna()
+        # If too few runs with results, don't return confidence intervals
+        if len(values) < 2:
+            mean = values.mean() if len(values) else float("nan")
+            lower, upper = float("nan"), float("nan")
+        # Otherwise, return mean and confidence intervals
+        else:
+            mean = values.mean()
+            lower, upper = sms.DescrStatsW(values).tconfint_mean(alpha=0.05)
+        records.append(
+            {
+                "category": category,
+                "outcome": outcome,
+                "metric": metric,
+                "mean": mean,
+                "ci_lower": lower,
+                "ci_upper": upper,
+            }
+        )
     overall = pd.DataFrame(records)
 
     return {

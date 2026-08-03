@@ -46,7 +46,10 @@ class Model:
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
         # Set up attribute to store results
+        # Patient ID counter is independent of self.patients to ensure
+        # patients in warm-up and data collection period each have unique ID
         self.patients = []
+        self.patient_id_counter = 0
 
         # Initialise distributions, with random seed based on run number
         self.dists = DistributionRegistry.create_batch(
@@ -72,8 +75,9 @@ class Model:
             outcome = self.dists["call_outcome"][category].sample()
 
             # Create a new patient
+            self.patient_id_counter += 1
             patient = Patient(
-                patient_id=len(self.patients) + 1,
+                patient_id=self.patient_id_counter,
                 category=category,
                 outcome=outcome,
                 call_timestamp=self.env.now,
@@ -103,6 +107,7 @@ class Model:
             vehicle = yield req
 
             # Record when patient was assigned an ambulance
+            patient.wait_for_assignment = self.env.now - patient.call_timestamp
             self.logger.log_resource_use_start(
                 entity_id=patient.patient_id,
                 event="ambulance_assigned",

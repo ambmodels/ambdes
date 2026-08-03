@@ -81,30 +81,6 @@ content_style: sky
 # - Use 'members: false' to exclude methods from documentation
 # - Add 'desc:' to sections for descriptions
 
-reference:
-  - title: Classes
-    desc: Main classes provided by the package
-    contents:
-      - ArrivalConfig
-      - FitDist  # 2 method(s)
-      - Model  # 4 method(s)
-      - ModelConfig
-      - Patient
-      - Results  # 4 method(s)
-      - Runner  # 2 method(s)
-      - SimConfig
-      - UtilisationCalculator  # 4 method(s)
-      - WarmUpAuditor  # 2 method(s)
-
-  - title: Functions
-    desc: Utility functions
-    contents:
-      - fit_config
-      - plot_metric_kde
-      - plot_observed_fitted
-      - plot_warm_up
-      - run_warm_up_audit
-
 # Site URL
 # --------
 # Canonical address of the deployed documentation site.
@@ -120,9 +96,11 @@ site:
   toc: true
   lightbox: true
 
+hero: false
+
 announcement:
   dismissable: true
-  content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="/reuse.qmd">Learn more about appropriate reuse</a>.
+  content: Developed with South Western Ambulance Service NHS Foundation Trust (SWASFT). Results shown here apply only to this service. <a href="/user-guide/reuse.html">Learn more about appropriate reuse</a>.
   style: slate
   position: below-navbar
   
