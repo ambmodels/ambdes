@@ -11,7 +11,7 @@ C3,,see_and_convey,0,
 C3,,see_and_treat,0,
 C4,,see_and_convey,0,
 C4,,see_and_treat,0,
-all,,all,0,1.1806938643947726
+all,,all,0,1.0000000000000002
 C1,189.18285486680895,all,1,
 C2,,all,1,
 C3,,all,1,
@@ -24,7 +24,7 @@ C3,,see_and_convey,1,
 C3,,see_and_treat,1,
 C4,,see_and_convey,1,
 C4,,see_and_treat,1,
-all,,all,1,1.2663423066307542
+all,,all,1,1.0
 C1,190.85698828659054,all,2,
 C2,6.067528991567185,all,2,
 C3,,all,2,
@@ -37,7 +37,7 @@ C3,,see_and_convey,2,
 C3,,see_and_treat,2,
 C4,11.72600065051249,see_and_convey,2,
 C4,,see_and_treat,2,
-all,,all,2,1.1530980428595416
+all,,all,2,0.9999813990618837
 C1,183.8577668570484,all,3,
 C2,,all,3,
 C3,,all,3,
@@ -50,7 +50,7 @@ C3,,see_and_convey,3,
 C3,,see_and_treat,3,
 C4,,see_and_convey,3,
 C4,,see_and_treat,3,
-all,,all,3,1.0998312974577469
+all,,all,3,1.0
 C1,187.08725271803414,all,4,
 C2,12.45046957612,all,4,
 C3,15.954503992579431,all,4,
@@ -63,4 +63,4 @@ C3,15.954503992579431,see_and_convey,4,
 C3,,see_and_treat,4,
 C4,,see_and_convey,4,
 C4,,see_and_treat,4,
-all,,all,4,1.1963672435337405
+all,,all,4,0.9989890135942994
