@@ -107,6 +107,7 @@ class Model:
             vehicle = yield req
 
             # Record when patient was assigned an ambulance
+            patient.wait_for_assignment = self.env.now - patient.call_timestamp
             self.logger.log_resource_use_start(
                 entity_id=patient.patient_id,
                 event="ambulance_assigned",
