@@ -5,9 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from ambdes import (
-    ArrivalConfig,
     Model,
-    ModelConfig,
     Results,
     Runner,
     SimConfig,
@@ -17,14 +15,12 @@ from ambdes import (
 INPUT = Path(__file__).parent.joinpath("input_data")
 OUTPUT = Path(__file__).parent.joinpath("regression_results")
 
-ARRIVALS = INPUT / "arrivals.csv"
+ARRIVALS = INPUT / "param_arrivals.json"
 TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 
-MODEL_PATIENT = OUTPUT / "model_patient_df.csv"
 MODEL_UTIL = OUTPUT / "model_utilisation_df.csv"
 MODEL_SUMMARY = OUTPUT / "model_summary_df.csv"
-RUNNER_PATIENTS = OUTPUT / "runner_patients.csv"
 RUNNER_RUN = OUTPUT / "runner_run.csv"
 RUNNER_OVERALL = OUTPUT / "runner_overall.csv"
 AUDIT = OUTPUT / "audit.csv"
@@ -32,12 +28,10 @@ AUDIT = OUTPUT / "audit.csv"
 
 def make_config():
     """Create a standard simulation config for regression tests."""
-    arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
-    model_config = ModelConfig(param_csv=MODEL)
     return SimConfig(
-        arrival_config=arrival_config,
+        arrivals_json=ARRIVALS,
         times_json=TIMES,
-        model_config=model_config,
+        param_csv=MODEL,
     )
 
 
@@ -54,12 +48,10 @@ def test_model_consistent():
     summary = Results(model).summary_df()
 
     # Import expected results
-    exp_patients = pd.read_csv(MODEL_PATIENT)
     exp_util = pd.read_csv(MODEL_UTIL)
     exp_summary = pd.read_csv(MODEL_SUMMARY)
 
     # Check extracted results match expected
-    pd.testing.assert_frame_equal(patients, exp_patients)
     pd.testing.assert_frame_equal(util, exp_util)
     pd.testing.assert_frame_equal(summary, exp_summary)
 
@@ -71,12 +63,10 @@ def test_runner_consistent():
     results = Runner(config=config).run_reps()
 
     # Import expected results
-    exp_patients = pd.read_csv(RUNNER_PATIENTS)
     exp_run = pd.read_csv(RUNNER_RUN)
     exp_overall = pd.read_csv(RUNNER_OVERALL)
 
     # Check extracted results match expected
-    pd.testing.assert_frame_equal(results["patients"], exp_patients)
     pd.testing.assert_frame_equal(results["run"], exp_run)
     pd.testing.assert_frame_equal(results["overall"], exp_overall)
 

@@ -2,23 +2,21 @@
 
 from pathlib import Path
 
-from ambdes import ArrivalConfig, Model, ModelConfig, Runner, SimConfig
+from ambdes import Model, Runner, SimConfig
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 
-ARRIVALS = INPUT / "arrivals.csv"
+ARRIVALS = INPUT / "param_arrivals.json"
 TIMES = INPUT / "param_times.json"
 MODEL = INPUT / "param_model.csv"
 
 
 def test_model_runs():
     """Model completes a short run successfully."""
-    arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
-    model_config = ModelConfig(param_csv=MODEL)
     config = SimConfig(
-        arrival_config=arrival_config,
+        arrivals_json=ARRIVALS,
         times_json=TIMES,
-        model_config=model_config,
+        param_csv=MODEL,
     )
     config.n_ambulances = 1
     model = Model(run_number=0, config=config)
@@ -28,12 +26,10 @@ def test_model_runs():
 
 def test_runner_parallel():
     """Check some short runs in parallel via Runner are successful."""
-    arrival_config = ArrivalConfig(arrival_csv=ARRIVALS)
-    model_config = ModelConfig(param_csv=MODEL)
     config = SimConfig(
-        arrival_config=arrival_config,
+        arrivals_json=ARRIVALS,
         times_json=TIMES,
-        model_config=model_config,
+        param_csv=MODEL,
     )
     config.n_ambulances = 1
 

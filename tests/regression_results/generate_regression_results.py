@@ -6,9 +6,7 @@ To run: python tests/regression_results/generate_regression_results.py
 from pathlib import Path
 
 from ambdes import (
-    ArrivalConfig,
     Model,
-    ModelConfig,
     Results,
     Runner,
     SimConfig,
@@ -23,21 +21,16 @@ OUTPUT = Path(__file__).parent
 # Config
 def make_config():
     """Make SimConfig."""
-    arrival_config = ArrivalConfig(arrival_csv=INPUT / "arrivals.csv")
-    model_config = ModelConfig(param_csv=INPUT / "param_model.csv")
     return SimConfig(
-        arrival_config=arrival_config,
+        arrivals_json=INPUT / "param_arrivals.json",
         times_json=INPUT / "param_times.json",
-        model_config=model_config,
+        param_csv=INPUT / "param_model.csv",
     )
 
 
 # Single run using Model and Results
 model = Model(run_number=0, config=make_config())
 model.run()
-Results(model).patient_df().to_csv(
-    OUTPUT / "model_patient_df.csv", index=False
-)
 Results(model).utilisation_df().to_csv(
     OUTPUT / "model_utilisation_df.csv", index=False
 )
@@ -48,7 +41,6 @@ Results(model).summary_df().to_csv(
 # Multiple replications using Runner
 runner = Runner(make_config())
 results = runner.run_reps()
-results["patients"].to_csv(OUTPUT / "runner_patients.csv", index=False)
 results["run"].to_csv(OUTPUT / "runner_run.csv", index=False)
 results["overall"].to_csv(OUTPUT / "runner_overall.csv", index=False)
 
