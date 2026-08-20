@@ -66,18 +66,6 @@ To activate this hook after cloning this repository, run:
 pre-commit install
 ```
 
-## Repository structure
-
-* `src/` - core simulation code.
-* `notebooks/` - example workflows and experiments.
-* `data/` - input data used by the notebooks.
-* `tests/` - test suite.
-* `docs/` - source for the Quarto documentation site <https://ambmodels.github.io/ambdes/>.
-
-## Running the notebooks
-
-After setting up the environment, open and run the notebooks in `notebooks/`.
-
 ## Documentation (local build)
 
 ```
@@ -87,7 +75,7 @@ great-docs preview
 
 ## Linting and formatting
 
-This will run on all `.py` files and `.ipynb` notebooks.
+This will run on all `.py` files and any `.ipynb` notebooks.
 
 ```
 ruff format
@@ -95,13 +83,6 @@ ruff check --fix
 ```
 
 ## Tests
-
-There is presently just two test files:
-
-* A simple smoke test, which performs a very short model run to see if it can run without error and at least one patient arrives.
-* Regression tests, which run the model and check results are consistent with those generated and saved previously.
-
-More tests will be added as part of verification of the model code.
 
 ```
 pytest
