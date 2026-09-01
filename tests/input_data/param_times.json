@@ -1,4 +1,38 @@
 {
+  "connect_to_queue_time": {
+    "C1": {
+      "class_name": "PearsonVI",
+      "params": {
+        "alpha1": 1,
+        "alpha2": 1,
+        "beta": 1
+      }
+    },
+    "C2": {
+      "class_name": "PearsonVI",
+      "params": {
+        "alpha1": 3,
+        "alpha2": 3,
+        "beta": 10
+      }
+    },
+    "C3": {
+      "class_name": "PearsonVI",
+      "params": {
+        "alpha1": 3,
+        "alpha2": 3,
+        "beta": 200
+      }
+    },
+    "C4": {
+      "class_name": "PearsonVI",
+      "params": {
+        "alpha1": 3,
+        "alpha2": 3,
+        "beta": 300
+      }
+    }
+  },
   "mobilisation_time": {
     "C1": {
       "class_name": "Weibull",
