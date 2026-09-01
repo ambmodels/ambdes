@@ -113,8 +113,9 @@ class Model:
         with self.ambulance.request(priority=patient.priority) as req:
             vehicle = yield req
 
-            # Record when patient was assigned an ambulance
-            patient.wait_for_assignment = self.env.now - patient.call_timestamp
+            # Record when patient was assigned an ambulance. This is their
+            # allocation time - time from call receipt to resource allocation.
+            patient.allocation_time = self.env.now - patient.call_timestamp
             self.logger.log_resource_use_start(
                 entity_id=patient.patient_id,
                 event="ambulance_assigned",

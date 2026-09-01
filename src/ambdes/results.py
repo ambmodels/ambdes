@@ -345,10 +345,10 @@ class Results:
             col="response_time",
             name="response_time_mean",
         )
-        wait_for_assignment = self.mean_by_category(
+        allocation_time = self.mean_by_category(
             df=df,
-            col="wait_for_assignment",
-            name="wait_for_assignment_mean",
+            col="allocation_time",
+            name="allocation_time_mean",
         )
 
         # Mean arrivals per day by response category
@@ -393,7 +393,7 @@ class Results:
         return pd.concat(
             [
                 response_time,
-                wait_for_assignment,
+                allocation_time,
                 arrivals_by_category,
                 arrivals_by_category_outcome,
                 utilisation,
