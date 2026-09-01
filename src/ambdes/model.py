@@ -99,6 +99,13 @@ class Model:
             Patient requesting ambulance transport.
 
         """
+        # Sample time from call connection to decision for call to be
+        # added to stack for response (i.e., joining queue for resource)
+        connect_to_queue_time = self.dists["connect_to_queue_time"][
+            patient.category
+        ].sample()
+        yield self.env.timeout(connect_to_queue_time)
+
         # Request an ambulance (will queue if none available)
         self.logger.log_queue(
             entity_id=patient.patient_id, event="ambulance_wait_begins"
@@ -113,12 +120,6 @@ class Model:
                 event="ambulance_assigned",
                 resource_id=vehicle.id_attribute,
             )
-
-            # Sample allocation time
-            allocation_time = self.dists["allocation_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(allocation_time)
 
             # Sample mobilisation time
             mobilisation_time = self.dists["mobilisation_time"][
