@@ -213,7 +213,7 @@
         <mxCell id="xlJl9fVPBfzegGheGhtG-8" edge="1" parent="1" source="xlJl9fVPBfzegGheGhtG-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="20EA9KDugzrVMnaY6hVi-20">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xlJl9fVPBfzegGheGhtG-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#000000;strokeColor=#666666;" value="Call processing to queue time" vertex="1">
+        <mxCell id="xlJl9fVPBfzegGheGhtG-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#000000;strokeColor=#666666;" value="Call connect to queue time" vertex="1">
           <mxGeometry height="30" width="170" x="1100.54" y="213" as="geometry" />
         </mxCell>
         <mxCell id="xlJl9fVPBfzegGheGhtG-3" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;dashed=1;dashPattern=1 7;fontColor=#000000;" target="xlJl9fVPBfzegGheGhtG-4">
