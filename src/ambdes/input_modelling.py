@@ -65,7 +65,7 @@ DIST_CLASSES = {
 }
 
 
-def get_dist_params(dist, data, mean=None, stdev=None, min=None, max=None, mode=None):
+def get_dist_params(dist, data):
     """Compute sim-tools parameter dict for a given distribution.
 
     Parameters
@@ -74,8 +74,6 @@ def get_dist_params(dist, data, mean=None, stdev=None, min=None, max=None, mode=
         Distribution name.
     data : pd.Series
         Time data to fit distribution to.
-    mean, stdev, min, max, mode : float
-        Summary statistics calculated from `data` or provided.
 
     Returns
     -------
@@ -88,8 +86,8 @@ def get_dist_params(dist, data, mean=None, stdev=None, min=None, max=None, mode=
     # Calculate mean, standard deviation, minimum and maximum
     mean = data.mean()
     stdev = data.std()
-    min = data.min()
-    max = data.max()
+    minimum = data.min()
+    maximum = data.max()
 
     # If multiple modes, choose the middle one
     modes = data.mode()
@@ -105,13 +103,13 @@ def get_dist_params(dist, data, mean=None, stdev=None, min=None, max=None, mode=
         return {"mean": mean, "sigma": stdev, "minimum": 0}
 
     if dist == "uniform":
-        return {"low": min, "high": max}
+        return {"low": minimum, "high": maximum}
 
     if dist == "triangular":
-        if mode <= min:
+        if mode <= minimum:
             epsilon = 1e-6
-            mode = min + epsilon
-        return {"low": min, "mode": mode, "high": max}
+            mode = minimum + epsilon
+        return {"low": minimum, "mode": mode, "high": maximum}
 
     if dist == "erlang":
         k = round((mean / stdev) ** 2)
@@ -136,15 +134,15 @@ def get_dist_params(dist, data, mean=None, stdev=None, min=None, max=None, mode=
 
     if dist == "beta":
         # Normalise data to [0, 1]
-        range_ = max - min
-        normalized = (data - min) / range_
+        range_ = maximum - minimum
+        normalized = (data - minimum) / range_
         normalized_adj = normalized.clip(lower=1e-6, upper=1 - 1e-6)
         a, b, loc, scale = beta.fit(normalized_adj, floc=0, fscale=1)
         return {
             "alpha1": a,
             "alpha2": b,
-            "lower_bound": min,
-            "upper_bound": max,
+            "lower_bound": minimum,
+            "upper_bound": maximum,
         }
 
     # Pearson Type V is also known as inverse Gamma
