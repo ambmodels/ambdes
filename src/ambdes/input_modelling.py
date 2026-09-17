@@ -167,6 +167,8 @@ class FitDist:
     ----------
     data : pd.Series
         Time data to fit distribution to.
+    metric_name : str
+        Name of metric, used for plot titles.
 
     """
 
@@ -204,6 +206,8 @@ class FitDist:
         xmax=200,
         seed=42,
         n_plots=None,
+        n_bins=200,
+        time_unit="minutes",
     ):
         """Fit distributions and compare.
 
@@ -218,6 +222,10 @@ class FitDist:
         n_plots : int
             Number of plots to show (e.g., if 3, will show plots for top 3
             distributions). If none specified, will show all.
+        n_bins : int
+            Number of histogram bins.
+        time_unit : str
+            Display unit for plot labels. This does not convert data values.
 
         Returns
         -------
@@ -305,6 +313,8 @@ class FitDist:
                 kind="hist",
                 xmax=xmax,
                 title=title,
+                n_bins=n_bins,
+                time_unit=time_unit,
             )
             figs.append(hist_fig)
 
@@ -312,8 +322,8 @@ class FitDist:
             qq_fig = qqplot_2samples(
                 data1=self.data,
                 data2=v["sample"],
-                xlabel="Observed (minutes)",
-                ylabel="Fitted (minutes)",
+                xlabel=f"Observed ({time_unit})",
+                ylabel=f"Fitted ({time_unit})",
                 line="45",
             )
             qq_fig.suptitle(title)
@@ -349,7 +359,15 @@ def snap_bins_to_seconds(xmax, target_bins=200, min_seconds=1):
     return edges
 
 
-def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
+def plot_observed_fitted(
+    data,
+    sample,
+    kind="hist",
+    xmax=200,
+    title=None,
+    n_bins=200,
+    time_unit="minutes",
+):
     """Plot overlaid comparison of observed vs fitted data.
 
     Parameters
@@ -364,6 +382,10 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
         X-axis limit for a second, optional cropped copy of the plot.
     title : str
         Title.
+    n_bins : int
+        Number of histogram bins.
+    time_unit : str
+        Display unit for plot labels. This does not convert data values.
 
     Returns
     -------
@@ -386,27 +408,28 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
         plot_kwargs["common_norm"] = False
     if kind == "hist":
         full_xmax = df_plot["value"].max()
-        full_edges = snap_bins_to_seconds(full_xmax, target_bins=200)
+        full_edges = snap_bins_to_seconds(full_xmax, target_bins=n_bins)
         plot_kwargs["bins"] = full_edges
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
     plot_fn(**plot_kwargs, ax=axes[0])
+    axes[0].set_xlim(df_plot["value"].min(), df_plot["value"].max())
     axes[0].set_title("Full range")
-    axes[0].set_xlabel("Minutes")
+    axes[0].set_xlabel(time_unit)
     axes[0].set_ylabel("Count" if kind == "hist" else "Density")
 
     cropped_kwargs = dict(plot_kwargs)
     if kind == "hist":
-        edges = snap_bins_to_seconds(xmax, target_bins=200)
+        edges = snap_bins_to_seconds(xmax, target_bins=n_bins)
         cropped_kwargs["bins"] = edges
         cropped_kwargs.pop("binrange", None)
     plot_fn(**cropped_kwargs, ax=axes[1])
-    axes[1].set_xlim(0, xmax)
+    axes[1].set_xlim(df_plot["value"].min(), xmax)
     axes[1].relim()
     axes[1].autoscale_view(scalex=False, scaley=True)
     axes[1].set_title(f"Cropped to 0-{xmax}")
-    axes[1].set_xlabel("Minutes")
+    axes[1].set_xlabel(time_unit)
     axes[1].set_ylabel("Count" if kind == "hist" else "Density")
 
     fig.suptitle(title)
