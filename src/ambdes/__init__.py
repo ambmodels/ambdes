@@ -12,6 +12,7 @@ from .input_modelling import (
     FitDist,
     build_arrival_config,
     fit_config,
+    get_dist_params,
     plot_metric_kde,
     plot_observed_fitted,
 )
@@ -25,6 +26,7 @@ __all__ = [
     "DISTRIBUTIONS",
     "fit_config",
     "FitDist",
+    "get_dist_params",
     "Model",
     "Patient",
     "plot_metric_kde",
