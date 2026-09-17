@@ -1,5 +1,6 @@
 """Input modelling."""
 
+import math
 from itertools import islice
 
 import matplotlib.pyplot as plt
@@ -402,19 +403,21 @@ def plot_observed_fitted(
         ignore_index=True,
     )
 
+    full_xmin = math.floor(df_plot["value"].min())
+    full_xmax = math.ceil(df_plot["value"].max())
+
     plot_fn = sns.histplot if kind == "hist" else sns.kdeplot
     plot_kwargs = dict(data=df_plot, x="value", hue="source", fill=True)
     if kind == "kde":
         plot_kwargs["common_norm"] = False
     if kind == "hist":
-        full_xmax = df_plot["value"].max()
         full_edges = snap_bins_to_seconds(full_xmax, target_bins=n_bins)
         plot_kwargs["bins"] = full_edges
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
     plot_fn(**plot_kwargs, ax=axes[0])
-    axes[0].set_xlim(df_plot["value"].min(), df_plot["value"].max())
+    axes[0].set_xlim(full_xmin, full_xmax)
     axes[0].set_title("Full range")
     axes[0].set_xlabel(time_unit)
     axes[0].set_ylabel("Count" if kind == "hist" else "Density")
@@ -425,10 +428,10 @@ def plot_observed_fitted(
         cropped_kwargs["bins"] = edges
         cropped_kwargs.pop("binrange", None)
     plot_fn(**cropped_kwargs, ax=axes[1])
-    axes[1].set_xlim(df_plot["value"].min(), xmax)
+    axes[1].set_xlim(full_xmin, xmax)
     axes[1].relim()
     axes[1].autoscale_view(scalex=False, scaley=True)
-    axes[1].set_title(f"Cropped to 0-{xmax}")
+    axes[1].set_title(f"Cropped to {full_xmin}-{xmax}")
     axes[1].set_xlabel(time_unit)
     axes[1].set_ylabel("Count" if kind == "hist" else "Density")
 
