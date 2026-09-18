@@ -37,13 +37,16 @@ class Model:
         # Create SimPy environment
         self.env = simpy.Environment()
 
-        # Set up ambulance resource
-        self.ambulance = VidigiPriorityStore(
-            self.env, num_resources=self.config.n_ambulances, label="ambulance"
-        )
-
         # Set up logger
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
+
+        # Set up ambulance resource
+        self.ambulance = VidigiPriorityStore(
+            self.env,
+            num_resources=self.config.n_ambulances,
+            label="ambulance",
+            logger=self.logger
+        )
 
         # Set up attribute to store results
         # Patient ID counter is independent of self.patients to ensure
@@ -110,17 +113,17 @@ class Model:
         self.logger.log_queue(
             entity_id=patient.patient_id, event="ambulance_wait_begins"
         )
-        with self.ambulance.request(priority=patient.priority) as req:
-            vehicle = yield req
+        with self.ambulance.request(
+            priority=patient.priority,
+            entity_id=patient.patient_id,
+            start_event="ambulance_assigned",
+            end_event="ambulance_available"
+        ) as req:
+            yield req
 
             # Record when patient was assigned an ambulance. This is their
             # allocation time - time from call receipt to resource allocation.
             patient.allocation_time = self.env.now - patient.call_timestamp
-            self.logger.log_resource_use_start(
-                entity_id=patient.patient_id,
-                event="ambulance_assigned",
-                resource_id=vehicle.id_attribute,
-            )
 
             # Sample mobilisation time
             mobilisation_time = self.dists["mobilisation_time"][
@@ -162,14 +165,7 @@ class Model:
             ].sample()
             yield self.env.timeout(wrap_up_time)
 
-            self.logger.log_resource_use_end(
-                entity_id=patient.patient_id,
-                event="ambulance_available",
-                resource_id=vehicle.id_attribute,
-            )
-            self.logger.log_departure(
-                entity_id=patient.patient_id,
-            )
+        self.logger.log_departure(entity_id=patient.patient_id)
 
     def warm_up(self):
         """Reset results collection after the warm-up period."""
