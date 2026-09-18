@@ -39,7 +39,7 @@ class Model:
 
         # Set up ambulance resource
         self.ambulance = VidigiPriorityStore(
-            self.env, num_resources=self.config.n_ambulances
+            self.env, num_resources=self.config.n_ambulances, label="ambulance"
         )
 
         # Set up logger
