@@ -1,24 +1,26 @@
 from itertools import cycle
 import simpy
+from vidigi.logging import EventLogger
 from vidigi.resources import VidigiStore
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 class Model:
     def __init__(self):
         """Initialise Model."""
         self.env = simpy.Environment()
         self.n_ambulances = 20
+        self.logger = EventLogger(env=self.env)
         self.ambulance = VidigiStore(
             env=self.env,
             num_resources=self.n_ambulances,
             label="ambulance",
+            logger=self.logger
         )
         self.patient_count = 0
         self.abstracted_units = []
         self.capacity_log = [
             {
-                # "run": self.run_number,
                 "time": 0.0,
                 "action": "initial",
                 "resource_id": None,
@@ -32,7 +34,6 @@ class Model:
         """Record a change in operational ambulance capacity."""
         self.capacity_log.append(
             {
-                # "run": self.run_number,
                 "time": self.env.now,
                 "action": action,
                 "resource_id": unit.unique_id_attribute,
@@ -52,28 +53,38 @@ class Model:
             self.patient_count += 1
             print(f"{self.env.now}: Patient {self.patient_count} arrived")
 
+            # Log call time
+            self.logger.log_arrival(entity_id=self.patient_count)
+
             # Request an ambulance
             self.env.process(self.request_ambulance(self.patient_count))
 
     def request_ambulance(self, patient_id):
         """Request ambulance."""
-        with self.ambulance.request() as req:
+        self.logger.log_queue(entity_id=patient_id, event="ambulance_wait_begins")
+        with self.ambulance.request(
+            entity_id=patient_id,
+            start_event="ambulance_assigned",
+            end_event="ambulance_available"
+        ) as req:
             # Once an ambulance is available, assign to the patient
-            yield req
+            vehicle = yield req
             print(
                 f"{self.env.now}: Patient {patient_id} allocated ambulance." +
                 f" Now there are {len(self.ambulance.items)} available " +
                 "ambulances"
             )
 
-            # Patient spends 15 minutes with ambulance then it is released
-            yield self.env.timeout(15)
+            # Patient spends 3 minutes with ambulance then it is released
+            yield self.env.timeout(3)
             print(f"{self.env.now}: Patient {patient_id} finished")
+
+        self.logger.log_departure(entity_id=patient_id)
 
     def abstraction(self):
         """Set a new abstraction target every 10 minutes."""
         # Targets (amounts to remove from maximum overall capacity)
-        targets = cycle([18, 0, 10, 5])
+        targets = cycle([17, 20, 10, 5])
         # How often to change targets
         interval = 10
 
@@ -134,7 +145,7 @@ class Model:
             # We alter _n_pool_units as num_resources is not changeable
             self.ambulance._n_pool_units += 1
             # Add the unit to the store
-            self.ambulance.put(unit)
+            self.ambulance.put(unit, auto_log=False)
             self.log_capacity_change(
                 action="returned",
                 unit=unit,
@@ -163,7 +174,7 @@ class Model:
             # Wait for either:
             # 1. An ambulance to become available to remove from store, or-
             # 2. The target interval to end.
-            get_event = self.ambulance.get_direct()
+            get_event = self.ambulance.get_direct(auto_log=False)
             result = yield get_event | deadline_event
 
             if get_event in result:
@@ -190,7 +201,7 @@ class Model:
                 self.ambulance.cancel_get(get_event)
                 print(
                     f"{self.env.now:.2f}: "
-                    f"Stopped trying to reach target "
+                    f"Stopped trying to rfrom vidigi.logging import EventLoggereach target "
                     f"{target_removed}; "
                     f"actually abstracted="
                     f"{len(self.abstracted_units)}"
@@ -231,4 +242,179 @@ class Model:
 
 model = Model()
 model.run()
-pd.DataFrame(model.capacity_log)
+
+
+log = model.logger.to_dataframe()
+capacity = model.n_ambulances
+
+# Filter to events marking start and end of ambulance resource use
+amb = log.loc[
+    log["event"].isin(
+        ["ambulance_assigned", "ambulance_available"]
+    ),
+    ["entity_id", "event_type", "time"],
+]
+
+# Create two dataframes - one with start times and one with end times
+starts = amb.loc[
+    amb["event_type"] == "resource_use", ["entity_id", "time"]
+].rename(columns={"time": "start_time"})
+ends = amb.loc[
+    amb["event_type"] == "resource_use_end", ["entity_id", "time"]
+].rename(columns={"time": "end_time"})
+
+# Defensive check: each ID should only correspond to one start
+dup_starts = starts.loc[starts["entity_id"].duplicated(), "entity_id"]
+dup_ends = ends.loc[ends["entity_id"].duplicated(), "entity_id"]
+dup_id = set(dup_starts) | set(dup_ends)
+if dup_id:
+    raise ValueError(
+        "Duplicate entity_id values found in ambulance event log ",
+        f"(n={len(dup_id)}). Each entity_id must only appear once ",
+        "for one arrival and one departure.",
+    )
+
+# Combine these, so each patient has one row with start and end time
+intervals = starts.merge(ends, on="entity_id", how="left")
+
+# If end_time is NA, use end of observation window as end time
+intervals["end_time"] = intervals["end_time"].fillna(50)
+display(intervals)
+
+
+# Convert intervals into event times: +1 when ambulance becomes busy
+# and -1 when ambulance stops being busy
+events = pd.concat(
+    [
+        intervals[["start_time"]]
+        .rename(columns={"start_time": "time"})
+        .assign(delta=1),
+        intervals[["end_time"]]
+        .rename(columns={"end_time": "time"})
+        .assign(delta=-1),
+    ],
+    ignore_index=True,
+).sort_values("time")
+display(events)
+
+# Combine simultaneous changes into +-2/3/4/5...
+# TODO: Should I drop rows with 0? It's e.g. +1 and -1 so cancel each other out?
+events_summary = events.groupby("time", as_index=False)["delta"].sum()
+display(events_summary)
+
+capacity_log = pd.DataFrame(model.capacity_log)
+
+# Keep the last achieved capacity at each timestamp (there can be several
+# individual ambulance changes at same time as add or remove each one - just
+# need a summary of what capacity became at that timepoint)
+capacity_changes = capacity_log[["time", "capacity"]].sort_values("time").drop_duplicates(subset="time", keep="last")
+
+# TODO: Filter to between warm-up and data collection
+display(capacity_changes)
+
+# Create a timeline of every point when the number busy changes or the
+# operational capacity changes
+times = sorted({
+    *events_summary["time"].to_list(),
+    *capacity_changes["time"].to_list()
+})
+
+state_changes = pd.DataFrame({"time": times})
+
+# Add the record of when ambulances were busy/releated by patients
+state_changes = state_changes.merge(
+    events_summary,
+    on="time",
+    how="left",
+)
+
+# For any timepoints with no change in ambulance use, set to 0
+state_changes["delta"] = (
+    state_changes["delta"]
+    .fillna(0)
+    .astype(int)
+)
+
+# Add a column with the total number of ambulances busy at each timepoint
+state_changes["busy"] = state_changes["delta"].cumsum()
+state_changes = state_changes.drop(columns="delta")
+
+# Add the capacity at each timepoint
+state_changes = pd.merge_asof(
+    state_changes.sort_values("time"),
+    capacity_changes.sort_values("time"),
+    on="time",
+    direction="backward",
+)
+
+# Find the time between each row, dropping any with a time of 0
+state_changes["interval_duration"] = (
+    state_changes["time"].shift(-1)
+    - state_changes["time"]
+)
+state_changes = state_changes.loc[
+    state_changes["interval_duration"] > 0
+].copy()
+
+# Check that the state is valid
+invalid = state_changes.loc[
+    state_changes["busy"] > state_changes["capacity"]
+]
+if not invalid.empty:
+    raise ValueError(
+        "Reconstructed busy ambulances exceed operational capacity:\n"
+        f"{invalid}"
+    )
+
+# Filter to where there is non-zero capacity
+# (as only relevant to include utilisation if there is any vehicles that
+# can possibly be utilised)
+state_changes = state_changes.loc[
+    state_changes["capacity"] > 0
+].copy()
+
+# Calculate utilisation at that timepoint (number of busy units over the
+# total capacity at that timepoint)
+state_changes["utilisation"] = state_changes["busy"] / state_changes["capacity"]
+display(state_changes)
+
+util_df = state_changes.copy()
+
+# Calculate time-weighted mean utilisation
+busy_minutes = (util_df["busy"]* util_df["interval_duration"]).sum()
+operational_minutes = (util_df["capacity"] * util_df["interval_duration"]).sum()
+print(f"Utilisation: {busy_minutes / operational_minutes}")
+
+figs, axes = plt.subplots(nrows=2, ncols=1, figsize=(8, 10))
+
+axes[0].step(
+    util_df["time"],
+    util_df["busy"],
+    color="tab:orange",
+    label="Busy ambulances",
+)
+axes[0].step(
+    util_df["time"],
+    util_df["capacity"],
+    color="tab:blue",
+    label="Capacity",
+    linestyle="--",
+    alpha=0.7
+)
+axes[0].set_xlabel("Time")
+axes[0].set_ylabel("Number of ambulances")
+axes[0].legend()
+axes[0].set_xlim(xmin=0)
+axes[0].set_ylim(ymin=0)
+
+axes[1].step(
+    util_df["time"],
+    util_df["utilisation"]
+)
+axes[1].set_xlabel("Time")
+axes[1].set_ylabel("Utilisation")
+axes[1].set_xlim(xmin=0)
+axes[1].set_ylim(ymin=0)
+
+plt.tight_layout()
+plt.show()
