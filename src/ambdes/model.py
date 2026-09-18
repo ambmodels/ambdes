@@ -224,7 +224,7 @@ class Model:
             # Sample the number of working hours that capacity should be
             # reduced by, relative to the maximum system capacity. Convert
             # this from hours to minutes to a number of resources
-            remove_mins = self.dists["remove_capacity"].sample() / 60
+            remove_mins = self.dists["reduce_daily_hours"].sample() * 60
             remove_target = round(remove_mins / self.config.capacity_interval)
 
             # Deadline is time at start of interval + interval length
