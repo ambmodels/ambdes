@@ -23,7 +23,7 @@ dependencies = [
     "simpy==4.1.1",
     "sim-tools==1.3.0",
     "statsmodels==0.14.6",
-    "vidigi==1.3.0"
+    "vidigi==2.0.0"
 ]
 
 [project.urls]
