@@ -18,12 +18,19 @@ class UtilisationCalculator:
         Length of the data collection period.
     run_length : float
         Total run length (including warm-up and data collection period).
-    capacity : int
-        Total number of ambulances.
+    capacity_log : pd.DataFrame
+        Record of ambulance capacity over time.
 
     """
 
-    def __init__(self, log, warm_up_period, data_collection_period, capacity):
+    def __init__(
+        self,
+        log,
+        warm_up_period,
+        data_collection_period,
+        capacity=None,
+        capacity_log=None,
+    ):
         """Initialise UtilisationCalculator.
 
         Parameters
@@ -36,14 +43,32 @@ class UtilisationCalculator:
         data_collection_period : float
             Length of the data collection period.
         capacity : int
-            Total number of ambulances.
+            Fixed number of ambulances available throughout the simulation.
+            Provide this argument when capacity does not change over time.
+            Exactly one of `capacity` or `capacity_log` must be provided.
+        capacity_log : list[dict]
+            Record of changes in ambulance capacity over time. Provide this
+            argument when capacity varies during the simulation. Exactly one
+            of `capacity` or `capacity_log` must be provided.
 
         """
         self.log = log
         self.warm_up_period = warm_up_period
         self.data_collection_period = data_collection_period
         self.run_length = warm_up_period + data_collection_period
-        self.capacity = capacity
+
+        if (capacity is None) == (capacity_log is None):
+            raise ValueError(
+                "Provide exactly one of 'capacity' or 'capacity_log', not "
+                "both or neither."
+            )
+
+        # Create capacity log if not otherwise provided, then convert into a
+        # dataframe. This allows consistent methods below regardless of
+        # whether the model had variable capacity or fixed capacity.
+        if capacity_log is None:
+            capacity_log = [{"time": 0.0, "capacity": capacity}]
+        self.capacity_log = pd.DataFrame(capacity_log)
 
     @classmethod
     def from_model(cls, model):
@@ -102,21 +127,28 @@ class UtilisationCalculator:
             capacity=model.config.n_ambulances,
         )
 
-    def state_changes_df(self):
+    def create_util_df(self):
         """Return the time-weighted ambulance utilisation intervals.
 
         Returns
         -------
-        state_changes : pd.DataFrame
-            Columns: time, busy, interval_duration, utilisation. One row per
-            state-change interval during the data collection period. `busy`
-            is the number of ambulances in use during that interval.
+        util_df : pd.DataFrame
+            Columns: time, busy, capacity, interval_duration, and utilisation.
+            One row per state-change interval during the data collection
+            period. `busy` is the number of ambulances in use during that
+            interval.
 
         """
         # Return empty of logger returned an empty DataFrame with no columns
         if self.log.empty:
             return pd.DataFrame(
-                columns=["time", "busy", "interval_duration", "utilisation"]
+                columns=[
+                    "time",
+                    "busy",
+                    "capacity",
+                    "interval_duration",
+                    "utilisation",
+                ]
             )
 
         # Filter to events marking start and end of ambulance resource use
@@ -184,39 +216,98 @@ class UtilisationCalculator:
             ],
             ignore_index=True,
         ).sort_values("time")
+        # Combine simultaneous changes so it becomes +-0/1/2/3/4/5... with
+        # just one row per timepoint
+        events = events.groupby("time", as_index=False)["delta"].sum()
 
-        # Combine all changes that happen at the same simulation time, then
-        # take a cumulative sum to get the number of busy ambulances after
-        # each event time. Grouping by time is important because multiple
-        # ambulances may start/end at exactly the same timestamp.
-        state_changes = (
-            events.groupby("time", as_index=False)["delta"]
-            .sum()
-            .assign(busy=lambda df: df["delta"].cumsum())
-            .drop(columns="delta")
+        # Keep the last achieved capacity at each timestamp (there can be
+        # several individual ambulance changes at same time as add or remove
+        # each one - just need a summary of what capacity became at that
+        # timepoint)
+        capacity_changes = (
+            self.capacity_log[["time", "capacity"]]
+            .sort_values("time")
+            .drop_duplicates(subset="time", keep="last")
         )
 
-        # The duration of each state is the gap until the next change in
-        # state. The final state runs until the end of the observation window.
-        state_changes["interval_duration"] = (
-            state_changes["time"].shift(-1).fillna(self.run_length)
-            - state_changes["time"]
-        )
-
-        # Drop any zero-length states, just to be safe
-        state_changes = state_changes.loc[
-            state_changes["interval_duration"] > 0
+        # Create a timeline of every point when:
+        # - The number of busy ambulances changes
+        # - The operational capacity changes
+        # - The observation window starts and ends
+        # Only include times that occurred during the observation window
+        # (i.e., after warm-up ended)
+        capacity_times = capacity_changes.loc[
+            capacity_changes["time"].between(
+                self.warm_up_period,
+                self.run_length,
+            ),
+            "time",
         ]
+        times = sorted(
+            {
+                self.warm_up_period,
+                self.run_length,
+                *events["time"].tolist(),
+                *capacity_times.tolist(),
+            }
+        )
+        util_df = pd.DataFrame({"time": times})
 
-        # Convert busy ambulances into utilisation.
-        # Because capacity is fixed in this model, utilisation is simply
-        # busy/capacity.
-        state_changes["utilisation"] = state_changes["busy"] / self.capacity
+        # Add the record of when ambulances were busy/releated by patients
+        util_df = util_df.merge(
+            events,
+            on="time",
+            how="left",
+        )
 
-        return state_changes
+        # For any timepoints with no change in ambulance use, set to 0
+        util_df["delta"] = util_df["delta"].fillna(0).astype(int)
+
+        # Calculate the total number of ambulances busy at each timepoint
+        util_df["busy"] = util_df["delta"].cumsum()
+        util_df = util_df.drop(columns="delta")
+
+        # Add the capacity at each timepoint
+        util_df = pd.merge_asof(
+            util_df.sort_values("time"),
+            capacity_changes.sort_values("time"),
+            on="time",
+            direction="backward",
+        )
+
+        # Find the time between each row, dropping any with a time of 0.
+        # The final state runs until the end of the observation window.
+        # TODO: CHECK THE FINAL STATE FILLNA IS STILL NEEDED IN NEW APPROACH
+        util_df["interval_duration"] = (
+            util_df["time"].shift(-1).fillna(self.run_length) - util_df["time"]
+        )
+        util_df = util_df.loc[util_df["interval_duration"] > 0].copy()
+
+        # Check that the state is valid
+        invalid = util_df.loc[util_df["busy"] > util_df["capacity"]]
+        if not invalid.empty:
+            raise ValueError(
+                "Reconstructed busy ambulances exceed operational capacity:\n"
+                f"{invalid}"
+            )
+
+        # Filter to where there is non-zero capacity (as only relevant to
+        # include utilisation if there is any vehicles that can possibly be
+        # utilised)
+        util_df = util_df.loc[util_df["capacity"] > 0].copy()
+
+        # Calculate utilisation at that timepoint (number of busy units over
+        # the total capacity at that timepoint)
+        util_df["utilisation"] = util_df["busy"] / util_df["capacity"]
+
+        return util_df
 
     def mean_utilisation(self):
         """Return mean time-weighted ambulance utilisation.
+
+        Calculated as total busy ambulance-minutes divided by total available
+        ambulance-minutes. Accounts for interval duration and changes in
+        available capacity.
 
         Returns
         -------
@@ -224,16 +315,18 @@ class UtilisationCalculator:
             Mean time-weighted ambulance utilisation.
 
         """
-        util_df = self.state_changes_df()
+        util_df = self.create_util_df()
 
         # If there is no observed utilisation interval, return 0
         if util_df.empty or self.data_collection_period <= 0:
             return 0
 
         # Time-weighted mean utilisation
-        return (util_df["busy"] * util_df["interval_duration"]).sum() / (
-            self.capacity * self.data_collection_period
-        )
+        busy_minutes = (util_df["busy"] * util_df["interval_duration"]).sum()
+        operational_minutes = (
+            util_df["capacity"] * util_df["interval_duration"]
+        ).sum()
+        return busy_minutes / operational_minutes
 
 
 class Results:
@@ -276,7 +369,7 @@ class Results:
             Columns: time, busy, interval_duration, utilisation.
 
         """
-        return UtilisationCalculator.from_model(self.model).state_changes_df()
+        return UtilisationCalculator.from_model(self.model).create_util_df()
 
     def utilisation(self):
         """Return mean time-weighted ambulance utilisation.
