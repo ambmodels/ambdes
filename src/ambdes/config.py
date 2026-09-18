@@ -26,6 +26,8 @@ class SimConfig:
     cores : int
         Number of CPU cores to use for parallel execution. To use all
         available cores, set to -1. For sequential execution, set to 1.
+    capacity_interval : int
+        How frequently to sample and change number of ambulances on shift.
 
     """
 
@@ -86,3 +88,6 @@ class SimConfig:
         self.data_collection_period = params["data_collection_period"]
         self.n_reps = int(params["n_reps"])
         self.cores = int(params["cores"])
+
+        # Set capacity interval if provided - otherwise sets to None
+        self.capacity_interval = params.get("capacity_interval")
