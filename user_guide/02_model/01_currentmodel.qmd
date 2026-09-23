@@ -6,57 +6,84 @@ title: Current model
 
 ## How can the model be used?
 
-This model can answer the question: How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?
+The model can answer the question:
 
-It can be used to model the whole trust at once, or by county. Historically demand planning was on a trust-level, but in recent years have been asked to do it on a county-level. County-level of interest e.g., sometimes each county is given a different target. This year, it's a blanket target, to improve job cycle by X minutes.
+> **How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?**
 
-Model structure is consistent between them - just change the input files. This is equivalent to having one model instance with separate ambulance resources per county, as then you’d just be running each county in parallel to each other essentially, no interaction, so it’s simpler to just use the single area model and run it for each county.
+We hope it can run quick enough to allow easy experimentation and scenario analysis. For example, it should be possible to ask: "If overall resource level changes by X hours, what happens to mean Category 2 response time?"
+
+The main uses are **resourcing and demand scenarios**. Less commonly, scenarios involving:
+
+* **Handover delays** - these are difficult to predict, so can instead test scenarios like "What would happen if mean handover time was 60 minutes per patient."
+
+* **On-scene time** - for example, "What would be the effect of reducing on-scene time by one minute?"
+
+The model can represent the **whole trust or an individual county**. Historically, demand planning was undertaken at trust level, but there has been a move to do county-level too in recent years. Counties may have the same targets as each other, or maybe different targets (e.g., one county aiming to reduce job cycle by X minutes, another by Y minutes).
+
+The model structure is consistent across areas - only the input files change. Running separate county models is equivalent to modelling one trust-wide system with separate ambulance resource pools for each county and no interaction between them. Running separate single-area models is therefore simpler.
 
 ## Comparison with the regression models
 
-The DES (particularly those with similar parameters) should broadly agree with existing estimates from regression models, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
+The DES should broadly agree with estimates from the existing regression models, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
 
-* Multiple outcomes from the same run (regression just one per model).
-* More intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).
-* Extendability (once core structure is in place, we can add more components in later stages).
+* Multiple outcomes from a single run, whereas regression produces one outcome per model.
+* A more intuitive representation of the system, showing how resourcing assumptions translate into waits and utilisation.
+* More scope for extension.
 
-In the current regression model, three things are changed:
+The current regression model changes three inputs:
 
 * Vehicle hours
 * Number of incidents per day
 * Handover delays
 
+Validation is important at both trust and county level. Something that is bad at a trust level could look good at a county level and vice versa.
+
 ## Assumptions
 
 > **Definition:** Assumptions arise from incomplete knowledge - you do not know exactly how something works, so you use the best available information ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
 
-Rough notes!
-
-**Extreme values.** Choices around cropping any times when input modelling (e.g., extreme values - 0 or very high).
+**Extreme values.** Decisions are needed about cropping extreme values when modelling input times, such as values of zero or very high values. These decisions will be assumptions around where cropping is appropriate.
 
 ## Simplifications
 
 > **Definition:** Simplifications are a deliberate design choice - you could model something in more detail, but you opt for a simple representation. ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
 
-Rough notes!
+**Arrival frequency.** The number of arrivals varies by day of week. Arrivals are then assigned a response category and response outcome, which do not vary by day of week. This was checked by comparing the proportions of Category 1, 2, 3, and 4 incidents, and see-and-convey versus see-and-treat outcomes, across days of the week. These were consistent. If clear day-of-week patterns were found, categories and outcomes should instead be sampled as part of the NHPP rather than assigned afterwards.
 
-**Arrival frequency.**  In the model, the number of arrivals vary by day of week. The arrivals are assigned a response category and a response outcome. These are not modelled as varying by day of week. We check this by looking at the proportion on each day of the week of C1 v.s., C2 v.s., C3 v.s., C4 and likewise by see and convey v.s., see and treat. If they did show a pattern of varying by day of week, then it should be changed to sampling as part of the NHPP, rather than assigning afterwards.
+**Conveyance.** 'See & Convey non ED' and 'See & Convey ED' are grouped into a single 'see & convey' group.
 
-**Conveyance.** Grouped 'See & Convey non ED' and 'See & Convey ED' into a single 'see & convey' group.
+**Queueing.** Queueing is simplified to priority sorting. No other queue behaviour is modelled. Operational colleagues noted that, in reality, geography and queues within dispatch areas also affect dispatch decisions.
 
-**Queueing.** Simplified - priority sorting.
+**Events.** Events (e.g., festivals) have been removed from time data.
 
-**Events.** Events (e.g., festivals) have been removed from times data.
+**One resource per patient.** We plan to change this. When we do, note, that more vehicles may be assigned to an incident than attend at scene, as some are stood down. Although data on responses per incident may be available, the relevant measure is responses per incident **at scene**. That's what we are using - the total number of resources that arrived on scene, grouped by incident category.
 
-**Vehicles**:
+**Separate vehicle types are not modelled.** Just aggregate all vehicle types into a single resource. In reality...
 
-* Only one resource per patient - not multiple.
-* Just one vehicle type - not multiple.
-* Just one fixed pool of resources - no shifts and changes in availability across week.
+* Different resource types, such as ambulances and cars and community first responders, have different job times, utilisations, and intended uses.
+* Cars are often specialist paramedic resources targeted at incidents unlikely to require conveyance, while ambulances are required for conveyance.
+* Cars may also attend Category 1 incidents, and different car types may be used for different jobs.
+* If a car attends and the patient then requires conveyance, an ambulance is needed. Only the ambulance stops the clock, so the recorded response time may appear worse. Requests for conveyance occur across all categories.
+
+**One fixed pool of resources with no shifts or changes in availability across the week.**
+
+* X resource hours doesn't mean resources are available continuously. Availability is affected by:
+    * Rest breaks.
+    * Short-notice abstraction (e.g., sickness).
+    * Restricted send during rest breaks or at end of shift (this has a big impact on availability).
+    * Any issues/problems on shift.
+* Resource availability also varies alot hour-to-hour, day-to-day, day-vs-night. This includes differences even of like 100 resources.
+* The model uses a single pool, but resources are actually organised by dispatch area. Dispatch areas are smaller than counties, and are areas where it is feasible to send ambulances. They were designed for operational use. Several are set up around acutes, but not all will include an acute.
+* Resources in different areas have different response times.
+* Even within the dispatch area, C3 near resource or C1 far from resource, will choose the C3, and instead have a non-core go to C1 or do call-out asking for resource.
 
 **Hear-and-treat.** Excluded.
 
-**Out-of-area activity.** Excluded. Both outside of the SWAST patch, but also outside of a county. Although the model doesn’t capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
+**Out-of-area activity.** Excluded. Both outside of the SWAST patch, but also across county boundaries. Although the model doesn’t capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
+
+**Times for see-and-treat v.s., see-and-convey:** Separate distributions for time on scene, but otherwise use a single distribution.
+
+**Upgrading/downgrading.** Provided data just has final category decision for each patient. In reality, some category 1 might downgrade to category 2 and so on. Also, like after X time, welfare call to check in, and maybe then change e.g., C3 to C2. Note, this will reset the clock.
 
 ## Other notes
 

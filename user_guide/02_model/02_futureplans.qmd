@@ -1,53 +1,47 @@
 ---
 title: Future plans
-bibliography: ../../assets/references.bib
 ---
 
-We have started by creating the simplest model. We have and will develop it iteratively, adding complexity in stages aligned to ambulance service use cases. At each stage, we assess whether the additional detail meaningfully improves validity or whether a simpler version remains sufficient.
+We started by creating the simplest model. We are building on it iteratively, adding complexity in stages aligned with ambulance service use cases. At each stage, we will assess whether the additional detail meaningfully improves validity or whether a simpler model remains sufficient.
+
+## Resource types
+
+This stage would distinguish between resource types, for example cars and double-crewed ambulances (DCAs).
+
+Relevant time information has already been provided for this work.
 
 ## Shift model
 
-Model shift-pattern effects on capacity and response times.
+This stage would represent shift patterns and their effects on resource capacity and response times. We need to add representation of shifts (resource availability over time), including breaks and protected periods to the model. Inputs would be current and alternative rota schedules (for the whole area, not by station, proportions on different schedules). We would also produce extra outputs e.g., resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). May also be other new outputs that are relevant like (a) overtime, (b) interruption of breaks.
 
-Key question: *Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?*
+It would answer the question:
 
-Current pattern is that many 12-hour shifts starting at 06:00 or 07:00. This means there are:
+> Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?
+
+The current pattern includes many 12-hour shifts starting at 06:00 or 07:00. This can create:
 
 * Midday and midnight dips in resource numbers when many crews are on break at once.
 * Effects of protected periods towards the end of shifts.
 
-The focus here is on whether alternative rota patterns smooth the resource availability profile and improve response time and utilisation. They want to look into:
+The focus would be whether alternative rota patterns can smooth the resource availability profile and improve response time and utilisation. Potential scenarios include:
 
 * Rota review (stagger shifts)
 * Meal break policy
 * Restricted send policy
 
-When evaluating shift scenarios, will work with **Ambulance Operations Managers** (visit in-person) (often ex-paramedics).
+Previous analysis split day into eight 3-hour periods. Did an analysis of whether profiled resourcing by day of week gives a better cat 2 mean, but it didn't. The weekly profile of activity is almost flattening out, variation is so large, it's hard to tell what day it is from another. So now the **next step and question to answer with DES** is, how do we profile our resource better throughout the day. For example, chunk into 3 hour blocks, if we had more on in that 6-12 period, does it improve cat mean for day. Model arrival rates by hour of day and break up results.
 
-Will not explore cost, as not something their team get asked to report on.
+**Cost:** Will not explore cost, as not something their team get asked to report on.
 
-Add representation of shifts (resource availability over time), including breaks and protected periods.
-
-Inputs would be current and alternative rota schedules (for the whole area, not by station, proportions on different schedules).
-
-Would produce extra outputs e.g., resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). May also be other new outputs that are relevant like:
-
-* Overtime
-* Interruption of breaks
-
-What are the current break policies?
-
-Is it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?
-
-* They can be cleared at hospital
-* Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
-* Will also depends on whether close to break window or end of shift.
+**Current rest break management:** For example, one dispatcher will have 10 crews to manage, Different shift lengths. Meal break windows align as shifts start/end at socially acceptable hours so minimal stagger. Higher call start during dinner break. 12pm-6pm is worst. Dispatchers wait until fully protected before assigning meal break. Instead could have system to tell when break should be for best performance. Exeter and Bristol are different on this. One waits for all to get into protected time, other doesn’t. Want to ask questions like, if pull some rest breaks forward, what would cat2 response time look like in 4 hours.
 
 ## Spatial model
 
 This stage adds **geography**: a single model containing all locations (counties or finer areas), so spatial variation and cross-location interactions are simulated together rather than via separate runs.
 
-Key question: *When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?*
+Key question:
+
+> When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?
 
 Arrivals and resources become linked to area - county or smaller.
 
@@ -63,113 +57,11 @@ Other things to consider would be:
 
 * What **size area** is required to answer this question?
 * Does this question require **shifts** in the model?
-    * If yes, it builds from stage 3 (as represented in current diagram), If no, it builds from stage 2.
 * **Socioeconomic inequalities**... Could explore outcome of not just reducing overall response time, but about gaps in response time between more and less deprived? Although, in this case, sometimes it's about rurality rather than socioeconomic - with actually better response times for lower SES.
-
-::: {.callout-note title="Literature" collapse="true"}
-
-**@demir_using_2024** - **SimulEQUALITY framework** - DES of NHS hospital - "patients' characteristics and their healthcare system interactions can vary according to their SES, leading to differences in resource utilisation, such as LoS, between individuals who are deprived and more affluent" - they create a model following this structural hierachy:
-
-* Level 1 - percentage of patients for outpatient care, inpatient admission, and ED
-* Level 2 - assign specific department or specialty based on how patient entered
-* Level 3 - assigned SES using IMD
-* Level 4 - assigned distributions (param + type), variables, attributes, etc. based on SES
-
-Result example is that they find paediatric inpatient admissions are highest for children in second most economically disadvantaged group. Forecast increased demain, compounding this. It could diminish care quality, leading to adverse health outcomes, especially for disadvantaged. So, they explore scenarios for reducing backlog of patients. They also attach costs.
-
-<br>
-
-**@madia_socioeconomic_2025** - analyses inequalities in access to emergency care (at Addenbrookes in Cambridgeshire).
-
-* Referral source - not IMD - drives ED performance outcomes (length of stay, 4-hour breach, unplanned returns). Once you account for how patient entered the system, deprivation-level differences largely disappear
-* Ambulance:
-    * Patients from most deprived areas are more likely to arrive by ambulance (even after adjusting for demographic, clinical and contextual variables).
-    * Ambulance utilisation highest in middle-deprivation areas.
-    * Ambulance referrals had longest ED stays and highest probability of 4-hour breaches.
-* Non-medical referrals (mainly police/forensic) higher for deprived areas.
-* GP referral higher in non-deprived.
-
-Reflections:
-
-* Deprivation gradients in our area may look different.
-* By modelling ambulance calls across geographic areas, we are implicitly modelling inequality, as deprivation shapes who ends up in the ambulance pathway, so **if our areas vary by IMD, our arrival rates are already an inequality signal**.
-* You could ask questions related to inequality such as:
-    * What is NHS 111 uptake increased in deprived areas? i.e., Reduced ambulance arrival rates for lower acuity cases in high deprivation areas.
-    * What if GP access improved in deprived areas? i.e., Shift some demand out of ambulance pathway.
-* The **ED waits observed in our model are an inequality outcome indicator**.
-
-We could **tag arrivals by deprivation band (based on their area) - meaning we could report equity breakdowns (e.g., response time by IMD)**.
-
-<br>
-
-<https://aace.org.uk/reducing-health-inequalities/>
-
-[Implementation toolkit](https://aace.org.uk/wp-content/uploads/2026/01/Health-inequalities-implementation-toolkit-FINAL-v3-31-Dec-2025.pdf): Data insight, evidence and evaluation.
-
-* Ambulance services and systems use ambulance data to better understand population health and health inequalities.
-* Ambulance services work to improve the evidence-base that supports and informs the role of the ambulance sector in reducing health inequalities.
-* Ambulance services work in collaboration witht heir local systems to better understand the needs of their communities through improved engagement, insight and patient experience.
-
-Examples in practice:
-
-* Routinely use population health data to better understand the needs of vulnerable population groups
-* Establish direct access to analysts trained in public health who routinely influence service design/delivery
-* Regularly undertake health inequalities research, implement changes based on the results
-* Regularly review data on equity of access, experience and outcomes and use to influence decision making
-
-[What we know](https://aace.org.uk/wp-content/uploads/2023/06/AACE-NHSE-RHI-WHAT-WE-KNOW-JUNE-2023-F2.pdf)
-
-Yorkshire Ambulance Service NHS Trust (as of June 2023) were undertaking a scoping review looking at what ambulance services understand about health inequalities in patients who have any of the characteristics described in the Core20PLUS5 approach for adults. Preliminrary themes:
-
-Copied from report:
-
-Ambulance access and usage:
-
-* Women, CYP and those of Latino ethnicity less likely to call 911
-* Higher rate of EMS calls in deprived areas and with high BAME population
-* Ethnic minorities less likely to travel to hospital by ambulance
-* Areas without ambulance provision over-represented by indigenous people
-* Higher incidence of chest pain, children with traumatic injurices and stabbings in males in most deprived areas
-* Higher incidence of out of hospital cardiac arrest for increasing age, sex ratio, diabetes prevalance, deprivation and ethnic concentration
-* Higher risk of injury by road traffic collision in regional areas
-* Emergency operations centre staff took longer to recognise cardiac arrest with limited English proficient callers
-
-Ambulance times:
-
-* Longer response times for areas of high deprivation and rurality (though other studies found shorter response times for those of BAME origin)
-* Longer on scene time with increased age and for females
-
-Ambulance assessment and treatment:
-
-* Disparities in analgesia administration based on age and ethnicity
-* Automated Externel Defibrilators more likely to be present in less deprived areas
-* Black individuals less likely to receive defibriliation or CPR
-* Less likely to give aspirin, GTN, perform ECG and gain intravenous access in women compared to men
-
-Outcomes:
-
-* Survival from OOHCA decreases with age in females, whereas younger men have relatively lower survival compared to older men until age 65
-* Lower likelihood of transport to specialist receiving facility with increased age and ethnic minority and female
-* Different hospital desination depending on racial group
-* Odds of surviving OOHCA lower in rural areas
-* Males in OOHCA without return of spontaneous circulation more likely tobe transported to hospital than females
-* Higher levels of deprivation associated with lower acuity patients transported to emergency department
-* Lower levels of stroke recognition amongst Hispanic patients
-
-
-<br>
-
-@portz_rising_2013
-
-<br>
-
-@turner_socioeconomic_2022
-
-<br>
-
-@leeds_institute_for_data_analytics_assessing_2025
-
-:::
+* Is it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?
+    * They can be cleared at hospital
+    * Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
+    * Will also depends on whether close to break window or end of shift.
 
 ## Station-level model
 
@@ -182,3 +74,5 @@ For example, identifying stations with low utilisation, as candidates.
 This requires representing individual stations explicitly. And linking resources to those.
 
 Depending on how model a station and what incorporate in prior stage, may not be super different structure. Just requires **sufficiently small areas** to represent different stations.
+
+System should be like this (although reality can be different with high demand and queues and so on): System status plan. What is most likely location of next call. Lord Carter 2018, all staff book on at a main operating hub, then get sent out to a community ambulance point. They don’t start/finish there but are sent there and response from there. That decision on where to send them and that is based on system status plan as well as dynamic changes. THe choice varies during the day. Each location gets a priority level e.g., in 4th window, each location x priority. Use data to create plan. Then manager dynamically changes it on the day. But plan e.g., first crew on call to priority 1.
