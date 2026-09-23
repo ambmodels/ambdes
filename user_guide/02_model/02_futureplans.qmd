@@ -1,0 +1,78 @@
+---
+title: Future plans
+---
+
+We started by creating the simplest model. We are building on it iteratively, adding complexity in stages aligned with ambulance service use cases. At each stage, we will assess whether the additional detail meaningfully improves validity or whether a simpler model remains sufficient.
+
+## Resource types
+
+This stage would distinguish between resource types, for example cars and double-crewed ambulances (DCAs).
+
+Relevant time information has already been provided for this work.
+
+## Shift model
+
+This stage would represent shift patterns and their effects on resource capacity and response times. We need to add representation of shifts (resource availability over time), including breaks and protected periods to the model. Inputs would be current and alternative rota schedules (for the whole area, not by station, proportions on different schedules). We would also produce extra outputs e.g., resource availability profile over the day (to see whether staggered shifts remove midday and midnight dips). May also be other new outputs that are relevant like (a) overtime, (b) interruption of breaks.
+
+It would answer the question:
+
+> Can alternative shift patterns (start times, staggering, breaks) smooth resource availability and improve response time and utilisation?
+
+The current pattern includes many 12-hour shifts starting at 06:00 or 07:00. This can create:
+
+* Midday and midnight dips in resource numbers when many crews are on break at once.
+* Effects of protected periods towards the end of shifts.
+
+The focus would be whether alternative rota patterns can smooth the resource availability profile and improve response time and utilisation. Potential scenarios include:
+
+* Rota review (stagger shifts)
+* Meal break policy
+* Restricted send policy
+
+Previous analysis split day into eight 3-hour periods. Did an analysis of whether profiled resourcing by day of week gives a better cat 2 mean, but it didn't. The weekly profile of activity is almost flattening out, variation is so large, it's hard to tell what day it is from another. So now the **next step and question to answer with DES** is, how do we profile our resource better throughout the day. For example, chunk into 3 hour blocks, if we had more on in that 6-12 period, does it improve cat mean for day. Model arrival rates by hour of day and break up results.
+
+**Cost:** Will not explore cost, as not something their team get asked to report on.
+
+**Current rest break management:** For example, one dispatcher will have 10 crews to manage, Different shift lengths. Meal break windows align as shifts start/end at socially acceptable hours so minimal stagger. Higher call start during dinner break. 12pm-6pm is worst. Dispatchers wait until fully protected before assigning meal break. Instead could have system to tell when break should be for best performance. Exeter and Bristol are different on this. One waits for all to get into protected time, other doesn’t. Want to ask questions like, if pull some rest breaks forward, what would cat2 response time look like in 4 hours.
+
+## Spatial model
+
+This stage adds **geography**: a single model containing all locations (counties or finer areas), so spatial variation and cross-location interactions are simulated together rather than via separate runs.
+
+Key question:
+
+> When vehicle hours change in one county, how are response time and utilisation affected both locally and in neighbouring counties?
+
+Arrivals and resources become linked to area - county or smaller.
+
+Brings with it possible changes to e.g., travel times (as can estimate now based on distance), and demand profiles (e.g., vary by area).
+
+There will be alot to figure here about how to do things, but can address at later stage.
+
+* E.g. Whether do **times, catetgories and conveyance by area**.
+* Where ambulances **start from and where they go** after release.
+* How we model **travel times**.
+
+Other things to consider would be:
+
+* What **size area** is required to answer this question?
+* Does this question require **shifts** in the model?
+* **Socioeconomic inequalities**... Could explore outcome of not just reducing overall response time, but about gaps in response time between more and less deprived? Although, in this case, sometimes it's about rurality rather than socioeconomic - with actually better response times for lower SES.
+* Is it relevant to know proportion of crews going straight from one job to the next versus returning to station between jobs? Here or elsewhere?
+    * They can be cleared at hospital
+    * Depending on whether there's a job straight away, they'll either remain at hospital, or return to base, or return to dispatch point.
+    * Will also depends on whether close to break window or end of shift.
+
+## Station-level model
+
+This stage moves to **lower-level geographies** so stations can be modelled. Resources can be allocated to sites and we can model deployment, dispatching and repositioning policies.
+
+Key question: *What is the impact of adding/moving/removing individual station shifts?*
+
+For example, identifying stations with low utilisation, as candidates.
+
+This requires representing individual stations explicitly. And linking resources to those.
+
+Depending on how model a station and what incorporate in prior stage, may not be super different structure. Just requires **sufficiently small areas** to represent different stations.
+
+System should be like this (although reality can be different with high demand and queues and so on): System status plan. What is most likely location of next call. Lord Carter 2018, all staff book on at a main operating hub, then get sent out to a community ambulance point. They don’t start/finish there but are sent there and response from there. That decision on where to send them and that is based on system status plan as well as dynamic changes. THe choice varies during the day. Each location gets a priority level e.g., in 4th window, each location x priority. Use data to create plan. Then manager dynamically changes it on the day. But plan e.g., first crew on call to priority 1.

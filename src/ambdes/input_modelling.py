@@ -1,5 +1,6 @@
 """Input modelling."""
 
+import math
 from itertools import islice
 
 import matplotlib.pyplot as plt
@@ -34,8 +35,6 @@ DISTRIBUTIONS = [
     "normal",
     "pearsonv",
     "pearsonvi",
-    #    "triangular",
-    #    "uniform",
     "weibull",
 ]
 
@@ -52,6 +51,115 @@ CAT_COLORS = {
     "C4": "tab:red",
 }
 
+DIST_CLASSES = {
+    "exponential": Exponential,
+    "lognormal": Lognormal,
+    "normal": Normal,
+    "uniform": Uniform,
+    "triangular": Triangular,
+    "erlang": Erlang,
+    "weibull": Weibull,
+    "gamma": Gamma,
+    "beta": Beta,
+    "pearsonv": PearsonV,
+    "pearsonvi": PearsonVI,
+}
+
+
+def get_dist_params(dist, data):
+    """Compute sim-tools parameter dict for a given distribution.
+
+    Parameters
+    ----------
+    dist : str
+        Distribution name.
+    data : pd.Series
+        Time data to fit distribution to.
+
+    Returns
+    -------
+    dict
+        Parameter name/values matching the corresponding sim-tools class.
+
+    """
+    dist = dist.lower()
+
+    # Calculate mean, standard deviation, minimum and maximum
+    mean = data.mean()
+    stdev = data.std()
+    minimum = data.min()
+    maximum = data.max()
+
+    # If multiple modes, choose the middle one
+    modes = data.mode()
+    mode = modes.iloc[len(modes) // 2]
+
+    if dist == "exponential":
+        return {"mean": mean}
+
+    if dist == "lognormal":
+        return {"mean": mean, "stdev": stdev}
+
+    if dist == "normal":
+        return {"mean": mean, "sigma": stdev, "minimum": 0}
+
+    if dist == "uniform":
+        return {"low": minimum, "high": maximum}
+
+    if dist == "triangular":
+        if mode <= minimum:
+            epsilon = 1e-6
+            mode = minimum + epsilon
+        return {"low": minimum, "mode": mode, "high": maximum}
+
+    if dist == "erlang":
+        k = round((mean / stdev) ** 2)
+        if k < 1:
+            raise ValueError(
+                f"Erlang not viable: shape parameter rounds to {k} "
+                f"(mean={mean:.2f}, stdev={stdev:.2f})"
+            )
+        return {"mean": mean, "stdev": stdev}
+
+    # Gamma and Weibull are stricly positive distributions, so we shift
+    # the data a tiny amount to avoid zeroes
+    if dist in ("weibull", "gamma"):
+        fit_data = data
+        if (fit_data <= 0).any():
+            fit_data = fit_data.clip(lower=1e-6)
+        if dist == "weibull":
+            shape, loc, scale = weibull_min.fit(fit_data, floc=0)
+        else:
+            shape, loc, scale = gamma.fit(fit_data, floc=0)
+        return {"alpha": shape, "beta": scale}
+
+    if dist == "beta":
+        # Normalise data to [0, 1]
+        range_ = maximum - minimum
+        normalized = (data - minimum) / range_
+        normalized_adj = normalized.clip(lower=1e-6, upper=1 - 1e-6)
+        a, b, loc, scale = beta.fit(normalized_adj, floc=0, fscale=1)
+        return {
+            "alpha1": a,
+            "alpha2": b,
+            "lower_bound": minimum,
+            "upper_bound": maximum,
+        }
+
+    # Pearson Type V is also known as inverse Gamma
+    # In invgamma docs, we can see it returns (a, loc, scale)
+    if dist == "pearsonv":
+        a, loc, scale = invgamma.fit(data, floc=0)
+        return {"alpha": a, "beta": scale}
+
+    # Pearson Type VI is also known as inverted beta or beta prime
+    # In betaprime docs, we can see it returns (a, b, loc, scale)
+    if dist == "pearsonvi":
+        a, b, loc, scale = betaprime.fit(data, floc=0)
+        return {"alpha1": a, "alpha2": b, "beta": scale}
+
+    raise ValueError(f"Unable to fit {dist} - not supported.")
+
 
 class FitDist:
     """Fit distributions using sim-tools and compare samples to real data.
@@ -62,16 +170,6 @@ class FitDist:
         Time data to fit distribution to.
     metric_name : str
         Name of metric, used for plot titles.
-    mean : float
-        Mean of `data`.
-    stdev : float
-        Standard deviation of `data`.
-    min : float
-        Minimum value of `data`.
-    max : float
-        Maximum value of `data`.
-    mode : float
-        Mode of `data`. If there are several modes, it chooses the middle one.
 
     """
 
@@ -89,16 +187,6 @@ class FitDist:
         self.data = data
         self.metric_name = metric_name
 
-        # Calculate mean, standard deviation, minimum and maximum
-        self.mean = self.data.mean()
-        self.stdev = self.data.std()
-        self.min = self.data.min()
-        self.max = self.data.max()
-
-        # If multiple modes, choose the middle one
-        modes = self.data.mode()
-        self.mode = modes.iloc[len(modes) // 2]
-
     def fit(self, dist, seed):
         """Create a sim-tools distribution instance.
 
@@ -110,84 +198,8 @@ class FitDist:
             Random seed.
 
         """
-        if dist == "exponential":
-            return Exponential(mean=self.mean, random_seed=seed)
-
-        if dist == "lognormal":
-            return Lognormal(
-                mean=self.mean, stdev=self.stdev, random_seed=seed
-            )
-
-        if dist == "normal":
-            return Normal(
-                mean=self.mean, sigma=self.stdev, minimum=0, random_seed=seed
-            )
-
-        if dist == "uniform":
-            return Uniform(low=self.min, high=self.max, random_seed=seed)
-
-        if dist == "triangular":
-            mode = self.mode
-            if mode <= self.min:
-                epsilon = 1e-6
-                mode = self.min + epsilon
-            return Triangular(
-                low=self.min, mode=mode, high=self.max, random_seed=seed
-            )
-
-        if dist == "erlang":
-            k = round((self.mean / self.stdev) ** 2)
-            if k < 1:
-                raise ValueError(
-                    f"Erlang not viable: shape parameter rounds to {k} "
-                    f"(mean={self.mean:.2f}, stdev={self.stdev:.2f})"
-                )
-            return Erlang(mean=self.mean, stdev=self.stdev, random_seed=seed)
-
-        # Gamma and Weibull are stricly positive distributions, so we shift
-        # the data a tiny amount to avoid zeroes
-        if dist == "weibull" or dist == "gamma":
-            fit_data = self.data
-            if (fit_data <= 0).any():
-                epsilon = 1e-6
-                fit_data = fit_data.clip(lower=epsilon)
-            if dist == "weibull":
-                shape, loc, scale = weibull_min.fit(fit_data, floc=0)
-                return Weibull(alpha=shape, beta=scale, random_seed=seed)
-            if dist == "gamma":
-                shape, loc, scale = gamma.fit(fit_data, floc=0)
-                return Gamma(alpha=shape, beta=scale, random_seed=seed)
-
-        if dist == "beta":
-            # Normalise data to [0, 1]
-            range_ = self.max - self.min
-            normalized = (self.data - self.min) / range_
-            epsilon = 1e-6
-            normalized_adj = normalized.clip(lower=epsilon, upper=1 - epsilon)
-            a, b, loc, scale = beta.fit(normalized_adj, floc=0, fscale=1)
-            return Beta(
-                alpha1=a,
-                alpha2=b,
-                lower_bound=self.min,
-                upper_bound=self.max,
-                random_seed=seed,
-            )
-
-        # Pearson Type V is also known as inverse Gamma
-        # In invgamma docs, we can see it returns (a, loc, scale)
-        if dist == "pearsonv":
-            a, loc, scale = invgamma.fit(self.data, floc=0)
-            return PearsonV(alpha=a, beta=scale, random_seed=seed)
-
-        # Pearson Type VI is also known as inverted beta or beta prime
-        # In betaprime docs, we can see it returns (a, b, loc, scale)
-        if dist == "pearsonvi":
-            a, b, loc, scale = betaprime.fit(self.data, floc=0)
-            return PearsonVI(alpha1=a, alpha2=b, beta=scale, random_seed=seed)
-
-        raise ValueError(
-            f"Unable to fit {dist} - not supported in FitDist code."
-        )
+        params = get_dist_params(dist=dist, data=self.data)
+        return DIST_CLASSES[dist](**params, random_seed=seed)
 
     def fit_and_compare(
         self,
@@ -195,6 +207,8 @@ class FitDist:
         xmax=200,
         seed=42,
         n_plots=None,
+        n_bins=200,
+        time_unit="minutes",
     ):
         """Fit distributions and compare.
 
@@ -209,6 +223,10 @@ class FitDist:
         n_plots : int
             Number of plots to show (e.g., if 3, will show plots for top 3
             distributions). If none specified, will show all.
+        n_bins : int
+            Number of histogram bins.
+        time_unit : str
+            Display unit for plot labels. This does not convert data values.
 
         Returns
         -------
@@ -296,6 +314,8 @@ class FitDist:
                 kind="hist",
                 xmax=xmax,
                 title=title,
+                n_bins=n_bins,
+                time_unit=time_unit,
             )
             figs.append(hist_fig)
 
@@ -303,8 +323,8 @@ class FitDist:
             qq_fig = qqplot_2samples(
                 data1=self.data,
                 data2=v["sample"],
-                xlabel="Observed (minutes)",
-                ylabel="Fitted (minutes)",
+                xlabel=f"Observed ({time_unit})",
+                ylabel=f"Fitted ({time_unit})",
                 line="45",
             )
             qq_fig.suptitle(title)
@@ -340,7 +360,15 @@ def snap_bins_to_seconds(xmax, target_bins=200, min_seconds=1):
     return edges
 
 
-def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
+def plot_observed_fitted(
+    data,
+    sample,
+    kind="hist",
+    xmax=200,
+    title=None,
+    n_bins=200,
+    time_unit="minutes",
+):
     """Plot overlaid comparison of observed vs fitted data.
 
     Parameters
@@ -355,6 +383,10 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
         X-axis limit for a second, optional cropped copy of the plot.
     title : str
         Title.
+    n_bins : int
+        Number of histogram bins.
+    time_unit : str
+        Display unit for plot labels. This does not convert data values.
 
     Returns
     -------
@@ -371,33 +403,36 @@ def plot_observed_fitted(data, sample, kind="hist", xmax=200, title=""):
         ignore_index=True,
     )
 
+    full_xmin = math.floor(df_plot["value"].min())
+    full_xmax = math.ceil(df_plot["value"].max())
+
     plot_fn = sns.histplot if kind == "hist" else sns.kdeplot
     plot_kwargs = dict(data=df_plot, x="value", hue="source", fill=True)
     if kind == "kde":
         plot_kwargs["common_norm"] = False
     if kind == "hist":
-        full_xmax = df_plot["value"].max()
-        full_edges = snap_bins_to_seconds(full_xmax, target_bins=200)
+        full_edges = snap_bins_to_seconds(full_xmax, target_bins=n_bins)
         plot_kwargs["bins"] = full_edges
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
     plot_fn(**plot_kwargs, ax=axes[0])
+    axes[0].set_xlim(full_xmin, full_xmax)
     axes[0].set_title("Full range")
-    axes[0].set_xlabel("Minutes")
+    axes[0].set_xlabel(time_unit)
     axes[0].set_ylabel("Count" if kind == "hist" else "Density")
 
     cropped_kwargs = dict(plot_kwargs)
     if kind == "hist":
-        edges = snap_bins_to_seconds(xmax, target_bins=200)
+        edges = snap_bins_to_seconds(xmax, target_bins=n_bins)
         cropped_kwargs["bins"] = edges
         cropped_kwargs.pop("binrange", None)
     plot_fn(**cropped_kwargs, ax=axes[1])
-    axes[1].set_xlim(0, xmax)
+    axes[1].set_xlim(full_xmin, xmax)
     axes[1].relim()
     axes[1].autoscale_view(scalex=False, scaley=True)
-    axes[1].set_title(f"Cropped to 0-{xmax}")
-    axes[1].set_xlabel("Minutes")
+    axes[1].set_title(f"Cropped to {full_xmin}-{xmax}")
+    axes[1].set_xlabel(time_unit)
     axes[1].set_ylabel("Count" if kind == "hist" else "Density")
 
     fig.suptitle(title)
@@ -429,24 +464,7 @@ def fit_dist(dist, data, time_data_unit):
     if time_data_unit == "s":
         data = data / 60
 
-    # Shift to avoid zeroes for strictly positive distributions
-    if dist in ("Weibull", "Gamma") and (data <= 0).any():
-        epsilon = 1e-6
-        data = data.clip(lower=epsilon)
-
-    if dist == "Weibull":
-        shape, loc, scale = weibull_min.fit(data, floc=0)
-        params = {"alpha": shape, "beta": scale}
-
-    elif dist == "Gamma":
-        shape, loc, scale = gamma.fit(data, floc=0)
-        params = {"alpha": shape, "beta": scale}
-
-    elif dist in ("Erlang", "Lognormal"):
-        params = {
-            "mean": data.mean(),
-            "stdev": data.std(),
-        }
+    params = get_dist_params(dist=dist, data=data)
 
     return {"class_name": dist, "params": params}
 

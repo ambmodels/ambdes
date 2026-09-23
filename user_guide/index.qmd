@@ -1,0 +1,14 @@
+---
+title: Introduction
+---
+
+The `ambdes` model has been developed as a pilot/prototype/test of creating a open-source DES model to support modelling demand etc., 
+
+some context... The model of the ambulance system represents incidents across four response categories:
+
+* C1 - life-threatening incidents
+* C2 - emergency incidents
+* C3 - urgent incidents
+* C4 - less urgent incidents
+
+The primary output is category 2 mean response time, and resource utilisation is a secondary output.

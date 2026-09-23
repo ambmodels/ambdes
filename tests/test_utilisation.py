@@ -320,7 +320,9 @@ def run_vidigi_store(
     rng = np.random.default_rng(seed)
     env = simpy.Environment()
     config = StubConfig(n_ambulances, warm_up, data_period)
-    vidigi_store = VidigiStore(env, num_resources=n_ambulances)
+    vidigi_store = VidigiStore(
+        env, num_resources=n_ambulances, label="ambulance"
+    )
     logger = EventLogger(env=env, run_number=0)
 
     def attend(patient_id):

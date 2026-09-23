@@ -14,7 +14,7 @@ class Patient:
         Call outcome ("see_and_convey" or "see_and_treat").
     call_timestamp : float
         Time at which patient called 999.
-    wait_for_assignment : float
+    allocation_time : float
         Time between the call and an ambulance being assigned.
     response_time : float
         Time between the call and ambulance arrival on scene.
@@ -42,7 +42,7 @@ class Patient:
         self.category = category
         self.outcome = outcome
         self.call_timestamp = call_timestamp
-        self.wait_for_assignment = None
+        self.allocation_time = None
         self.response_time = None
 
     @property
