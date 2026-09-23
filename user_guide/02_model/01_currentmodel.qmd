@@ -2,7 +2,7 @@
 title: Current model
 ---
 
-![Model structure](/assets/images/ambdes_aggregate.drawio.png)
+![Model structure](/assets/images/ambdes_aggregate.drawio.png)\
 
 ## How can the model be used?
 
