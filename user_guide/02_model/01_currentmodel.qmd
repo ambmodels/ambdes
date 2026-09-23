@@ -2,4 +2,72 @@
 title: Current model
 ---
 
-TODO.
+![Model structure](/assets/images/ambdes_aggregate.drawio.png)
+
+## How can the model be used?
+
+This model can answer the question: How do changes in total vehicle hours, number of incidents per day, and/or handover delays affect Category 2 mean response time and resource utilisation?
+
+It can be used to model the whole trust at once, or by county. Historically demand planning was on a trust-level, but in recent years have been asked to do it on a county-level. County-level of interest e.g., sometimes each county is given a different target. This year, it's a blanket target, to improve job cycle by X minutes.
+
+Model structure is consistent between them - just change the input files. This is equivalent to having one model instance with separate ambulance resources per county, as then you’d just be running each county in parallel to each other essentially, no interaction, so it’s simpler to just use the single area model and run it for each county.
+
+## Comparison with the regression models
+
+The DES (particularly those with similar parameters) should broadly agree with existing estimates from regression models, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
+
+* Multiple outcomes from the same run (regression just one per model).
+* More intuitive system representation (can “see” how resourcing assumptions translate into waits and utilisation).
+* Extendability (once core structure is in place, we can add more components in later stages).
+
+In the current regression model, three things are changed:
+
+* Vehicle hours
+* Number of incidents per day
+* Handover delays
+
+## Assumptions
+
+> **Definition:** Assumptions arise from incomplete knowledge - you do not know exactly how something works, so you use the best available information ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
+
+Rough notes!
+
+**Extreme values.** Choices around cropping any times when input modelling (e.g., extreme values - 0 or very high).
+
+## Simplifications
+
+> **Definition:** Simplifications are a deliberate design choice - you could model something in more detail, but you opt for a simple representation. ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
+
+Rough notes!
+
+**Arrival frequency.**  In the model, the number of arrivals vary by day of week. The arrivals are assigned a response category and a response outcome. These are not modelled as varying by day of week. We check this by looking at the proportion on each day of the week of C1 v.s., C2 v.s., C3 v.s., C4 and likewise by see and convey v.s., see and treat. If they did show a pattern of varying by day of week, then it should be changed to sampling as part of the NHPP, rather than assigning afterwards.
+
+**Conveyance.** Grouped 'See & Convey non ED' and 'See & Convey ED' into a single 'see & convey' group.
+
+**Queueing.** Simplified - priority sorting.
+
+**Events.** Events (e.g., festivals) have been removed from times data.
+
+**Vehicles**:
+
+* Only one resource per patient - not multiple.
+* Just one vehicle type - not multiple.
+* Just one fixed pool of resources - no shifts and changes in availability across week.
+
+**Hear-and-treat.** Excluded.
+
+**Out-of-area activity.** Excluded. Both outside of the SWAST patch, but also outside of a county. Although the model doesn’t capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
+
+## Other notes
+
+Even in this simplest stage, we can't just have one service time, as we need to be able to:
+
+* Calculate **response time** output
+* Input varying **handover delay**
+
+SWASFT are normally interested in category 2 mean response time for a given day of the week (e.g., a Monday), or a given week or year. They don't look **within the day** at response times by time of day. In which case, arguably not relevant to include time of day in NHPP. Their typical profile is:
+
+* Higher activity at weekend.
+* Longer handover delays on Mondays (as they've built up over weekend).
+
+Therefore, we agreed it best to use **NHPP by day of week**.
