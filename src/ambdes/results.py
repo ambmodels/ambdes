@@ -261,6 +261,10 @@ class UtilisationCalculator:
         )
         util_df = pd.DataFrame({"time": times})
 
+        # merge_asof requires identical key dtypes, so force time to float
+        util_df["time"] = util_df["time"].astype(float)
+        capacity_changes["time"] = capacity_changes["time"].astype(float)
+
         # Add the record of when ambulances were busy/releated by patients
         util_df = util_df.merge(
             events,
@@ -285,7 +289,6 @@ class UtilisationCalculator:
 
         # Find the time between each row, dropping any with a time of 0.
         # The final state runs until the end of the observation window.
-        # TODO: CHECK THE FINAL STATE FILLNA IS STILL NEEDED IN NEW APPROACH
         util_df["interval_duration"] = (
             util_df["time"].shift(-1).fillna(self.run_length) - util_df["time"]
         )
