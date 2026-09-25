@@ -88,12 +88,16 @@ class UtilisationCalculator:
         UtilisationCalculator
 
         """
-        return cls(
+        kwargs = dict(
             log=model.logger.to_dataframe(),
             warm_up_period=model.config.warm_up_period,
             data_collection_period=model.config.data_collection_period,
-            capacity=model.config.n_ambulances,
         )
+        if hasattr(model, "capacity_log"):
+            kwargs["capacity_log"] = model.capacity_log
+        else:
+            kwargs["capacity"] = model.config.n_ambulances
+        return cls(**kwargs)
 
     @classmethod
     def from_model_at_time(cls, model, current_time):
@@ -120,12 +124,16 @@ class UtilisationCalculator:
         UtilisationCalculator
 
         """
-        return cls(
+        kwargs = dict(
             log=model.logger.to_dataframe(),
             warm_up_period=0,
             data_collection_period=current_time,
-            capacity=model.config.n_ambulances,
         )
+        if hasattr(model, "capacity_log"):
+            kwargs["capacity_log"] = model.capacity_log
+        else:
+            kwargs["capacity"] = model.config.n_ambulances
+        return cls(**kwargs)
 
     def create_util_df(self):
         """Return the time-weighted ambulance utilisation intervals.
@@ -188,10 +196,10 @@ class UtilisationCalculator:
         # and those that span warm-up are trimmed so their start time is the
         # start of the data collection period
         intervals["start_time"] = intervals["start_time"].clip(
-            lower=self.warm_up_period
+            lower=self.warm_up_period, upper=self.run_length
         )
         intervals["end_time"] = intervals["end_time"].clip(
-            lower=self.warm_up_period
+            lower=self.warm_up_period, upper=self.run_length
         )
         # Drop those before warm-up (becomes [start, start])
         intervals = intervals.loc[
@@ -200,7 +208,13 @@ class UtilisationCalculator:
 
         if intervals.empty:
             return pd.DataFrame(
-                columns=["time", "busy", "interval_duration", "utilisation"]
+                columns=[
+                    "time",
+                    "busy",
+                    "capacity",
+                    "interval_duration",
+                    "utilisation",
+                ]
             )
 
         # Convert intervals into event times: +1 when ambulance becomes busy
@@ -253,6 +267,10 @@ class UtilisationCalculator:
         )
         util_df = pd.DataFrame({"time": times})
 
+        # merge_asof requires identical key dtypes, so force time to float
+        util_df["time"] = util_df["time"].astype(float)
+        capacity_changes["time"] = capacity_changes["time"].astype(float)
+
         # Add the record of when ambulances were busy/releated by patients
         util_df = util_df.merge(
             events,
@@ -277,7 +295,6 @@ class UtilisationCalculator:
 
         # Find the time between each row, dropping any with a time of 0.
         # The final state runs until the end of the observation window.
-        # TODO: CHECK THE FINAL STATE FILLNA IS STILL NEEDED IN NEW APPROACH
         util_df["interval_duration"] = (
             util_df["time"].shift(-1).fillna(self.run_length) - util_df["time"]
         )

@@ -36,6 +36,7 @@ class SimConfig:
         arrivals_json,
         times_json,
         param_csv,
+        capacity_json=None,
     ):
         """Initialise simulation configuration.
 
@@ -47,6 +48,8 @@ class SimConfig:
             Path to JSON file containing time distribution configuration.
         param_csv : str | Path
             Path to CSV containing model parameters.
+        capacity_json : str | Path
+            Path to JSON file containing the capacity configuration.
 
         """
         # Load ready-made distribution configs from JSON
@@ -54,6 +57,9 @@ class SimConfig:
             arrivals_config = json.load(f)
         with open(times_json, encoding="utf-8") as f:
             times_config = json.load(f)
+        if capacity_json is not None:
+            with open(capacity_json, encoding="utf-8") as f:
+                capacity_config = json.load(f)
 
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
         # (as sim-tools requires a dataframe, but had to use lists for JSON)
@@ -67,10 +73,18 @@ class SimConfig:
                 }
             )
         }
-        self.dist_config = {
-            **arrivals_config,
-            **times_config,
-        }
+
+        if capacity_json is None:
+            self.dist_config = {
+                **arrivals_config,
+                **times_config,
+            }
+        else:
+            self.dist_config = {
+                **arrivals_config,
+                **times_config,
+                **capacity_config,
+            }
 
         # Import model parameter CSV and convert to dict
         param_df = pd.read_csv(param_csv)
