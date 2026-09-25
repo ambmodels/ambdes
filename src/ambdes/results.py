@@ -91,7 +91,7 @@ class UtilisationCalculator:
         kwargs = dict(
             log=model.logger.to_dataframe(),
             warm_up_period=model.config.warm_up_period,
-            data_collection_period=model.config.data_collection_period
+            data_collection_period=model.config.data_collection_period,
         )
         if hasattr(model, "capacity_log"):
             kwargs["capacity_log"] = model.capacity_log
