@@ -93,6 +93,7 @@ class UtilisationCalculator:
             warm_up_period=model.config.warm_up_period,
             data_collection_period=model.config.data_collection_period,
             capacity=model.config.n_ambulances,
+            capacity_log=model.capacity_log,
         )
 
     @classmethod
@@ -125,6 +126,7 @@ class UtilisationCalculator:
             warm_up_period=0,
             data_collection_period=current_time,
             capacity=model.config.n_ambulances,
+            capacity_log=model.capacity_log,
         )
 
     def create_util_df(self):
@@ -188,10 +190,10 @@ class UtilisationCalculator:
         # and those that span warm-up are trimmed so their start time is the
         # start of the data collection period
         intervals["start_time"] = intervals["start_time"].clip(
-            lower=self.warm_up_period
+            lower=self.warm_up_period, upper=self.run_length
         )
         intervals["end_time"] = intervals["end_time"].clip(
-            lower=self.warm_up_period
+            lower=self.warm_up_period, upper=self.run_length
         )
         # Drop those before warm-up (becomes [start, start])
         intervals = intervals.loc[
@@ -200,7 +202,13 @@ class UtilisationCalculator:
 
         if intervals.empty:
             return pd.DataFrame(
-                columns=["time", "busy", "interval_duration", "utilisation"]
+                columns=[
+                    "time",
+                    "busy",
+                    "capacity",
+                    "interval_duration",
+                    "utilisation"
+                ]
             )
 
         # Convert intervals into event times: +1 when ambulance becomes busy
