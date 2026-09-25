@@ -14,7 +14,13 @@ def n_ambulances(request):
 
 
 @pytest.fixture
-def model(n_ambulances, monkeypatch):
+def capacity_interval(request):
+    """Capacity interval for the test model."""
+    return getattr(request, "param", None)
+
+
+@pytest.fixture
+def model(n_ambulances, capacity_interval, monkeypatch):
     """Simplified Model."""
     # Don't run create_batch - just return dict as is
     monkeypatch.setattr(
@@ -25,7 +31,7 @@ def model(n_ambulances, monkeypatch):
     # that Model accesses during construction and when run.
     config = SimpleNamespace(
         n_ambulances=n_ambulances,
-        capacity_interval=None,
+        capacity_interval=capacity_interval,
         warm_up_period=0,
         data_collection_period=100,
         dist_config={},
@@ -34,8 +40,20 @@ def model(n_ambulances, monkeypatch):
     return Model(run_number=0, config=config)
 
 
+class SequenceDistribution:
+    """Simple fake distribution."""
+
+    def __init__(self, values):
+        """Build iterator object for values."""
+        self.values = iter(values)
+
+    def sample(self, **kwargs):
+        """Return next item from values."""
+        return next(self.values)
+
+
 # ---------------------------------------------------------------------------
-# Simple resource addition / removal
+# Simple resource addition / removal tests for apply_capacity_update()
 # ---------------------------------------------------------------------------
 
 
@@ -83,8 +101,7 @@ def test_remove_idle_ambulances(model):
             "capacity": 1,
         },
     ]
-    for actual, expected in zip(model.capacity_log, expected_log, strict=True):
-        assert actual == expected
+    assert model.capacity_log == expected_log
 
 
 def test_remove_and_return_idle_ambulances(model):
@@ -108,7 +125,6 @@ def test_remove_and_return_idle_ambulances(model):
     model.env.process(scenario())
     model.env.run()
 
-    # As first apply_capacity_update with schedule timeout()
     assert model.env.now == 25
     # Removed resources
     assert len(model.removed_units) == 0
@@ -162,12 +178,11 @@ def test_remove_and_return_idle_ambulances(model):
             "capacity": 3,
         },
     ]
-    for actual, expected in zip(model.capacity_log, expected_log, strict=True):
-        assert actual == expected
+    assert model.capacity_log == expected_log
 
 
 # ---------------------------------------------------------------------------
-# Busy resource removal
+# Busy resource removal test for apply_capacity_update()
 # ---------------------------------------------------------------------------
 
 
@@ -229,12 +244,11 @@ def test_wait_before_remove_busy_ambulance(model):
             "capacity": 0,
         },
     ]
-    for actual, expected in zip(model.capacity_log, expected_log, strict=True):
-        assert actual == expected
+    assert model.capacity_log == expected_log
 
 
 # ---------------------------------------------------------------------------
-# Deadline
+# Deadline test for apply_capacity_update()
 # ---------------------------------------------------------------------------
 
 
@@ -258,16 +272,16 @@ def test_not_remove_after_deadline(model):
         model.apply_capacity_update(remove_target=2, deadline=10),
     )
 
-    model.env.run(until=15)
+    model.env.run(until=25)
 
     # Removed resources
     assert len(model.removed_units) == 1
     # Capacity (busy + available ambulances)
     assert model.ambulance.num_resources == 1
     # Available ambulances
-    assert len(model.ambulance.items) == 0
+    assert len(model.ambulance.items) == 1
     # Busy resources
-    assert model.ambulance.count == 1
+    assert model.ambulance.count == 0
 
     # Check the capacity log
     expected_log = [
@@ -288,5 +302,64 @@ def test_not_remove_after_deadline(model):
             "capacity": 1,
         },
     ]
-    for actual, expected in zip(model.capacity_log, expected_log, strict=True):
-        assert actual == expected
+    assert model.capacity_log == expected_log
+
+
+# ---------------------------------------------------------------------------
+# Test of update_operational_capacity (which calls apply_capacity_update)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("capacity_interval", [60], indirect=True)
+def test_capacity_changes_between_intervals(model):
+    """Test capacity changes using interval and update_operational_capacity."""
+    # With 1-hour capacity interval, first remove two ambulances, then return
+    model.dists = {
+        "reduce_daily_hours": SequenceDistribution([2, 0]),
+    }
+    model.env.process(model.update_operational_capacity())
+    model.env.run(until=61)
+
+    expected_log = [
+        {
+            "time": 0.0,
+            "action": "initial",
+            "resource_id": None,
+            "remove_target": 0,
+            "removed": 0,
+            "capacity": 3,
+        },
+        {
+            "time": 0.0,
+            "action": "removed",
+            "resource_id": "ambulance_1",
+            "remove_target": 2,
+            "removed": 1,
+            "capacity": 2,
+        },
+        {
+            "time": 0.0,
+            "action": "removed",
+            "resource_id": "ambulance_2",
+            "remove_target": 2,
+            "removed": 2,
+            "capacity": 1,
+        },
+        {
+            "time": 60.0,
+            "action": "returned",
+            "resource_id": "ambulance_2",
+            "remove_target": 0,
+            "removed": 1,
+            "capacity": 2,
+        },
+        {
+            "time": 60.0,
+            "action": "returned",
+            "resource_id": "ambulance_1",
+            "remove_target": 0,
+            "removed": 0,
+            "capacity": 3,
+        },
+    ]
+    assert model.capacity_log == expected_log
