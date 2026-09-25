@@ -88,13 +88,16 @@ class UtilisationCalculator:
         UtilisationCalculator
 
         """
-        return cls(
+        kwargs = dict(
             log=model.logger.to_dataframe(),
             warm_up_period=model.config.warm_up_period,
-            data_collection_period=model.config.data_collection_period,
-            capacity=model.config.n_ambulances,
-            capacity_log=model.capacity_log,
+            data_collection_period=model.config.data_collection_period
         )
+        if hasattr(model, "capacity_log"):
+            kwargs["capacity_log"] = model.capacity_log
+        else:
+            kwargs["capacity"] = model.config.n_ambulances
+        return cls(**kwargs)
 
     @classmethod
     def from_model_at_time(cls, model, current_time):
@@ -121,13 +124,16 @@ class UtilisationCalculator:
         UtilisationCalculator
 
         """
-        return cls(
+        kwargs = dict(
             log=model.logger.to_dataframe(),
             warm_up_period=0,
             data_collection_period=current_time,
-            capacity=model.config.n_ambulances,
-            capacity_log=model.capacity_log,
         )
+        if hasattr(model, "capacity_log"):
+            kwargs["capacity_log"] = model.capacity_log
+        else:
+            kwargs["capacity"] = model.config.n_ambulances
+        return cls(**kwargs)
 
     def create_util_df(self):
         """Return the time-weighted ambulance utilisation intervals.
@@ -207,7 +213,7 @@ class UtilisationCalculator:
                     "busy",
                     "capacity",
                     "interval_duration",
-                    "utilisation"
+                    "utilisation",
                 ]
             )
 
