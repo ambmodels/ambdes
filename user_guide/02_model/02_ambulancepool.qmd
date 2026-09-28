@@ -1,0 +1,59 @@
+---
+title: Estimating the ambulance pool
+---
+
+The model requires a single number representing how many ambulances exist in its resource pool. Because the model uses a fixed pool, this number remains constant at every simulated minute.
+
+## Estimating the pool size from total weekly ambulance hours
+
+The available data provide the total number of ambulance-hours per week. One ambulance staffed continuously for a full week provides:
+
+$$
+24 \times 7 = 168\text{ ambulance hours per week}
+$$
+
+Therefore, if the service provides 50,400 ambulance-hours per week:
+
+$$
+\frac{50,400\text{ ambulance hours per week}}{168\text{ hours per week}} = 300 \text{ ambulances}
+$$
+
+This doesn't mean there are 300 ambulances per day. Instead, it means that the **weekly staffing supplies capacity equivalent to 300 ambulances operating concurrently**.
+
+## Multi-resource incidents
+
+The model assigns one ambulance to each incident. However, in reality, many incidents will require multiple resources.
+
+For example, for an incident requiring 3 resources, the model captures ambulance 1 but is omitting the workload of ambulances 2 and 3. This means it is underestimating resource utilisation and overestimating ambulance availability.
+
+To compensate for this, the workload of second, third, and subsequent ambulances is converted into an **average concurrent ambulance equivalent** and subtracted from the fixed pool.
+
+### Example calculation
+
+For example, suppose there are ten Category 1 incidents on an average day, each incident uses two ambulances, and the mean ambulance job duration is 100 minutes.
+
+The model already represents one ambulance per incident, so the omitted resources per incident are:
+
+$$
+2 - 1 = 1 \text{ additional ambulance}
+$$
+
+The total omitted workload is:
+
+$$
+10 \text{ incidents} \times 1 \text{ additional ambulance} \times 100 \text{ minutes} = 1000 \text{ additional ambulance minutes per day}
+$$
+
+One ambulance continuously occupied for a complete day accounts for:
+
+$$
+1 \times 24 \times 7 = 1440 \text{ minutes per day}
+$$
+
+Therefore, the omitted workload is equivalent to:
+
+$$
+\frac{1000 \text{ ambulance minutes per day}}{1440 \text{ minutes per day}} = 0.694 \text{ ambulances}
+$$
+
+So those extra Category 1 responses consume the same amount of capacity as 0.694 ambulances being continuously occupied throughout the day.

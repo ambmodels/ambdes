@@ -56,8 +56,6 @@ Validation is important at both trust and county level. Something that is bad at
 
 **Events.** Events (e.g., festivals) have been removed from time data.
 
-**One resource per patient.** We plan to change this. When we do, note, that more vehicles may be assigned to an incident than attend at scene, as some are stood down. Although data on responses per incident may be available, the relevant measure is responses per incident **at scene**. That's what we are using - the total number of resources that arrived on scene, grouped by incident category.
-
 **Separate vehicle types are not modelled.** Just aggregate all vehicle types into a single resource. In reality...
 
 * Different resource types, such as ambulances and cars and community first responders, have different job times, utilisations, and intended uses.
@@ -76,6 +74,20 @@ Validation is important at both trust and county level. Something that is bad at
 * The model uses a single pool, but resources are actually organised by dispatch area. Dispatch areas are smaller than counties, and are areas where it is feasible to send ambulances. They were designed for operational use. Several are set up around acutes, but not all will include an acute.
 * Resources in different areas have different response times.
 * Even within the dispatch area, C3 near resource or C1 far from resource, will choose the C3, and instead have a non-core go to C1 or do call-out asking for resource.
+
+**Representation of multiple resources per incident.** The simulation assigns one ambulance resource to each incident, but there are often multiple resources per incident in reality. Modelling these extra responses directly requires complex dispatch rules in the DES:
+
+* If a lower-priority incident is waiting for a second ambulance when a higher-priority incident arrives, the model must decide which incident receives the next available ambulance.
+    * Choosing the lower-priority incident overestimates the higher-priority response time.
+    * Choosing the higher-priority incident can mess up the lower-priority times...
+* Lower-priority times beecome complicated. You would assume that all resources should be on scene within the on-scene time of the first ambulance arriving - and can't be after, when that ambulance is conveying.
+
+Instead, we have chosen a simpler approach: the ambulance pool is reduced by the estimated average number of extra ambulances occupied on a multi-resource incident. This calculation is explained on the [Estimating the ambulance pool page](02_ambulancepool.qmd).
+
+In practice, some incidents require second, third, or subsequent ambulances. Rather than explicitly modelling these additional responses, the model reduces the fixed ambulance pool by the estimated average number of ambulances occupied by additional resources. This approach represents the average extra capacity used by multi-resource incidents - but has some limitations:
+
+* Does not capture clusters of multi-resource incidents or short-term shortages caused by several occurring at once.
+* Assumes additional ambulances are occupied for the category-average job duration - but this is likely an overestimate if they arrive later, leave earlier, or do not convey the patient.
 
 **Hear-and-treat.** Excluded.
 
