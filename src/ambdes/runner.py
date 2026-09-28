@@ -88,11 +88,11 @@ class Runner:
                     parallel(
                         delayed(self.run_single)(i)
                         for i in range(self.config.n_reps)
-                    )
-                ),
-                total=self.config.n_reps,
-                desc="Simulation replications",
-                unit="run",
+                    ),
+                    total=self.config.n_reps,
+                    desc="Simulation replications",
+                    unit="run",
+                )
             )
 
         # Create results dataframes
