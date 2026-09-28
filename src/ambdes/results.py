@@ -1,5 +1,6 @@
 """Calculate simulation results."""
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import statsmodels.stats.api as sms
 
@@ -344,6 +345,52 @@ class UtilisationCalculator:
             util_df["capacity"] * util_df["interval_duration"]
         ).sum()
         return busy_minutes / operational_minutes
+
+
+def plot_capacity_vs_util(util_df):
+    """Plot capacity v.s., utilisation during the model run.
+
+    Create two subplots:
+        1. Number of resources available v.s. in use.
+        2. Utilisation.
+
+    Parameters
+    ----------
+    util_df : pd.DataFrame
+        As returned by UtilisationCalculator create_util_df().
+
+    Returns
+    -------
+    matplotlibt.figure.Figure
+        Capacity v.s., utilisation figure.
+
+    """
+    figs, axes = plt.subplots(nrows=2, ncols=1, figsize=(8, 10))
+
+    axes[0].step(
+        util_df["time"],
+        util_df["busy"],
+        color="tab:orange",
+        label="Busy ambulances",
+    )
+    axes[0].step(
+        util_df["time"],
+        util_df["capacity"],
+        color="tab:blue",
+        label="Capacity",
+        linestyle="--",
+        alpha=0.7,
+    )
+    axes[0].set_xlabel("Time")
+    axes[0].set_ylabel("Number of ambulances")
+    axes[0].legend()
+
+    axes[1].step(util_df["time"], util_df["utilisation"])
+    axes[1].set_xlabel("Time")
+    axes[1].set_ylabel("Utilisation")
+
+    plt.tight_layout()
+    return figs
 
 
 class Results:

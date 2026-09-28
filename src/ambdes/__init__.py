@@ -18,7 +18,7 @@ from .input_modelling import (
 )
 from .model import Model
 from .patient import Patient
-from .results import Results, UtilisationCalculator
+from .results import Results, UtilisationCalculator, plot_capacity_vs_util
 from .runner import Runner
 
 __all__ = [
@@ -29,6 +29,7 @@ __all__ = [
     "get_dist_params",
     "Model",
     "Patient",
+    "plot_capacity_vs_util",
     "plot_metric_kde",
     "plot_observed_fitted",
     "plot_warm_up",
