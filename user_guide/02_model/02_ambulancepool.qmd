@@ -28,6 +28,8 @@ For example, for an incident requiring 3 resources, the model captures ambulance
 
 To compensate for this, the workload of second, third, and subsequent ambulances is converted into an **average concurrent ambulance equivalent** and subtracted from the fixed pool.
 
+*Note: Our approach follows the same principles as Little's Law: average items in a system equals average arrival rate multiplied by average time spent in system.*
+
 ### Example calculation
 
 For example, suppose there are ten Category 1 incidents on an average day, each incident uses two ambulances, and the mean ambulance job duration is 100 minutes.
@@ -57,3 +59,19 @@ $$
 $$
 
 So those extra Category 1 responses consume the same amount of capacity as 0.694 ambulances being continuously occupied throughout the day.
+
+### When does the multi-resource reduction need recalculating?
+
+The multi-resource reduction is estimated from historical data on incident volume, the number of ambulances attending each incident, and ambulance job duration by response category. The same historical data are also used to estimate model inputs such as inter-arrival times and job-time distributions.
+
+When running scenarios, the reduction should be updated only if the scenario changes the additional ambulance workload.
+
+| Scenario change | Change the reduction? | Treatment |
+| - | - | - |
+| Ambulance pool size changes | No | Keep reduction fixed |
+| Overall demand increases by 5% with same category mix | Yes | Increase the reduction by 5% |
+| Demand changes differently by category | Yes | Recalculate the contribution from each category |
+| Job duration changes | Yes | Recalculate using the new relevant job times |
+| Number of resources per incident changes | Yes | Recalculate using the new multi-resource proportions |
+
+Changing the number of ambulances does not itself create more multi-resource incidents, so the reduction remains unchanged. However, if incident demand increases by 5%, the workload from second, third and subsequent ambulances also increases by 5%.
