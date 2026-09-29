@@ -5,6 +5,7 @@ concatenate per-run DataFrames.
 """
 
 from joblib import Parallel, cpu_count, delayed
+from tqdm.auto import tqdm
 
 from .model import Model
 from .results import Results, combine_run_results
@@ -62,7 +63,15 @@ class Runner:
         """
         # Sequential execution
         if self.config.cores == 1:
-            all_runs = [self.run_single(i) for i in range(self.config.n_reps)]
+            all_runs = [
+                self.run_single(i)
+                for i in tqdm(
+                    range(self.config.n_reps),
+                    total=self.config.n_reps,
+                    desc="Simulation replications",
+                    unit="run",
+                )
+            ]
         # Parallel execution
         else:
             # Check the requested number of cores is possible on machine
@@ -73,8 +82,17 @@ class Runner:
                     + f"{valid_cores}."
                 )
             # Execute replications in parallel
-            all_runs = Parallel(n_jobs=self.config.cores)(
-                delayed(self.run_single)(i) for i in range(self.config.n_reps)
+            parallel = Parallel(n_jobs=self.config.cores)
+            all_runs = list(
+                tqdm(
+                    parallel(
+                        delayed(self.run_single)(i)
+                        for i in range(self.config.n_reps)
+                    ),
+                    total=self.config.n_reps,
+                    desc="Simulation replications",
+                    unit="run",
+                )
             )
 
         # Create results dataframes

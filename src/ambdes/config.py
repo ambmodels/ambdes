@@ -90,11 +90,10 @@ class SimConfig:
         param_df = pd.read_csv(param_csv)
         params = param_df.set_index("parameter")["value"].to_dict()
 
-        # Convert total weekly ambulance-hours into an equivalent constant
-        # fleet size, assuming a fixed 24/7 resource pool with no shift
-        # pattern. One always-available ambulance provides 168 hours of
-        # capacity per week (24 × 7), so we approximate the number of
-        # ambulances as resource_hours_per_week / 168.
+        # Convert total weekly ambulance-hours into an equivalent number of
+        # resources. One ambulance available for a week contributes 168 hours
+        # (24 x 7), so we approximate the number of ambulances as
+        # resource_hours_per_week / 168.
         self.n_ambulances = round(params["resource_hours_per_week"] / 168)
 
         # Set the other model parameters as attributes
