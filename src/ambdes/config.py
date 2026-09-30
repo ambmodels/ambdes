@@ -15,8 +15,14 @@ class SimConfig:
     dist_config : dict
         Dictionary with all distribution settings, in required format for
         sim-tools DistributionRegistry.
-    n_ambulances : int
-        Number of ambulances in the resource pool.
+    planned_n_ambulances : int
+        Number of planned ambulances in the resource pool.
+    model_n_ambulances : int
+        Actual number of resources used in the simulation model - for example,
+        reduced to reflect:
+            - Abstraction due to sickness
+            - The capacity used by multiple resources attending an incident
+              (as the simulation only models one resource per incident).
     warm_up_period : int
         Duration of the warm-up period in minutes.
     data_collection_period : int
@@ -41,8 +47,8 @@ class SimConfig:
         n_reps,
         cores=-1,
         resource_hours_per_week=None,
-        n_ambulances=None,
-        multiresource_pool_reduction=None,
+        planned_n_ambulances=None,
+        capacity_fixed_reduction=0,
         capacity_interval=None,
         capacity_json=None,
     ):
@@ -54,43 +60,50 @@ class SimConfig:
             Path to JSON file containing arrival distribution configuration.
         times_json : str | Path
             Path to JSON file containing time distribution configuration.
-        warm_up_period
+        warm_up_period : int
             Duration of the warm-up period in minutes.
-        data_collection_period
+        data_collection_period : int
             Duration of the data collection period in minutes.
-        n_reps
+        n_reps : int
             Number of replications to run.
-        cores
+        cores : int
             Number of CPU cores for parallel execution. Use `-1` for all
             available cores and `1` for sequential execution.
-        resource_hours_per_week
+        resource_hours_per_week : int
             Total ambulance resource-hours available per week, used to derive
-            `n_ambulances`. Provide this or `n_ambulances`, but not both.
-        n_ambulances
-            Number of ambulances in the resource pool. Provide this or
+            `planned_n_ambulances`. Provide this or `planned_n_ambulances`,
+            but not both.
+        planned_n_ambulances : int
+            Number of planned ambulances in the resource pool. Provide this or
             `resource_hours_per_week`, but not both.
-        multiresource_pool_reduction
-            Optional reduction in resource pool to represent the capacity
-            used by multiple resources attending an incident (as the
-            simulation only models one resource per incident).
-        capacity_interval
+        capacity_fixed_reduction : int
+            Fixed reduction in resource pool capacity - will simply be
+            subtracted from planned_n_ambulances. This might represent:
+              - Abstraction due to sickness
+              - The capacity used by multiple resources attending an incident
+                (as the simulation only models one resource per incident).
+        capacity_interval : int
             How frequently to sample and change number of ambulances on shift,
             in minutes. Required if varying capacity - and must be supplied
             with `capacity_json`.
-        capacity_json
+        capacity_json : str | Path
             Path to JSON containing the time-varying capacity configuration.
             Required if varying capacity - and must be supplied with
             `capacity_interval`.
 
         """
-        if resource_hours_per_week is None and n_ambulances is None:
+        if resource_hours_per_week is None and planned_n_ambulances is None:
             raise ValueError(
                 "Provide exactly one of resource_hours_per_week "
-                "or n_ambulances."
+                "or planned_n_ambulances."
             )
-        if resource_hours_per_week is not None and n_ambulances is not None:
+        if (
+            resource_hours_per_week is not None
+            and planned_n_ambulances is not None
+        ):
             raise ValueError(
-                "Provide resource_hours_per_week or n_ambulances, not both."
+                "Provide resource_hours_per_week or planned_n_ambulances, "
+                "not both."
             )
         if (capacity_interval is None) != (capacity_json is None):
             raise ValueError(
@@ -136,10 +149,15 @@ class SimConfig:
         # resources. One ambulance available for a week contributes 168 hours
         # (24 x 7), so we approximate the number of ambulances as
         # resource_hours_per_week / 168.
-        if n_ambulances is None:
-            self.n_ambulances = round(resource_hours_per_week / 168)
+        if planned_n_ambulances is None:
+            self.planned_n_ambulances = round(resource_hours_per_week / 168)
         else:
-            self.n_ambulances = n_ambulances
+            self.planned_n_ambulances = planned_n_ambulances
+
+        # This is the reduced number of resources actually used by the model
+        self.model_n_ambulances = (
+            self.planned_n_ambulances - capacity_fixed_reduction
+        )
 
         # Set the other model parameters as attributes
         self.warm_up_period = warm_up_period

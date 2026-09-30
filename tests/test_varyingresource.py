@@ -8,7 +8,7 @@ from ambdes import Model
 
 
 @pytest.fixture
-def n_ambulances(request):
+def model_n_ambulances(request):
     """Ambulances for the test model."""
     return getattr(request, "param", 3)
 
@@ -20,7 +20,7 @@ def capacity_interval(request):
 
 
 @pytest.fixture
-def model(n_ambulances, capacity_interval, monkeypatch):
+def model(model_n_ambulances, capacity_interval, monkeypatch):
     """Simplified Model."""
     # Don't run create_batch - just return dict as is
     monkeypatch.setattr(
@@ -30,7 +30,7 @@ def model(n_ambulances, capacity_interval, monkeypatch):
     # Create an object that can replace config in Model, which contains fields
     # that Model accesses during construction and when run.
     config = SimpleNamespace(
-        n_ambulances=n_ambulances,
+        model_n_ambulances=model_n_ambulances,
         capacity_interval=capacity_interval,
         warm_up_period=0,
         data_collection_period=100,
@@ -186,7 +186,7 @@ def test_remove_and_return_idle_ambulances(model):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize("model_n_ambulances", [2], indirect=True)
 def test_wait_before_remove_busy_ambulance(model):
     """Busy ambulance should only be removed once finished with patient."""
 
@@ -252,7 +252,7 @@ def test_wait_before_remove_busy_ambulance(model):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize("model_n_ambulances", [2], indirect=True)
 def test_not_remove_after_deadline(model):
     """If ambulance still busy after deadline, don't remove later."""
 

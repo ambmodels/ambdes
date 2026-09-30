@@ -97,7 +97,7 @@ class UtilisationCalculator:
         if hasattr(model, "capacity_log"):
             kwargs["capacity_log"] = model.capacity_log
         else:
-            kwargs["capacity"] = model.config.n_ambulances
+            kwargs["capacity"] = model.config.model_n_ambulances
         return cls(**kwargs)
 
     @classmethod
@@ -133,7 +133,7 @@ class UtilisationCalculator:
         if hasattr(model, "capacity_log"):
             kwargs["capacity_log"] = model.capacity_log
         else:
-            kwargs["capacity"] = model.config.n_ambulances
+            kwargs["capacity"] = model.config.model_n_ambulances
         return cls(**kwargs)
 
     def create_util_df(self):

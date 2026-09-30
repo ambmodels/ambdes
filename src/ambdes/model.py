@@ -43,7 +43,7 @@ class Model:
         # Set up ambulance resource
         self.ambulance = VidigiPriorityStore(
             self.env,
-            num_resources=self.config.n_ambulances,
+            num_resources=self.config.model_n_ambulances,
             label="ambulance",
             logger=self.logger,
         )
@@ -57,7 +57,7 @@ class Model:
                 "resource_id": None,
                 "remove_target": 0,
                 "removed": 0,
-                "capacity": self.config.n_ambulances,
+                "capacity": self.config.model_n_ambulances,
             }
         ]
 
@@ -253,10 +253,10 @@ class Model:
             method waits for them to become available only until this time.
 
         """
-        if not 0 <= remove_target <= self.config.n_ambulances:
+        if not 0 <= remove_target <= self.config.model_n_ambulances:
             raise ValueError(
                 f"remove_target must be between 0 and "
-                f"{self.config.n_ambulances}; received {remove_target}"
+                f"{self.config.model_n_ambulances}; received {remove_target}"
             )
 
         # Return ambulances if the new target is lower than the
@@ -312,7 +312,7 @@ class Model:
 
     def assert_resource_invariants(self):
         """Check that ambulance resource counting is consistent."""
-        original = self.config.n_ambulances
+        original = self.config.model_n_ambulances
         operational = self.ambulance.num_resources
         removed = len(self.removed_units)
         busy = self.ambulance.count

@@ -26,7 +26,7 @@ def test_no_duplicate_patient_ids():
         data_collection_period=DATA_COLLECTION_PERIOD,
         n_reps=N_REPS,
         cores=CORES,
-        n_ambulances=N_AMBULANCES,
+        planned_n_ambulances=N_AMBULANCES,
     )
     model = Model(run_number=0, config=config)
     model.run()
