@@ -17,7 +17,12 @@ OUTPUT = Path(__file__).parent.joinpath("regression_results")
 
 ARRIVALS = INPUT / "param_arrivals.json"
 TIMES = INPUT / "param_times.json"
-MODEL = INPUT / "param_model.csv"
+
+WARM_UP_PERIOD = 10
+DATA_COLLECTION_PERIOD = 400
+N_REPS = 5
+CORES = 1
+RESOURCE_HOURS_PER_WEEK = 2000
 
 MODEL_UTIL = OUTPUT / "model_utilisation_df.csv"
 MODEL_SUMMARY = OUTPUT / "model_summary_df.csv"
@@ -31,7 +36,11 @@ def make_config():
     return SimConfig(
         arrivals_json=ARRIVALS,
         times_json=TIMES,
-        param_csv=MODEL,
+        warm_up_period=WARM_UP_PERIOD,
+        data_collection_period=DATA_COLLECTION_PERIOD,
+        n_reps=N_REPS,
+        cores=CORES,
+        resource_hours_per_week=RESOURCE_HOURS_PER_WEEK,
     )
 
 

@@ -16,7 +16,7 @@ class SimConfig:
         Dictionary with all distribution settings, in required format for
         sim-tools DistributionRegistry.
     n_ambulances : int
-        Size of ambulance resource pool.
+        Number of ambulances in the resource pool.
     warm_up_period : int
         Duration of the warm-up period in minutes.
     data_collection_period : int
@@ -24,10 +24,11 @@ class SimConfig:
     n_reps : int
         Number of replications to run.
     cores : int
-        Number of CPU cores to use for parallel execution. To use all
-        available cores, set to -1. For sequential execution, set to 1.
+        Number of CPU cores for parallel execution. Use `-1` for all
+        available cores and `1` for sequential execution.
     capacity_interval : int
-        How frequently to sample and change number of ambulances on shift.
+        How frequently to sample and change number of ambulances on shift,
+        in minutes.
 
     """
 
@@ -35,7 +36,14 @@ class SimConfig:
         self,
         arrivals_json,
         times_json,
-        param_csv,
+        warm_up_period,
+        data_collection_period,
+        n_reps,
+        cores=-1,
+        resource_hours_per_week=None,
+        n_ambulances=None,
+        multiresource_pool_reduction=None,
+        capacity_interval=None,
         capacity_json=None,
     ):
         """Initialise simulation configuration.
@@ -46,12 +54,50 @@ class SimConfig:
             Path to JSON file containing arrival distribution configuration.
         times_json : str | Path
             Path to JSON file containing time distribution configuration.
-        param_csv : str | Path
-            Path to CSV containing model parameters.
-        capacity_json : str | Path
-            Path to JSON file containing the capacity configuration.
+        warm_up_period
+            Duration of the warm-up period in minutes.
+        data_collection_period
+            Duration of the data collection period in minutes.
+        n_reps
+            Number of replications to run.
+        cores
+            Number of CPU cores for parallel execution. Use `-1` for all
+            available cores and `1` for sequential execution.
+        resource_hours_per_week
+            Total ambulance resource-hours available per week, used to derive
+            `n_ambulances`. Provide this or `n_ambulances`, but not both.
+        n_ambulances
+            Number of ambulances in the resource pool. Provide this or
+            `resource_hours_per_week`, but not both.
+        multiresource_pool_reduction
+            Optional reduction in resource pool to represent the capacity
+            used by multiple resources attending an incident (as the
+            simulation only models one resource per incident).
+        capacity_interval
+            How frequently to sample and change number of ambulances on shift,
+            in minutes. Required if varying capacity - and must be supplied
+            with `capacity_json`.
+        capacity_json
+            Path to JSON containing the time-varying capacity configuration.
+            Required if varying capacity - and must be supplied with
+            `capacity_interval`.
 
         """
+        if resource_hours_per_week is None and n_ambulances is None:
+            raise ValueError(
+                "Provide exactly one of resource_hours_per_week "
+                "or n_ambulances."
+            )
+        if resource_hours_per_week is not None and n_ambulances is not None:
+            raise ValueError(
+                "Provide resource_hours_per_week or n_ambulances, not both."
+            )
+        if (capacity_interval is None) != (capacity_json is None):
+            raise ValueError(
+                "Provide capacity_interval and capacity_json together, "
+                "or leave both as None."
+            )
+
         # Load ready-made distribution configs from JSON
         with open(arrivals_json, encoding="utf-8") as f:
             arrivals_config = json.load(f)
@@ -86,21 +132,18 @@ class SimConfig:
                 **capacity_config,
             }
 
-        # Import model parameter CSV and convert to dict
-        param_df = pd.read_csv(param_csv)
-        params = param_df.set_index("parameter")["value"].to_dict()
-
         # Convert total weekly ambulance-hours into an equivalent number of
         # resources. One ambulance available for a week contributes 168 hours
         # (24 x 7), so we approximate the number of ambulances as
         # resource_hours_per_week / 168.
-        self.n_ambulances = round(params["resource_hours_per_week"] / 168)
+        if n_ambulances is None:
+            self.n_ambulances = round(resource_hours_per_week / 168)
+        else:
+            self.n_ambulances = n_ambulances
 
         # Set the other model parameters as attributes
-        self.warm_up_period = params["warm_up_period"]
-        self.data_collection_period = params["data_collection_period"]
-        self.n_reps = int(params["n_reps"])
-        self.cores = int(params["cores"])
-
-        # Set capacity interval if provided - otherwise sets to None
-        self.capacity_interval = params.get("capacity_interval")
+        self.warm_up_period = warm_up_period
+        self.data_collection_period = data_collection_period
+        self.n_reps = int(n_reps)
+        self.cores = int(cores)
+        self.capacity_interval = capacity_interval
