@@ -21,3 +21,20 @@
 #quarto-announcement a {
   color: #08354f !important;
 }
+
+/* Let Great Docs Markdown tables wrap to fit the content width. */
+.gd-table-scroll {
+  overflow-x: visible;
+}
+
+.gd-table-scroll > table {
+  width: 100%;
+  min-width: 0;
+  table-layout: auto;
+}
+
+.gd-table-scroll th,
+.gd-table-scroll td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
