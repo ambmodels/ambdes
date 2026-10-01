@@ -180,7 +180,9 @@ MEAN_SERVICE = 25.0
 class StubConfig:
     """Minimal config stub satisfying the Results interface."""
 
-    def __init__(self, model_n_ambulances, warm_up_period, data_collection_period):
+    def __init__(
+        self, model_n_ambulances, warm_up_period, data_collection_period
+    ):
         """Initialise StubConfig.
 
         Parameters
@@ -282,7 +284,9 @@ def run_monitored_resource(
     # Close the final open interval
     monitored.update_time_weighted_stats()
 
-    return sum(monitored.area_resource_busy) / (model_n_ambulances * data_period)
+    return sum(monitored.area_resource_busy) / (
+        model_n_ambulances * data_period
+    )
 
 
 def run_vidigi_store(
