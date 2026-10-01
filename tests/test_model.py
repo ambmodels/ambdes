@@ -8,7 +8,12 @@ INPUT = Path(__file__).parent.joinpath("input_data")
 
 ARRIVALS = INPUT / "param_arrivals.json"
 TIMES = INPUT / "param_times.json"
-MODEL = INPUT / "param_model.csv"
+
+WARM_UP_PERIOD = 100
+DATA_COLLECTION_PERIOD = 500
+N_REPS = 5
+CORES = 1
+N_AMBULANCES = 150
 
 
 def test_no_duplicate_patient_ids():
@@ -17,11 +22,12 @@ def test_no_duplicate_patient_ids():
     config = SimConfig(
         arrivals_json=ARRIVALS,
         times_json=TIMES,
-        param_csv=MODEL,
+        warm_up_period=WARM_UP_PERIOD,
+        data_collection_period=DATA_COLLECTION_PERIOD,
+        n_reps=N_REPS,
+        cores=CORES,
+        planned_n_ambulances=N_AMBULANCES,
     )
-    config.n_ambulances = 150
-    config.warm_up_period = 100
-    config.data_collection_period = 500
     model = Model(run_number=0, config=config)
     model.run()
 

@@ -42,7 +42,7 @@ Validation is important at both trust and county level. Something that is bad at
 
 > **Definition:** Assumptions arise from incomplete knowledge - you do not know exactly how something works, so you use the best available information ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
 
-**Extreme values.** Decisions are needed about cropping extreme values when modelling input times, such as values of zero or very high values. These decisions will be assumptions around where cropping is appropriate.
+**Extreme values.** Made an assumption to set extremely long times beyond 99.9th percentile to NA.
 
 ## Simplifications
 
@@ -54,7 +54,7 @@ Validation is important at both trust and county level. Something that is bad at
 
 **Queueing.** Queueing is simplified to priority sorting. No other queue behaviour is modelled. Operational colleagues noted that, in reality, geography and queues within dispatch areas also affect dispatch decisions.
 
-**Events.** Events (e.g., festivals) have been removed from time data.
+**Special events.** Events (e.g., festivals) have been removed from time data.
 
 **Separate vehicle types are not modelled.** Just aggregate all vehicle types into a single resource. In reality...
 
@@ -63,17 +63,29 @@ Validation is important at both trust and county level. Something that is bad at
 * Cars may also attend Category 1 incidents, and different car types may be used for different jobs.
 * If a car attends and the patient then requires conveyance, an ambulance is needed. Only the ambulance stops the clock, so the recorded response time may appear worse. Requests for conveyance occur across all categories.
 
-**One fixed pool of resources with no shifts or changes in availability across the week.**
+<br>
 
-* X resource hours doesn't mean resources are available continuously. Availability is affected by:
+**Abstraction due to sickness.** This can be represented as either a fixed reduction in the resource pool, or can sample how much it should be reduced by per day. 
+
+**Converting abstraction due to sickness from staff hours to vehicle hours**: This is just done by a simple half, and doesn't incorporate any weighting by proportions of single or double crewed vehicle types.
+
+**One fixed pool of resources with no shifts or changes in availability across the week.** This depends on how the model is run. There may be no variation, it may be run with a fixed reduction for sickness abstraction, or there may be daily variation related to sickness abstraction. However it doesn't represent:
+
+* Shift patterns... the number of resources on shift will vary alot hour-to-hour, day-to-day, day-vs-night. This includes differences even of like 100 resources.
+
+* Although sickness abstraction is represented, the model doesn't include unavailability due to:
     * Rest breaks.
-    * Short-notice abstraction (e.g., sickness).
+    * Other abstractions besides sickness.
     * Restricted send during rest breaks or at end of shift (this has a big impact on availability).
     * Any issues/problems on shift.
-* Resource availability also varies alot hour-to-hour, day-to-day, day-vs-night. This includes differences even of like 100 resources.
+
 * The model uses a single pool, but resources are actually organised by dispatch area. Dispatch areas are smaller than counties, and are areas where it is feasible to send ambulances. They were designed for operational use. Several are set up around acutes, but not all will include an acute.
+
 * Resources in different areas have different response times.
+
 * Even within the dispatch area, C3 near resource or C1 far from resource, will choose the C3, and instead have a non-core go to C1 or do call-out asking for resource.
+
+<br>
 
 **Representation of multiple resources per incident.** The simulation assigns one ambulance resource to each incident, but there are often multiple resources per incident in reality. Modelling these extra responses directly requires complex dispatch rules in the DES:
 
@@ -82,12 +94,12 @@ Validation is important at both trust and county level. Something that is bad at
     * Choosing the higher-priority incident can mess up the lower-priority times...
 * Lower-priority times beecome complicated. You would assume that all resources should be on scene within the on-scene time of the first ambulance arriving - and can't be after, when that ambulance is conveying.
 
-Instead, we have chosen a simpler approach: the ambulance pool is reduced by the estimated average number of extra ambulances occupied on a multi-resource incident. This calculation is explained on the [Estimating the ambulance pool page](02_ambulancepool.qmd).
-
-In practice, some incidents require second, third, or subsequent ambulances. Rather than explicitly modelling these additional responses, the model reduces the fixed ambulance pool by the estimated average number of ambulances occupied by additional resources. This approach represents the average extra capacity used by multi-resource incidents - but has some limitations:
+Instead, we have chosen a simpler approach: the ambulance pool is reduced by the estimated average number of extra ambulances occupied on a multi-resource incident. This calculation is explained on the [Estimating the ambulance pool page](02_ambulancepool.qmd). This approach represents the average extra capacity used by multi-resource incidents - but has some limitations:
 
 * Does not capture clusters of multi-resource incidents or short-term shortages caused by several occurring at once.
 * Assumes additional ambulances are occupied for the category-average job duration - but this is likely an overestimate if they arrive later, leave earlier, or do not convey the patient.
+
+<br>
 
 **Hear-and-treat.** Excluded.
 
@@ -110,3 +122,5 @@ SWASFT are normally interested in category 2 mean response time for a given day 
 * Longer handover delays on Mondays (as they've built up over weekend).
 
 Therefore, we agreed it best to use **NHPP by day of week**.
+
+We don't explicitly ensure that time distributions are returning "zero". Just very short times.

@@ -180,12 +180,14 @@ MEAN_SERVICE = 25.0
 class StubConfig:
     """Minimal config stub satisfying the Results interface."""
 
-    def __init__(self, n_ambulances, warm_up_period, data_collection_period):
+    def __init__(
+        self, model_n_ambulances, warm_up_period, data_collection_period
+    ):
         """Initialise StubConfig.
 
         Parameters
         ----------
-        n_ambulances : int
+        model_n_ambulances : int
             Number of ambulances.
         warm_up_period : float
             Warm-up period duration.
@@ -193,7 +195,7 @@ class StubConfig:
             Data collection period duration.
 
         """
-        self.n_ambulances = n_ambulances
+        self.model_n_ambulances = model_n_ambulances
         self.warm_up_period = warm_up_period
         self.data_collection_period = data_collection_period
 
@@ -224,7 +226,7 @@ def run_monitored_resource(
     seed,
     mean_iat=MEAN_IAT,
     mean_service=MEAN_SERVICE,
-    n_ambulances=N_AMBULANCES,
+    model_n_ambulances=N_AMBULANCES,
     warm_up=WARM_UP,
     data_period=DATA_PERIOD,
 ):
@@ -238,7 +240,7 @@ def run_monitored_resource(
         Mean inter-arrival time.
     mean_service : float
         Mean service time.
-    n_ambulances : int
+    model_n_ambulances : int
         Number of ambulances (resource capacity).
     warm_up : float
         Warm-up period duration.
@@ -254,7 +256,7 @@ def run_monitored_resource(
     run_length = warm_up + data_period
     rng = np.random.default_rng(seed)
     env = simpy.Environment()
-    monitored = MonitoredResource(env, capacity=n_ambulances)
+    monitored = MonitoredResource(env, capacity=model_n_ambulances)
 
     def attend(patient_id):
         """Request ambulance and sample time with ambulance."""
@@ -282,14 +284,16 @@ def run_monitored_resource(
     # Close the final open interval
     monitored.update_time_weighted_stats()
 
-    return sum(monitored.area_resource_busy) / (n_ambulances * data_period)
+    return sum(monitored.area_resource_busy) / (
+        model_n_ambulances * data_period
+    )
 
 
 def run_vidigi_store(
     seed,
     mean_iat=MEAN_IAT,
     mean_service=MEAN_SERVICE,
-    n_ambulances=N_AMBULANCES,
+    model_n_ambulances=N_AMBULANCES,
     warm_up=WARM_UP,
     data_period=DATA_PERIOD,
 ):
@@ -303,7 +307,7 @@ def run_vidigi_store(
         Mean inter-arrival time.
     mean_service : float
         Mean service time.
-    n_ambulances : int
+    model_n_ambulances : int
         Number of ambulances (resource capacity).
     warm_up : float
         Warm-up period duration.
@@ -319,9 +323,9 @@ def run_vidigi_store(
     run_length = warm_up + data_period
     rng = np.random.default_rng(seed)
     env = simpy.Environment()
-    config = StubConfig(n_ambulances, warm_up, data_period)
+    config = StubConfig(model_n_ambulances, warm_up, data_period)
     vidigi_store = VidigiStore(
-        env, num_resources=n_ambulances, label="ambulance"
+        env, num_resources=model_n_ambulances, label="ambulance"
     )
     logger = EventLogger(env=env, run_number=0)
 
@@ -366,42 +370,42 @@ SCENARIOS = {
     "low_demand": dict(
         mean_iat=500,
         mean_service=5,
-        n_ambulances=3,
+        model_n_ambulances=3,
         warm_up=100,
         data_period=500,
     ),
     "near_saturation": dict(
         mean_iat=5,
         mean_service=25,
-        n_ambulances=3,
+        model_n_ambulances=3,
         warm_up=100,
         data_period=500,
     ),
     "zero_warmup": dict(
         mean_iat=10,
         mean_service=25,
-        n_ambulances=3,
+        model_n_ambulances=3,
         warm_up=0,
         data_period=500,
     ),
     "long_warmup": dict(
         mean_iat=10,
         mean_service=25,
-        n_ambulances=3,
+        model_n_ambulances=3,
         warm_up=1000,
         data_period=100,
     ),
     "short_data": dict(
         mean_iat=10,
         mean_service=5,
-        n_ambulances=3,
+        model_n_ambulances=3,
         warm_up=100,
         data_period=10,
     ),
     "single_ambulance": dict(
         mean_iat=10,
         mean_service=25,
-        n_ambulances=1,
+        model_n_ambulances=1,
         warm_up=100,
         data_period=500,
     ),
