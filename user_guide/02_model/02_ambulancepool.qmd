@@ -2,11 +2,11 @@
 title: Estimating the ambulance pool
 ---
 
-The model requires a single number representing how many ambulances exist in its resource pool. Because the model uses a fixed pool, this number remains constant at every simulated minute.
-
 ## Estimating the pool size from total weekly ambulance hours
 
-The available data provide the total number of ambulance-hours per week. One ambulance staffed continuously for a full week provides:
+The model has a fixed maximum number of ambulances available throughout the simulation.
+
+The available data provide the total number of ambulance-hours per week. One ambulance available continuously for a full week provides:
 
 $$
 24 \times 7 = 168\text{ ambulance hours per week}
@@ -18,23 +18,34 @@ $$
 \frac{50,400\text{ ambulance hours per week}}{168\text{ hours per week}} = 300 \text{ ambulances}
 $$
 
-This doesn't mean there are 300 ambulances per day. Instead, it means that the **weekly staffing supplies capacity equivalent to 300 ambulances operating concurrently**.
+The model therefore uses an ambulance pool of 300 ambulances.
 
-## Multi-resource incidents
+This does not mean there are 300 different ambulances on each day. It means that, across a week, the service provides the same total capacity as 300 ambulances each being available continuously for the whole week.
 
-The model assigns one ambulance to each incident. However, in reality, many incidents will require multiple resources.
+## Reducing the pool for sickness abstraction
 
-For example, for an incident requiring 3 resources, the model captures ambulance 1 but is omitting the workload of ambulances 2 and 3. This means it is underestimating resource utilisation and overestimating ambulance availability.
+Absence due to sickness reduces the ambulance capacity from the planned capacity.
 
-To compensate for this, the workload of second, third, and subsequent ambulances is converted into an **average concurrent ambulance equivalent** and subtracted from the fixed pool.
+The sickness data contains the total absence-hours for individual staff members per day. As the majority of resources require two staff members, these hours are divided by two to estimate the equivalent ambulance-hours unavailable.
 
-*Note: Our approach follows the same principles as Little's Law: average items in a system equals average arrival rate multiplied by average time spent in system.*
+For example, suppose the mean daily abstraction due to sickness was 240 hours. One ambulance available continuously for a day provides 24 ambulance hours, so:
 
-### Example calculation
+$$
+\frac{240 \text{ ambulance-hours unavailable per day}}{24 \text{ hours per day}} = 10 \text{ ambulances}
+$$
 
-For example, suppose there are ten Category 1 incidents on an average day, each incident uses two ambulances, and the mean ambulance job duration is 100 minutes.
+This is equivalent to 10 ambulances being continuously unavailable. This value is either:
 
-The model already represents one ambulance per incident, so the omitted resources per incident are:
+* Calculated once, as a mean, and subtracted once from the fixed ambulance pool size, or-
+* Sampled per day from a distribution of unavailability, and the ambulance pool size is then changed each day to match.
+
+## Reducing the pool for multi-resource incidents.
+
+The model assigns one ambulance to each incident. However, some incidents require more than one ambulance.
+
+The first ambulance is represented directly in the simulation. Any second, third, or later ambulances attending the same incident are not explicitly represented. Their work still uses ambulance capacity, so the model reduces the pool to account for it.
+
+For example, suppose there are ten Category 1 incidents on an average day, each incident uses two ambulances, and the mean ambulance job duration is 100 minutes. The model already represents one ambulance per incident, so the omitted resources per incident are:
 
 $$
 2 - 1 = 1 \text{ additional ambulance}
@@ -60,18 +71,19 @@ $$
 
 So those extra Category 1 responses consume the same amount of capacity as 0.694 ambulances being continuously occupied throughout the day.
 
-### When does the multi-resource reduction need recalculating?
+## When to update the reductions
 
-The multi-resource reduction is estimated from historical data on incident volume, the number of ambulances attending each incident, and ambulance job duration by response category. The same historical data are also used to estimate model inputs such as inter-arrival times and job-time distributions.
+The sickness reduction should be updated if the scenario changes the assumed level of sickness absence.
 
-When running scenarios, the reduction should be updated only if the scenario changes the additional ambulance workload.
+The multi-resource reduction should be updated only when the scenario changes the amount of work done by second and subsequent ambulances.
 
-| Scenario change | Change the reduction? | Treatment |
+| Scenario change | Update sickness reduction? | Update multi-resource reduction? |
 | - | - | - |
-| Ambulance pool size changes | No | Keep reduction fixed |
-| Overall demand increases by 5% with same category mix | Yes | Increase the reduction by 5% |
-| Demand changes differently by category | Yes | Recalculate the contribution from each category |
-| Job duration changes | Yes | Recalculate using the new relevant job times |
-| Number of resources per incident changes | Yes | Recalculate using the new multi-resource proportions |
+| Increase or decrease overall ambulance pool size | No | No |
+| Change in average levels of sickness | Yes | No |
+| Increase incident demand by 5% | No | Yes, increase by 5% |
+| Change incident demand by response category | No | Yes, recalculate by category |
+| Change ambulance job durations | No | Yes |
+| Change the number of ambulances attending incidents | No | Yes |
 
-Changing the number of ambulances does not itself create more multi-resource incidents, so the reduction remains unchanged. However, if incident demand increases by 5%, the workload from second, third and subsequent ambulances also increases by 5%.
+Just changing the pool size will not itself create more sickness or multi-resource incidents, so the reduction remains unchanged. However, if other factors also change (e.g., if you assumed sickness should be a proportion related to pool size, or if incident demand also changed with pool size), then amendments are required.
