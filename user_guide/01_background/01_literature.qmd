@@ -471,6 +471,88 @@ Less relevant: dispatching rules (policy change), destination hospital (mass cas
 
 <br>
 
+## Number of resources
+
+TODO.
+
+::: {.callout-note title="View studies" collapse="true"}
+
+@aboueljinane_discrete_2023 - Model has number of operators, regulators, and rescue teams per shift. Teams are located by geography and follow shift pattern with number on shift at a given time. Model does optimisation related to minimum rescue teams needed.
+
+@aringhieri_integrated_2010 - Resources are ambulances and operators. They can be defined hourly. Example figure has 24 ambulances and 3 operators.
+
+@baird_bairdjambulance-simmer_2020 - TODO
+
+@berlin_mathematical_1974 - TODO
+
+@bertsimas_robust_2019 - TODO
+
+@van_buuren_evaluating_2012 - TODO
+
+@demir_using_2024 - TODO
+
+@fonseca_discrete_2025 - TODO
+
+@frichi_ambulance_2025 - TODO
+
+@frichi_dataset_2022 - TODO
+
+@frichi_assessing_2022 - TODO
+
+@gigante_study_2022 - TODO
+
+@gunes_simulation_2005 - TODO
+
+@henderson_ambulance_2005 - TODO
+
+@ingolfsson_simulation_2003 - TODO
+
+@iskander_simulation_1989 - TODO
+
+@kergosien_generic_2015 - TODO
+
+@lam_low-cost_2019 - TODO
+
+@lee_simulation-based_2012 - TODO
+
+@leeds_institute_for_data_analytics_assessing_2025 - TODO
+
+@madia_socioeconomic_2025 - TODO
+
+@maxwell_ambulance_2009 - TODO
+
+@otles_eotlesems_2024 - TODO
+
+@parajuli_urmila-mambulance-gis-system_2021 - TODO
+
+@pilbery_richardpilberydaa_des_2025 - TODO
+
+@pinto_generic_2015 - TODO
+
+@portz_rising_2013 - TODO
+
+@ridler_simulation_2022 - TODO
+
+@schjolberg_comparing_2023 - TODO
+
+@silva_emergency_2010 - TODO
+
+@turner_socioeconomic_2022 - TODO
+
+@uyeno_practical_1984 - TODO
+
+@wang_discrete-event_2025 - TODO
+
+@wears_simulation_1993 - TODO
+
+@wei_lam_reducing_2014 - TODO
+
+@wu_using_2009 - TODO
+
+:::
+
+<br>
+
 ## Shifts
 
 Vary between studies.
@@ -856,4 +938,9 @@ Outcomes:
 
 @leeds_institute_for_data_analytics_assessing_2025
 
+:::
+
+## References
+
+::: {#refs}
 :::
