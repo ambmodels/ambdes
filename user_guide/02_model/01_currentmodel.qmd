@@ -1,5 +1,6 @@
 ---
 title: Current model
+bibliography: ../../assets/references.bib
 ---
 
 ![Model structure](/assets/images/ambdes_aggregate.drawio.png)\
@@ -40,74 +41,45 @@ Validation is important at both trust and county level. Something that is bad at
 
 ## Assumptions
 
-> **Definition:** Assumptions arise from incomplete knowledge - you do not know exactly how something works, so you use the best available information ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
+> **Definition:** Assumptions arise from incomplete knowledge - you do not know exactly how something works, so you use the best available information.
+>
+> You can also identify **simplifying assumptions**. These are assumptions that lead to simplification of the model. (@robinson_assumptions_2025)
+>
+> @robinson_assumptions_2025 recommend assessing:
+>
+> * **Confidence** - how certain we are that the assumption is correct.
+> * **Impact** - the anticipated effect on outputs if the assumption is incorrect - independent of the likelihood of the assumption being correct.
+>
+> They recommend that **sensitivity analysis** can be used to measure the impact of changing an assumption.
 
-**Extreme values.** Made an assumption to set extremely long times beyond 99.9th percentile to NA.
+| Assumption | Confidence | Impact |
+| - | - | - |
+| **Extreme values:** Values above the 99.9th percentile are treated as missing (`NA`), on the assumption that they are more likely to reflect data quality issues than genuine operational times. | **High:** The data were discussed with system experts who agreed that very long times are often caused by data-quality issues, but said it's hard to draw a definitive threshold | **Low:** Extreme values can make distribution fitting a little harder as it distorts visualisations. However, fitting with and without these values actually had relatively minimal impact on the selected distributions or model outputs. |
+| **NHPP arrivals:** Arrivals are represented by an NHPP - a common approach for DES in the literature - assuming arrivals occur independently and follow a Poisson distribution, and vary over time. | **Medium:** NHPP is established practice for time-varying service demand arrivals and captures known variation in demand over time. However, marked as "medium" not "high" as not yet assessed independence, clustering and variability in arrivals. | **Medium:** If arrivals are more variable than NHPP allows or are correlated or clustered, then the model may understate the variation in demand and risk of extreme demand periods. |
+| **Process and activity durations:** These are represented by probability distributions selected through input modelling. They are assumed to adequately represent the observed data. | **High:** Distributions and parameters were selected using input modelling and graphical and statistical measures of fit. | **Low:** Sensitivity testing using fitted distributions v.s., empirical sampling produced similar results, suggesting relatively minimal impact of using fitted distributions. |
 
 ## Simplifications
 
-> **Definition:** Simplifications are a deliberate design choice - you could model something in more detail, but you opt for a simple representation. ([Robinson 2024](https://www.bloomsbury.com/uk/simulation-9781350445222/)).
+> **Definition:** Simplifications are a deliberate design choice - you could model something in more detail, but you opt for a simple representation. (@robinson_assumptions_2025)
+>
+> @robinson_assumptions_2025 recommend assessing the **impact** of simplifications - i.e., it's anticipated effect on model outputs.
 
-**Arrival frequency.** The number of arrivals varies by day of week. Arrivals are then assigned a response category and response outcome, which do not vary by day of week. This was checked by comparing the proportions of Category 1, 2, 3, and 4 incidents, and see-and-convey versus see-and-treat outcomes, across days of the week. These were consistent. If clear day-of-week patterns were found, categories and outcomes should instead be sampled as part of the NHPP rather than assigned afterwards.
-
-**Conveyance.** 'See & Convey non ED' and 'See & Convey ED' are grouped into a single 'see & convey' group.
-
-**Queueing.** Queueing is simplified to priority sorting. No other queue behaviour is modelled. Operational colleagues noted that, in reality, geography and queues within dispatch areas also affect dispatch decisions.
-
-**Special events.** Events (e.g., festivals) have been removed from time data.
-
-**Separate vehicle types are not modelled.** Just aggregate all vehicle types into a single resource. In reality...
-
-* Different resource types, such as ambulances and cars and community first responders, have different job times, utilisations, and intended uses.
-* Cars are often specialist paramedic resources targeted at incidents unlikely to require conveyance, while ambulances are required for conveyance.
-* Cars may also attend Category 1 incidents, and different car types may be used for different jobs.
-* If a car attends and the patient then requires conveyance, an ambulance is needed. Only the ambulance stops the clock, so the recorded response time may appear worse. Requests for conveyance occur across all categories.
-
-<br>
-
-**Abstraction due to sickness.** This can be represented as either a fixed reduction in the resource pool, or can sample how much it should be reduced by per day. 
-
-**Converting abstraction due to sickness from staff hours to vehicle hours**: This is just done by a simple half, and doesn't incorporate any weighting by proportions of single or double crewed vehicle types.
-
-**One fixed pool of resources with no shifts or changes in availability across the week.** This depends on how the model is run. There may be no variation, it may be run with a fixed reduction for sickness abstraction, or there may be daily variation related to sickness abstraction. However it doesn't represent:
-
-* Shift patterns... the number of resources on shift will vary alot hour-to-hour, day-to-day, day-vs-night. This includes differences even of like 100 resources.
-
-* Although sickness abstraction is represented, the model doesn't include unavailability due to:
-    * Rest breaks.
-    * Other abstractions besides sickness.
-    * Restricted send during rest breaks or at end of shift (this has a big impact on availability).
-    * Any issues/problems on shift.
-
-* The model uses a single pool, but resources are actually organised by dispatch area. Dispatch areas are smaller than counties, and are areas where it is feasible to send ambulances. They were designed for operational use. Several are set up around acutes, but not all will include an acute.
-
-* Resources in different areas have different response times.
-
-* Even within the dispatch area, C3 near resource or C1 far from resource, will choose the C3, and instead have a non-core go to C1 or do call-out asking for resource.
-
-<br>
-
-**Representation of multiple resources per incident.** The simulation assigns one ambulance resource to each incident, but there are often multiple resources per incident in reality. Modelling these extra responses directly requires complex dispatch rules in the DES:
-
-* If a lower-priority incident is waiting for a second ambulance when a higher-priority incident arrives, the model must decide which incident receives the next available ambulance.
-    * Choosing the lower-priority incident overestimates the higher-priority response time.
-    * Choosing the higher-priority incident can mess up the lower-priority times...
-* Lower-priority times beecome complicated. You would assume that all resources should be on scene within the on-scene time of the first ambulance arriving - and can't be after, when that ambulance is conveying.
-
-Instead, we have chosen a simpler approach: the ambulance pool is reduced by the estimated average number of extra ambulances occupied on a multi-resource incident. This calculation is explained on the [Estimating the ambulance pool page](02_ambulancepool.qmd). This approach represents the average extra capacity used by multi-resource incidents - but has some limitations:
-
-* Does not capture clusters of multi-resource incidents or short-term shortages caused by several occurring at once.
-* Assumes additional ambulances are occupied for the category-average job duration - but this is likely an overestimate if they arrive later, leave earlier, or do not convey the patient.
-
-<br>
-
-**Hear-and-treat.** Excluded.
-
-**Out-of-area activity.** Excluded. Both outside of the SWAST patch, but also across county boundaries. Although the model doesn’t capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected.
-
-**Times for see-and-treat v.s., see-and-convey:** Separate distributions for time on scene, but otherwise use a single distribution.
-
-**Upgrading/downgrading.** Provided data just has final category decision for each patient. In reality, some category 1 might downgrade to category 2 and so on. Also, like after X time, welfare call to check in, and maybe then change e.g., C3 to C2. Note, this will reset the clock.
+| Simplifications | Impact |
+| - | - |
+| **Arrival frequency:** Arrival frequency varies by day of week. Response category and response outcome are assigned after arrival and do not change by day of week. | **Low:** The proportion of Category 1-4 incidents and of see-and-convey v.s., see-and-treat outcomes, was compared across days of the week and found to be consistent. If a clear day-of-week pattern was later identified, then the response category and outcome should be sampled as part of the NHPP rather than assigned afterwards. |
+| **Conveyance:** "See & Convey non ED" and "See & Convey ED" are combined into a single "See & Convey" group. | **Low:** This level of aggregation matches the reporting level required by SWAST. |
+| **Queueing and dispatch:** Queueing is represented by priority sorting, with no other behaviours (e.g., reneging, balking). Operational colleagues noted that, in reality, geography and queues within dispatch areas also affect dispatch decisions. | **High:** It is anticipated that the current queueing process is having a large impact on outcomes, causing very low C1/C2 times and very high C3/C4 times. |
+| **Special events:** Events (e.g., festivals) have been removed from time data. | **Low:** This is typical for SWAST operational modelling. If we wanted to explore special events in the model, this could be performed via scenario analysis altering demand. |
+| **Vehicle types:** All vehicle types are pooled and represented as one ambulance resource type. The model does not distinguish e.g., double-crewed ambulances, cars, community first responders, other specialist vehicles. | **Medium:** Vehicle types have different capabilities (e.g., conveyance v.s., not, or targeted at different job types), utilisation, job duration. Also, if a car attends a patient requiring conveyance, the clock stops when an ambulance arrivals, so recorded response time looks longer. |
+| **Sickness abstraction:** Sickness is represented either as a fixed reduction in the resource pool or a daily sampled reduction. | **Low:** This simplification captures average loss of capacity. Used a fixed or daily sampled reduction produces similar results. |
+| **Staff-to-vehicle sickness conversion:** Sickness data is provided as staff-hours per day. This is converted to vehicle-hours by halving the number of staff hours, without accounting for the mix of single- and double-crewed vehicles. | **Medium:** This conversion may over- or under-estimate the number of unavailable vehicles. |
+| **Resource availability over time:** The model uses one resource pool. It doesn't represent... (A) Shifts. These can vary alot hour-to-hour, day-to-day, day-v.s.-night, with differences up to even 100 resources. (B) Other abstractions besides sickness. (C) Restricted send during rest breaks or end of shift (this has a big impact on availability). (D) Any other issues or problems on shift. | **High:** There is alot of variability not represented, with large impact on resource numbers. |
+| **Resource availability by location:** The model uses one resource pool, but resources are actually organised by dispatch areas. Dispatch areas are smaller than counties, and are areas where it is feasible to send ambulances. They were designed for operational use. Several are set up around acutes, but not all will include an acute. Resources in different areas have different response times. Even within the dispatch area, C3 near resource or C1 far from resource, will choose the C3, and instead have a non-core go to C1 or do call-out asking for resource. | **Medium-to-high:** Lots of impact on dispatch, not represented in model. |
+| **Multiple-resource incidents:** In the model, each incident receives one ambulance resource. The average capacity used by additional resources at multi-resource incidents is represented by reducing the available ambulance pool by an estimated average amount (see [Estimating the ambulance pool page](02_ambulancepool.qmd)). This is done instead of modelling multiple resources directly as that would require complex dispatch rules. If a lower-priority incident is waiting for a second ambulance when a higher-priority incident arrives, the model must decide which incident receives the next available ambulance. Also, all resources would need to arrive before the sampled on-scene time ends, which would be tricky to guarantee. | **Medium:** This approach represents the average extra capacity used by multi-resource incidents - but has some limitations... (A) Does not capture clusters of multi-resource incidents or short-term shortages caused by several occurring at once. (B) Assumes additional ambulances are occupied for the category-average job duration - but this is likely an overestimate if they arrive later, leave earlier, or do not convey the patient. |
+| **Hear-and-treat:** Excluded. | **Low:** Agreed scope with SWAST is to exclude hear-and-treat. Hear-and-treat is assumed to not materially affect dispatched ambulance activity. |
+|  **Out-of-area activity:** Activity outside of SWAST and across county boundaries is not represented. | **Medium:** Although the model doesn’t capture interactions between counties (e.g., where patients are frequently conveyed out of their originating county), this simplification may be acceptable. The model groups activity by location where the call is received, rather than by the location of hospital attendance. As a result, it represents demand originating from each county, meaning that differences in response times driven by local demand and resource availability (e.g., longer response times in higher-pressure areas) are still reflected. |
+| **Times for see-and-treat v.s., see-and-convey:** Separate distributions for time on scene, but otherwise use a single distribution. | **Medium:** This is based on discussion with system experts, who identified time on scene as necessary to model separately. This could be reduced to "low" if checked data to see other times don't vary markedly. |
+| **Upgrading and downgrading:** Provided data just has final category decision for each patient. In reality, some category 1 might downgrade to category 2 and so on. Also, like after X time, welfare call to check in, and maybe then change e.g., C3 to C2. Note, this will reset the clock. | **Low:** Assumed that category changes are relatively uncommon and therefore this should have a minimal impact. |
 
 ## Other notes
 
@@ -124,3 +96,8 @@ SWASFT are normally interested in category 2 mean response time for a given day 
 Therefore, we agreed it best to use **NHPP by day of week**.
 
 We don't explicitly ensure that time distributions are returning "zero". Just very short times.
+
+## References
+
+::: {#refs}
+:::
