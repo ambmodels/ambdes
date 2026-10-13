@@ -591,13 +591,16 @@ def plot_metric_kde(metric, registry, size=10_000):
     fig.tight_layout()
 
 
-def build_arrival_config(arrivals):
+def build_arrival_config(arrivals, hourly=False):
     """Determine arrival parameters and create config dict.
 
     Parameters
     ----------
     arrivals : pd.DataFrame
-        Count of arrivals by weekday, response category and outcome.
+        Count of arrivals by weekday, response category and outcome. Must also
+        contain incident hour when hourly=True.
+    hourly : bool
+        Use weekday-hour intervals instead of just weekday intervals.
 
     Returns
     -------
@@ -607,19 +610,28 @@ def build_arrival_config(arrivals):
         assumptions in the arrival modelling.
 
     """
+    if hourly:
+        time_index = arrivals["weekday"] * 24 + arrivals["incidenthour"]
+        n_intervals = 168
+        interval_minutes = 60
+    else:
+        time_index = arrivals["weekday"]
+        n_intervals = 7
+        interval_minutes = 1440
+
     # Aggregate to counts by response category only
     # Producing dataframe where weekday is index and columns are category
     arrival_df = pd.crosstab(
-        arrivals["weekday"],
+        time_index,
         arrivals["category"],
         values=arrivals["count"],
         aggfunc="sum",
-    ).reindex(range(7))
+    ).reindex(range(n_intervals)).fillna(0)
 
-    # Convert from counts to proportions of each category on each day
+    # Convert from counts to proportions of each category for each interval
     proportion_df = arrival_df.div(arrival_df.sum(axis=1), axis=0)
 
-    # Summarise the variations in proportions by day of week
+    # Summarise the variations in proportions across intervals
     variation_df = pd.DataFrame(
         {
             "mean": proportion_df.mean(axis=0),
@@ -633,16 +645,16 @@ def build_arrival_config(arrivals):
     # Get overall mean proportion by response category
     category_proportions = proportion_df.mean(axis=0)
 
-    # Get count of total arrivals per day
-    arrivals_per_day = arrival_df.sum(axis=1)
+    # Get count of total arrivals per interval
+    arrivals_per_interval = arrival_df.sum(axis=1)
 
     # Convert to format required by sim_tools NSPPThinning class
     # It requires "t" (timepoint when arrival rate changes) and "mean_iat"
     # (mean inter-arrival time).
     nspp_df = pd.DataFrame(
         {
-            "t": range(0, 7 * 1440, 1440),
-            "mean_iat": 1440 / arrivals_per_day.values,
+            "t": range(0, n_intervals * interval_minutes, interval_minutes),
+            "mean_iat": interval_minutes / arrivals_per_interval.values,
         }
     )
 
