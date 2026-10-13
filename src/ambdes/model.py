@@ -40,10 +40,16 @@ class Model:
         # Set up logger
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
+        # Calculate maximum possible number of ambulances
+        if self.config.ambulance_schedule is None:
+            self.max_n_ambulances = self.config.n_ambulances
+        else:
+            self.max_n_ambulances = max(self.config.ambulance_schedule.values())
+
         # Set up ambulance resource
         self.ambulance = VidigiPriorityStore(
             self.env,
-            num_resources=self.config.model_n_ambulances,
+            num_resources=self.max_n_ambulances,
             label="ambulance",
             logger=self.logger,
         )
@@ -57,7 +63,7 @@ class Model:
                 "resource_id": None,
                 "remove_target": 0,
                 "removed": 0,
-                "capacity": self.config.model_n_ambulances,
+                "capacity": self.max_n_ambulances,
             }
         ]
 
@@ -219,25 +225,39 @@ class Model:
         )
 
     def update_operational_capacity(self):
-        """Set a new operational capacity target."""
+        """Apply the ambulance capacity schedule repeatedly."""
+        schedule = sorted(self.config.ambulance_schedule.items())
+        cycle_start = self.env.now
+
         while True:
-            # Sample the number of working hours that capacity should be
-            # reduced by, relative to the maximum system capacity. Convert
-            # this from hours to minutes to a number of resources
-            remove_mins = self.dists["reduce_daily_hours"].sample() * 60
-            remove_target = round(remove_mins / self.config.capacity_interval)
+            for index, (time, n_amb) in enumerate(schedule):
 
-            # Deadline is time at start of interval + interval length
-            deadline = self.env.now + self.config.capacity_interval
-            yield from self.apply_capacity_update(
-                remove_target=remove_target, deadline=deadline
-            )
+                # Wait until the next schedule entry starts
+                start = cycle_start + time
+                if self.env.now < start:
+                    yield self.env.timeout(start - self.env.now)
 
-            # If the target was reached early, wait for the remainder
-            # of the interval
-            remaining_time = deadline - self.env.now
-            if remaining_time > 0:
-                yield self.env.timeout(remaining_time)
+                # Get the next time in schedule - or if at end of schedule,
+                # use the ambulance_schedule_period
+                if index + 1 < len(schedule):
+                    next_time = schedule[index + 1][0]
+                else:
+                    next_time = self.config.ambulance_schedule_period
+
+                deadline = cycle_start + next_time
+                remove_target = self.max_n_ambulances - n_amb
+
+                yield from self.apply_capacity_update(
+                    remove_target=remove_target, deadline=deadline
+                )
+
+                # If the target was reached early, wait for the remainder
+                # of the interval
+                remaining_time = deadline - self.env.now
+                if remaining_time > 0:
+                    yield self.env.timeout(remaining_time)
+
+            cycle_start += self.config.ambulance_schedule_period
 
     def apply_capacity_update(self, remove_target, deadline):
         """Try to reach capacity target until the specified deadline.
@@ -253,10 +273,10 @@ class Model:
             method waits for them to become available only until this time.
 
         """
-        if not 0 <= remove_target <= self.config.model_n_ambulances:
+        if not 0 <= remove_target <= self.max_n_ambulances:
             raise ValueError(
                 f"remove_target must be between 0 and "
-                f"{self.config.model_n_ambulances}; received {remove_target}"
+                f"{self.max_n_ambulances}; received {remove_target}"
             )
 
         # Return ambulances if the new target is lower than the
@@ -312,7 +332,7 @@ class Model:
 
     def assert_resource_invariants(self):
         """Check that ambulance resource counting is consistent."""
-        original = self.config.model_n_ambulances
+        original = self.max_n_ambulances
         operational = self.ambulance.num_resources
         removed = len(self.removed_units)
         busy = self.ambulance.count
@@ -335,7 +355,7 @@ class Model:
         self.env.process(self.warm_up())
 
         # Schedule changing capacity if set
-        if self.config.capacity_interval is not None:
+        if self.config.ambulance_schedule is not None:
             self.env.process(self.update_operational_capacity())
 
         # Run simulation
