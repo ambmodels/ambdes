@@ -611,7 +611,7 @@ def build_arrival_config(arrivals, hourly=False):
 
     """
     if hourly:
-        time_index = arrivals["weekday"] * 24 + arrivals["incidenthour"]
+        time_index = arrivals["weekday"] * 24 + arrivals["IncidentHour"]
         n_intervals = 168
         interval_minutes = 60
     else:
