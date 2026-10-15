@@ -6,6 +6,25 @@ from pathlib import Path
 import pandas as pd
 
 
+def resolve_dict(value):
+    """Return a dictionary unchanged, or load one from a JSON file path.
+
+    Parameters
+    ----------
+    value : dict | str | Path
+        Dictionary, or path to a JSON file containing a dictionary.
+
+    Returns
+    -------
+    dict
+        The supplied dictionary or the dictionary loaded from the file.
+    """
+    if isinstance(value, (str, Path)):
+        with open(value, encoding="utf-8") as f:
+            return json.load(f)
+    return value
+
+
 class SimConfig:
     """Configuration for a simulation run.
 
@@ -39,8 +58,8 @@ class SimConfig:
 
     def __init__(
         self,
-        arrivals_json,
-        times_json,
+        arrivals_config,
+        times_config,
         warm_up_period,
         data_collection_period,
         n_reps,
@@ -53,10 +72,12 @@ class SimConfig:
 
         Parameters
         ----------
-        arrivals_json : str | Path
-            Path to JSON file containing arrival distribution configuration.
-        times_json : str | Path
-            Path to JSON file containing time distribution configuration.
+        arrivals_config : dict | str | Path
+            Dictionary or path to JSON file containing arrival distribution
+            configuration.
+        times_config : dict | str | Path
+            Dictionary or path to JSON file containing time distribution
+            configuration.
         warm_up_period : int
             Duration of the warm-up period in minutes.
         data_collection_period : int
@@ -78,21 +99,17 @@ class SimConfig:
             for the schedule, at which point it should run again, on loop.
 
         """
-        # Load ready-made distribution configs from JSON
-        with open(arrivals_json, encoding="utf-8") as f:
-            arrivals_config = json.load(f)
-        with open(times_json, encoding="utf-8") as f:
-            times_config = json.load(f)
+        # Load dictionaries from JSON paths, unless have directly provided
+        # a dictionary - in which case, leave unchanged
+        arrivals_config = resolve_dict(arrivals_config)
+        times_config = resolve_dict(times_config)
+        self.ambulance_schedule = resolve_dict(ambulance_schedule)
 
-        # Load ambulance schedule if provided as JSON
         # Ensure times are int (as might e.g., read in as strings)
-        if isinstance(ambulance_schedule, (str, Path)):
-            with open(ambulance_schedule, encoding="utf-8") as f:
-                ambulance_schedule = json.load(f)
-        if ambulance_schedule is not None:
-            ambulance_schedule = {
+        if self.ambulance_schedule is not None:
+            self.ambulance_schedule = {
                 int(time): n_ambulances
-                for time, n_ambulances in ambulance_schedule.items()
+                for time, n_ambulances in self.ambulance_schedule.items()
             }
 
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
@@ -108,6 +125,7 @@ class SimConfig:
             )
         }
 
+        # Combine configs into a single dictionary
         self.dist_config = {
             **arrivals_config,
             **times_config,
@@ -119,7 +137,6 @@ class SimConfig:
         self.n_reps = int(n_reps)
         self.cores = int(cores)
         self.n_ambulances = n_ambulances
-        self.ambulance_schedule = ambulance_schedule
         self.ambulance_schedule_period = ambulance_schedule_period
 
         self.validate_inputs()

@@ -20,8 +20,8 @@ def test_no_duplicate_patient_ids():
     """Patient IDs must be unique for the whole run."""
     # Run model with a warm-up period
     config = SimConfig(
-        arrivals_json=ARRIVALS,
-        times_json=TIMES,
+        arrivals_config=ARRIVALS,
+        times_config=TIMES,
         warm_up_period=WARM_UP_PERIOD,
         data_collection_period=DATA_COLLECTION_PERIOD,
         n_reps=N_REPS,

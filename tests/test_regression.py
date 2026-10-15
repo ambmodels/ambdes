@@ -34,8 +34,8 @@ AUDIT = OUTPUT / "audit.csv"
 def make_config():
     """Create a standard simulation config for regression tests."""
     return SimConfig(
-        arrivals_json=ARRIVALS,
-        times_json=TIMES,
+        arrivals_config=ARRIVALS,
+        times_config=TIMES,
         warm_up_period=WARM_UP_PERIOD,
         data_collection_period=DATA_COLLECTION_PERIOD,
         n_reps=N_REPS,

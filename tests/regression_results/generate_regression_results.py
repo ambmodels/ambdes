@@ -22,8 +22,8 @@ OUTPUT = Path(__file__).parent
 def make_config():
     """Make SimConfig."""
     return SimConfig(
-        arrivals_json=INPUT / "param_arrivals.json",
-        times_json=INPUT / "param_times.json",
+        arrivals_config=INPUT / "param_arrivals.json",
+        times_config=INPUT / "param_times.json",
         param_csv=INPUT / "param_model.csv",
     )
 
