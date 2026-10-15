@@ -1,6 +1,7 @@
 """Model configuration."""
 
 import json
+from pathlib import Path
 
 import pandas as pd
 
@@ -67,11 +68,12 @@ class SimConfig:
             available cores and `1` for sequential execution.
         n_ambulances : int
             Number of ambulances in the resource pool.
-        ambulance_schedule : dict
-            Used to mimic ambulance shifts or varying resource over time. The
-            dictionary keys should be time (int, in minutes) and values are
-            `n_ambulances` for that time period.
-        ambulance_schedule_period : int
+        ambulance_schedule : dict | str | Path | None
+            Dictionary or path to a JSON file containing ambulance availability
+            over time. Keys are times in minutes and values are the number of
+            ambulances available from that time. Provide exactly one of
+            `n_ambulances` or `ambulance_schedule`.
+        ambulance_schedule_period : int | None
             Required if ambulance_schedule is provided. Defines the end time
             for the schedule, at which point it should run again, on loop.
 
@@ -81,6 +83,17 @@ class SimConfig:
             arrivals_config = json.load(f)
         with open(times_json, encoding="utf-8") as f:
             times_config = json.load(f)
+
+        # Load ambulance schedule if provided as JSON
+        # Ensure times are int (as might e.g., read in as strings)
+        if isinstance(ambulance_schedule, (str, Path)):
+            with open(ambulance_schedule, encoding="utf-8") as f:
+                ambulance_schedule = json.load(f)
+        if ambulance_schedule is not None:
+            ambulance_schedule = {
+                int(time): n_ambulances
+                for time, n_ambulances in ambulance_schedule.items()
+            }
 
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
         # (as sim-tools requires a dataframe, but had to use lists for JSON)
@@ -129,9 +142,8 @@ class SimConfig:
                     "Must provide `ambulance_schedule_period` when using "
                     "`ambulance_schedule`."
                 )
-            if (
-                self.ambulance_schedule_period <=
-                max(self.ambulance_schedule.keys())
+            if self.ambulance_schedule_period <= max(
+                self.ambulance_schedule.keys()
             ):
                 raise ValueError(
                     "`ambulance_schedule_period` must be greater than the "
