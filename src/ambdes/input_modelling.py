@@ -621,12 +621,16 @@ def build_arrival_config(arrivals, hourly=False):
 
     # Aggregate to counts by response category only
     # Producing dataframe where weekday is index and columns are category
-    arrival_df = pd.crosstab(
-        time_index,
-        arrivals["category"],
-        values=arrivals["count"],
-        aggfunc="sum",
-    ).reindex(range(n_intervals)).fillna(0)
+    arrival_df = (
+        pd.crosstab(
+            time_index,
+            arrivals["category"],
+            values=arrivals["count"],
+            aggfunc="sum",
+        )
+        .reindex(range(n_intervals))
+        .fillna(0)
+    )
 
     # Convert from counts to proportions of each category for each interval
     proportion_df = arrival_df.div(arrival_df.sum(axis=1), axis=0)

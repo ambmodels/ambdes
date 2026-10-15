@@ -44,7 +44,9 @@ class Model:
         if self.config.ambulance_schedule is None:
             self.max_n_ambulances = self.config.n_ambulances
         else:
-            self.max_n_ambulances = max(self.config.ambulance_schedule.values())
+            self.max_n_ambulances = max(
+                self.config.ambulance_schedule.values()
+            )
 
         # Set up ambulance resource
         self.ambulance = VidigiPriorityStore(
@@ -231,7 +233,6 @@ class Model:
 
         while True:
             for index, (time, n_amb) in enumerate(schedule):
-
                 # Wait until the next schedule entry starts
                 start = cycle_start + time
                 if self.env.now < start:

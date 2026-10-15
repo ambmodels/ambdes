@@ -27,10 +27,8 @@ def ambulance_schedule_period(request):
 
 @pytest.fixture
 def model(
-    n_ambulances,
-    ambulance_schedule,
-    ambulance_schedule_period,
-    monkeypatch):
+    n_ambulances, ambulance_schedule, ambulance_schedule_period, monkeypatch
+):
     """Simplified Model."""
     # Don't run create_batch - just return dict as is
     monkeypatch.setattr(
@@ -40,11 +38,7 @@ def model(
     # Create an object that can replace config in Model, which contains fields
     # that Model accesses during construction and when run.
     config = SimpleNamespace(
-        n_ambulances=(
-            n_ambulances
-            if ambulance_schedule is None
-            else None
-        ),
+        n_ambulances=(n_ambulances if ambulance_schedule is None else None),
         ambulance_schedule=ambulance_schedule,
         ambulance_schedule_period=ambulance_schedule_period,
         warm_up_period=0,
@@ -384,9 +378,7 @@ def test_capacity_schedule_repeats(model):
     model.env.run(until=121)
 
     changes_at_120 = [
-        entry
-        for entry in model.capacity_log
-        if entry["time"] == 120.0
+        entry for entry in model.capacity_log if entry["time"] == 120.0
     ]
 
     assert len(changes_at_120) == 2
