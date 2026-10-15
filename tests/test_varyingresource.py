@@ -44,6 +44,7 @@ def model(
         warm_up_period=0,
         data_collection_period=100,
         dist_config={},
+        permit_schedule=None,
     )
     # Return initialised model
     return Model(run_number=0, config=config)
@@ -58,7 +59,14 @@ def test_remove_idle_ambulances(model):
     """Check idle ambulances are removed immediately."""
     # Run apply_capacity_update
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.apply_capacity_update(
+            resource=model.ambulance,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
+            remove_target=2,
+            deadline=10,
+            capacity_log=model.capacity_log,
+        )
     )
     model.env.run()
 
@@ -106,15 +114,23 @@ def test_remove_and_return_idle_ambulances(model):
 
     def scenario():
         yield from model.apply_capacity_update(
+            resource=model.ambulance,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
             remove_target=2,
             deadline=10,
+            capacity_log=model.capacity_log,
         )
 
         yield model.env.timeout(5)
 
         yield from model.apply_capacity_update(
+            resource=model.ambulance,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
             remove_target=0,
             deadline=15,
+            capacity_log=model.capacity_log,
         )
 
         yield model.env.timeout(20)
@@ -200,7 +216,14 @@ def test_wait_before_remove_busy_ambulance(model):
     model.env.process(occupy_ambulance())
 
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.apply_capacity_update(
+            resource=model.ambulance,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
+            remove_target=2,
+            deadline=10,
+            capacity_log=model.capacity_log,
+        ),
     )
 
     model.env.run()
@@ -266,7 +289,14 @@ def test_not_remove_after_deadline(model):
     model.env.process(occupy_ambulance())
 
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.apply_capacity_update(
+            resource=model.ambulance,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
+            remove_target=2,
+            deadline=10,
+            capacity_log=model.capacity_log,
+        ),
     )
 
     model.env.run(until=25)
@@ -303,7 +333,7 @@ def test_not_remove_after_deadline(model):
 
 
 # ---------------------------------------------------------------------------
-# Test of update_operational_capacity (which calls apply_capacity_update)
+# Test of update_capacity (which calls apply_capacity_update)
 # ---------------------------------------------------------------------------
 
 
@@ -315,9 +345,17 @@ def test_not_remove_after_deadline(model):
     indirect=True,
 )
 def test_capacity_changes_between_intervals(model):
-    """Test capacity changes using interval and update_operational_capacity."""
+    """Test capacity changes using interval and update_capacity."""
     # With 1-hour capacity interval, first remove two ambulances, then return
-    model.env.process(model.update_operational_capacity())
+    model.env.process(
+        model.update_capacity(
+            resource=model.ambulance,
+            schedule=model.config.ambulance_schedule,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
+            capacity_log=model.capacity_log,
+        )
+    )
     model.env.run(until=61)
 
     expected_log = [
@@ -374,7 +412,15 @@ def test_capacity_changes_between_intervals(model):
 )
 def test_capacity_schedule_repeats(model):
     """Check the ambulance schedule repeats after its period."""
-    model.env.process(model.update_operational_capacity())
+    model.env.process(
+        model.update_capacity(
+            resource=model.ambulance,
+            schedule=model.config.ambulance_schedule,
+            max_capacity=model.max_n_ambulances,
+            removed_units=model.removed_units,
+            capacity_log=model.capacity_log,
+        )
+    )
     model.env.run(until=121)
 
     changes_at_120 = [

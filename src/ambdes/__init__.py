@@ -6,7 +6,12 @@ __version__ = "0.1.0"
 # rather than `from ambdes.model import Model`.
 
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
-from .config import SimConfig, convert_resource_hours_to_ambulances
+from .config import (
+    SimConfig,
+    convert_keys_to_int,
+    convert_resource_hours_to_ambulances,
+    resolve_dict,
+)
 from .empirical import EmpiricalRunner, build_empirical_config
 from .input_modelling import (
     DISTRIBUTIONS,
@@ -25,6 +30,7 @@ from .runner import Runner
 __all__ = [
     "build_arrival_config",
     "build_empirical_config",
+    "convert_keys_to_int",
     "convert_resource_hours_to_ambulances",
     "DISTRIBUTIONS",
     "EmpiricalRunner",
@@ -37,6 +43,7 @@ __all__ = [
     "plot_metric_kde",
     "plot_observed_fitted",
     "plot_warm_up",
+    "resolve_dict",
     "Results",
     "run_warm_up_audit",
     "Runner",
