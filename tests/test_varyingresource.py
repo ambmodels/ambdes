@@ -8,19 +8,27 @@ from ambdes import Model
 
 
 @pytest.fixture
-def model_n_ambulances(request):
+def n_ambulances(request):
     """Ambulances for the test model."""
     return getattr(request, "param", 3)
 
 
 @pytest.fixture
-def capacity_interval(request):
-    """Capacity interval for the test model."""
+def ambulance_schedule(request):
+    """Ambulance schedule for a varying-capacity test model."""
     return getattr(request, "param", None)
 
 
 @pytest.fixture
-def model(model_n_ambulances, capacity_interval, monkeypatch):
+def ambulance_schedule_period(request):
+    """Period over which the ambulance schedule repeats."""
+    return getattr(request, "param", None)
+
+
+@pytest.fixture
+def model(
+    n_ambulances, ambulance_schedule, ambulance_schedule_period, monkeypatch
+):
     """Simplified Model."""
     # Don't run create_batch - just return dict as is
     monkeypatch.setattr(
@@ -30,26 +38,15 @@ def model(model_n_ambulances, capacity_interval, monkeypatch):
     # Create an object that can replace config in Model, which contains fields
     # that Model accesses during construction and when run.
     config = SimpleNamespace(
-        model_n_ambulances=model_n_ambulances,
-        capacity_interval=capacity_interval,
+        n_ambulances=(n_ambulances if ambulance_schedule is None else None),
+        ambulance_schedule=ambulance_schedule,
+        ambulance_schedule_period=ambulance_schedule_period,
         warm_up_period=0,
         data_collection_period=100,
         dist_config={},
     )
     # Return initialised model
     return Model(run_number=0, config=config)
-
-
-class SequenceDistribution:
-    """Simple fake distribution."""
-
-    def __init__(self, values):
-        """Build iterator object for values."""
-        self.values = iter(values)
-
-    def sample(self, **kwargs):
-        """Return next item from values."""
-        return next(self.values)
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +183,7 @@ def test_remove_and_return_idle_ambulances(model):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("model_n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
 def test_wait_before_remove_busy_ambulance(model):
     """Busy ambulance should only be removed once finished with patient."""
 
@@ -252,7 +249,7 @@ def test_wait_before_remove_busy_ambulance(model):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("model_n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
 def test_not_remove_after_deadline(model):
     """If ambulance still busy after deadline, don't remove later."""
 
@@ -310,13 +307,16 @@ def test_not_remove_after_deadline(model):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("capacity_interval", [60], indirect=True)
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [
+        ({0: 1, 60: 3}, 120),
+    ],
+    indirect=True,
+)
 def test_capacity_changes_between_intervals(model):
     """Test capacity changes using interval and update_operational_capacity."""
     # With 1-hour capacity interval, first remove two ambulances, then return
-    model.dists = {
-        "reduce_daily_hours": SequenceDistribution([2, 0]),
-    }
     model.env.process(model.update_operational_capacity())
     model.env.run(until=61)
 
@@ -363,3 +363,25 @@ def test_capacity_changes_between_intervals(model):
         },
     ]
     assert model.capacity_log == expected_log
+
+
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [
+        ({0: 1, 60: 3}, 120),
+    ],
+    indirect=True,
+)
+def test_capacity_schedule_repeats(model):
+    """Check the ambulance schedule repeats after its period."""
+    model.env.process(model.update_operational_capacity())
+    model.env.run(until=121)
+
+    changes_at_120 = [
+        entry for entry in model.capacity_log if entry["time"] == 120.0
+    ]
+
+    assert len(changes_at_120) == 2
+    assert changes_at_120[-1]["remove_target"] == 2
+    assert changes_at_120[-1]["removed"] == 2
+    assert changes_at_120[-1]["capacity"] == 1

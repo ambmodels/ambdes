@@ -6,7 +6,8 @@ __version__ = "0.1.0"
 # rather than `from ambdes.model import Model`.
 
 from .choose_warm_up import WarmUpAuditor, plot_warm_up, run_warm_up_audit
-from .config import SimConfig
+from .config import SimConfig, convert_resource_hours_to_ambulances
+from .empirical import EmpiricalRunner, build_empirical_config
 from .input_modelling import (
     DISTRIBUTIONS,
     FitDist,
@@ -23,7 +24,10 @@ from .runner import Runner
 
 __all__ = [
     "build_arrival_config",
+    "build_empirical_config",
+    "convert_resource_hours_to_ambulances",
     "DISTRIBUTIONS",
+    "EmpiricalRunner",
     "fit_config",
     "FitDist",
     "get_dist_params",

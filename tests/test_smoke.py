@@ -25,7 +25,7 @@ def make_config():
         data_collection_period=DATA_COLLECTION_PERIOD,
         n_reps=N_REPS,
         cores=CORES,
-        planned_n_ambulances=N_AMBULANCES,
+        n_ambulances=N_AMBULANCES,
     )
 
 

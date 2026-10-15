@@ -22,7 +22,7 @@ WARM_UP_PERIOD = 10
 DATA_COLLECTION_PERIOD = 400
 N_REPS = 5
 CORES = 1
-RESOURCE_HOURS_PER_WEEK = 2000
+N_AMBULANCES = 12
 
 MODEL_UTIL = OUTPUT / "model_utilisation_df.csv"
 MODEL_SUMMARY = OUTPUT / "model_summary_df.csv"
@@ -40,7 +40,7 @@ def make_config():
         data_collection_period=DATA_COLLECTION_PERIOD,
         n_reps=N_REPS,
         cores=CORES,
-        resource_hours_per_week=RESOURCE_HOURS_PER_WEEK,
+        n_ambulances=N_AMBULANCES,
     )
 
 
