@@ -413,3 +413,18 @@ def test_capacity_schedule_repeats(model):
     assert changes_at_120[-1]["remove_target"] == 2
     assert changes_at_120[-1]["removed"] == 2
     assert changes_at_120[-1]["capacity"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Other tests
+# ---------------------------------------------------------------------------
+
+
+def test_fixed_capacity_model_has_dispatcher(model):
+    """A fixed-capacity model should still use the dispatcher."""
+    assert model.ambulance.num_resources == 3
+    assert model.ambulance_availability is None
+
+    assert model.dispatcher.ambulance is model.ambulance
+    assert model.dispatcher.permit is None
+    assert model.dispatcher.queue == []

@@ -13,6 +13,7 @@ from .config import (
     convert_resource_hours_to_ambulances,
     resolve_dict,
 )
+from .dispatcher import Dispatcher, DispatchRequest
 from .empirical import EmpiricalRunner, build_empirical_config
 from .input_modelling import (
     DISTRIBUTIONS,
@@ -34,6 +35,8 @@ __all__ = [
     "CapacitySchedule",
     "convert_keys_to_int",
     "convert_resource_hours_to_ambulances",
+    "Dispatcher",
+    "DispatchRequest",
     "DISTRIBUTIONS",
     "EmpiricalRunner",
     "fit_config",
