@@ -22,6 +22,10 @@ class Model:
     records patients during a single simulation run.
     """
 
+    # ------------------------------------------------------------------------
+    # Model set up
+    # ------------------------------------------------------------------------
+
     def __init__(self, run_number, config):
         """Initialise the simulation model.
 
@@ -36,13 +40,20 @@ class Model:
         self.run_number = run_number
         self.config = config
 
-        # Create SimPy environment
-        self.env = simpy.Environment()
+        self._setup_environment()
+        self._setup_distributions()
+        self._setup_patient_tracking()
+        self._setup_resources()
+        self._setup_dispatcher()
+        self._setup_capacity_schedule()
 
-        # Set up logger
+    def _setup_environment(self):
+        """Create the SimPy environment and event logger."""
+        self.env = simpy.Environment()
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
-        # Initialise distributions, with random seed based on run number
+    def _setup_distributions(self):
+        """Initialise distributions with seed based on run number."""
         self.dists = DistributionRegistry.create_batch(
             self.config.dist_config,
             main_seed=self.run_number,
@@ -50,12 +61,19 @@ class Model:
             preserve_structure=True,
         )
 
-        # Set up attribute to store results
-        # Patient ID counter is independent of self.patients to ensure
-        # patients in warm-up and data collection period each have unique ID
+    def _setup_patient_tracking(self):
+        """Create attributes to store patient results and create IDs.
+
+        We create a separate `patient_id_counter` instead of relying on the
+        length of `patients` to create IDs as this ensures they are
+        independent, and so that patients in warm-up and data collection
+        period each have unique ID.
+        """
         self.patients = []
         self.patient_id_counter = 0
 
+    def _setup_resources(self):
+        """Create ambulance and optional restricted send permit pools."""
         # Calculate maximum possible number of ambulances
         if self.config.ambulance_schedule is None:
             self.max_n_ambulances = self.config.n_ambulances
@@ -72,12 +90,8 @@ class Model:
             logger=self.logger,
         )
 
-        # Set-up the permit pool (indicating vehicles permitted to attend
-        # C2-C4 incidents - i.e., excluding those in restricted send) in a
-        # similar way to our set-up for ambulance resources, with support
-        # for varying the permits over time. However, we deliberately don't
-        # log, as permits are just used as a modelling constraints and don't
-        # represent actual ambulance use
+        # Set-up permit pool. No logging as are just a modelling
+        # constraint and dont't represent actual ambulance use
         if self.config.permit_schedule is not None:
             self.max_n_permits = max(self.config.permit_schedule.values())
             self.permit = VidigiPriorityStore(
@@ -89,13 +103,16 @@ class Model:
             self.max_n_permits = None
             self.permit = None
 
-        # Set up dispatcher after creating its resource pools
+    def _setup_dispatcher(self):
+        """Create the central dispatcher for ambulance allocation."""
         self.dispatcher = Dispatcher(
             env=self.env,
             ambulance=self.ambulance,
             permit=self.permit,
         )
 
+    def _setup_capacity_schedule(self):
+        """Create schedules for resources with varying availability."""
         # Manage varying ambulance availability when a schedule is supplied
         if self.config.ambulance_schedule is not None:
             self.ambulance_availability = CapacitySchedule(
@@ -137,6 +154,10 @@ class Model:
             )
         else:
             self.permit_availability = None
+
+    # ------------------------------------------------------------------------
+    # Model logic
+    # ------------------------------------------------------------------------
 
     def generate_patients(self):
         """Generate patients."""
