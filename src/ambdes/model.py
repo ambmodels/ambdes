@@ -94,13 +94,12 @@ class Model:
         self.patients = []
         self.patient_id_counter = 0
 
-        # Patients waiting for dispatch
+        # Patients waiting for resources
         self.dispatch_queue = []
         self.dispatch_counter = 0
-        # Blank SimPy event - it has not happened yet, but other processes
-        # can wait for it, and when it is triggered with .succeed(), it will
-        # schedule processes waiting for this event to continue
-        self.dispatch_signal = self.env.event()
+
+        # Messages telling the dispatcher to check the queue.
+        self.dispatch_notifications = simpy.Store(self.env)
 
         # Initialise distributions, with random seed based on run number
         self.dists = DistributionRegistry.create_batch(
@@ -142,7 +141,7 @@ class Model:
             self.env.process(self.request_ambulance(patient))
 
     def request_ambulance(self, patient):
-        """Wait for the resources needed to respond to a patient.
+        """Join the dispatch queue and wait for the required resources.
 
         First samples the time from call receipt to joining the dispatch queue.
 
@@ -173,16 +172,18 @@ class Model:
 
         # Get a queue number for the central dispatch queue
         self.dispatch_counter += 1
-        request = {
+        dispatch_request = {
             "patient": patient,
             "order": self.dispatch_counter,
-            "event": self.env.event(),
+            # The event will occur when the patient has been allocated
+            # their resources
+            "allocated": self.env.event(),
         }
-        self.dispatch_queue.append(request)
-        self.wake_dispatcher()
+        self.dispatch_queue.append(dispatch_request)
+        self.notify_dispatcher()
 
         # Wait until all required resources have been allocated
-        ambulance, permit = yield request["event"]
+        ambulance, permit = yield dispatch_request["allocated"]
 
         yield from self.use_ambulance(
             patient=patient,
@@ -193,16 +194,14 @@ class Model:
     def dispatch_patients(self):
         """Allocate resources to the highest-priority eligible patient."""
         while True:
-            # Pause the dispatcher until signal is triggered
-            yield self.dispatch_signal
+            # Wait until the model state changes
+            yield self.dispatch_notifications.get()
 
-            # We now continue as the signal has been triggered - but first, we
-            # create a new blank signal to wait for next time
-            self.dispatch_signal = self.env.event()
-
+            # Dispatch as many patients as currently possible.
             while self.dispatch_queue and self.ambulance.items:
                 request = self.get_next_dispatchable_request()
 
+                # Patients are waiting, but none can currently be sent
                 if request is None:
                     break
 
@@ -212,37 +211,36 @@ class Model:
                     patient.category != "C1" and self.permit is not None
                 )
 
+                # Reserve everything before yielding
                 ambulance_get = self.ambulance.get_direct(
                     entity_id=patient.patient_id, event="ambulance_assigned"
                 )
-
+                permit_get = None
                 if needs_permit:
                     permit_get = self.permit.get_direct(auto_log=False)
-                else:
-                    permit_get = None
 
                 self.dispatch_queue.remove(request)
 
+                # Collecte the reserved resources
                 ambulance = yield ambulance_get
-
+                permit = None
                 if permit_get is not None:
                     permit = yield permit_get
-                else:
-                    permit = None
 
-                request["event"].succeed((ambulance, permit))
+                # Give the resources to the waiting patient process
+                request["allocated"].succeed((ambulance, permit))
 
-    def wake_dispatcher(self):
-        """Tell the dispatcher that its state may have changed."""
-        # If the dispatch signal is not already active, then activate it
-        if not self.dispatch_signal.triggered:
-            self.dispatch_signal.succeed()
+    def notify_dispatcher(self):
+        """Tell the dispatcher that the model state has changed."""
+        # None carries no information - it just triggers it to check the
+        # dispatch queue again
+        self.dispatch_notifications.put(None)
 
     def get_next_dispatchable_request(self):
         """Return highest-priority patient whose resources are available."""
         # Create a new sorted list of patients waiting in self.dispatch_queue.
         # It gets the priority and arrival order for each patient then sorts.
-        requests = sorted(
+        waiting_requests = sorted(
             self.dispatch_queue,
             key=lambda request: (
                 request["patient"].priority,
@@ -251,29 +249,33 @@ class Model:
         )
 
         # Looks through the sorted requests...
-        for request in requests:
+        for request in waiting_requests:
             patient = request["patient"]
+
             # If the patient is C1 or if restricted send is not enabled, then
             # everyone can be sent as soon as an ambulance is available
             if patient.category == "C1" or self.permit is None:
                 return request
+
             # If at least one permit is free, return this C2-C4 patient to
             # be dispatched
             if self.permit.items:
                 return request
+
         return None
 
     def use_ambulance(self, patient, ambulance, permit):
-        """Request and use an ambulance for a patient.
+        """Simulate an ambulance response for a patient.
 
         Parameters
         ----------
         patient : Patient
-            Patient requesting ambulance transport.
-        ambulance : TODO
-            TODO
-        permit : TODO
-            TODO
+            Patient receiving an ambulance response.
+        ambulance : VidigiResource
+            Ambulance allocated by the dispatcher.
+        permit : VidigiResoure or None
+            Permit allocated by the dispatcher for C2-C4 patient under
+            restricted send conditions, or None if no permit was required.
 
         """
         # Record when patient was assigned an ambulance. This is their
@@ -327,9 +329,11 @@ class Model:
         if permit is not None:
             self.permit.put(permit, auto_log=False)
 
-        self.wake_dispatcher()
-
         self.logger.log_departure(entity_id=patient.patient_id)
+
+        # Notify the dispatcher, as returning resources may allow another
+        # patient to be sent
+        self.notify_dispatcher()
 
     def warm_up(self):
         """Reset results collection after the warm-up period."""
@@ -480,6 +484,7 @@ class Model:
 
         # Return units if the new target is lower than the
         # number currently removed
+        units_returned = False
         while len(removed_units) > remove_target:
             # Remove final unit from list
             unit = removed_units.pop()
@@ -496,6 +501,12 @@ class Model:
                 unit=unit,
                 remove_target=remove_target,
             )
+            units_returned = True
+
+        # Notify dispatcher as new resources may allow a patient to be
+        # dispatched
+        if units_returned:
+            self.notify_dispatcher()
 
         # Create a deadline event that can be shared by all removal attempts
         # made during this target period
@@ -540,8 +551,6 @@ class Model:
             max_capacity=max_capacity,
             removed_units=removed_units,
         )
-
-        self.wake_dispatcher()
 
     def assert_resource_invariants(
         self, resource, max_capacity, removed_units
