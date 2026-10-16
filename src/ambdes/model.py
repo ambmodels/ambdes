@@ -94,6 +94,14 @@ class Model:
         self.patients = []
         self.patient_id_counter = 0
 
+        # Patients waiting for dispatch
+        self.dispatch_queue = []
+        self.dispatch_counter = 0
+        # Blank SimPy event - it has not happened yet, but other processes
+        # can wait for it, and when it is triggered with .succeed(), it will
+        # schedule processes waiting for this event to continue
+        self.dispatch_signal = self.env.event()
+
         # Initialise distributions, with random seed based on run number
         self.dists = DistributionRegistry.create_batch(
             self.config.dist_config,
@@ -163,81 +171,163 @@ class Model:
             entity_id=patient.patient_id, event="ambulance_wait_begins"
         )
 
-        # C1 does not require a permit OR not modelling restricted send
-        if patient.category == "C1" or self.permit is None:
-            yield from self.use_ambulance(patient)
-            return
+        # Get a queue number for the central dispatch queue
+        self.dispatch_counter += 1
+        request = {
+            "patient": patient,
+            "order": self.dispatch_counter,
+            "event": self.env.event(),
+        }
+        self.dispatch_queue.append(request)
+        self.wake_dispatcher()
 
-        # C2-C4 require a non-C1 permit and an ambulance
-        # Permit remains held while the patient waits for and uses an ambulance
-        # When use_ambulance() finishes, the permit context manager returns it
-        # automatically
-        with self.permit.request(
-            priority=patient.priority, auto_log=False
-        ) as permit_request:
-            yield permit_request
-            yield from self.use_ambulance(patient)
+        # Wait until all required resources have been allocated
+        ambulance, permit = yield request["event"]
 
-    def use_ambulance(self, patient):
+        yield from self.use_ambulance(
+            patient=patient,
+            ambulance=ambulance,
+            permit=permit,
+        )
+
+    def dispatch_patients(self):
+        """Allocate resources to the highest-priority eligible patient."""
+        while True:
+            # Pause the dispatcher until signal is triggered
+            yield self.dispatch_signal
+
+            # We now continue as the signal has been triggered - but first, we
+            # create a new blank signal to wait for next time
+            self.dispatch_signal = self.env.event()
+
+            while self.dispatch_queue and self.ambulance.items:
+                request = self.get_next_dispatchable_request()
+
+                if request is None:
+                    break
+
+                patient = request["patient"]
+
+                needs_permit = (
+                    patient.category != "C1" and self.permit is not None
+                )
+
+                ambulance_get = self.ambulance.get_direct(
+                    entity_id=patient.patient_id, event="ambulance_assigned"
+                )
+
+                if needs_permit:
+                    permit_get = self.permit.get_direct(auto_log=False)
+                else:
+                    permit_get = None
+
+                self.dispatch_queue.remove(request)
+
+                ambulance = yield ambulance_get
+
+                if permit_get is not None:
+                    permit = yield permit_get
+                else:
+                    permit = None
+
+                request["event"].succeed((ambulance, permit))
+
+    def wake_dispatcher(self):
+        """Tell the dispatcher that its state may have changed."""
+        # If the dispatch signal is not already active, then activate it
+        if not self.dispatch_signal.triggered:
+            self.dispatch_signal.succeed()
+
+    def get_next_dispatchable_request(self):
+        """Return highest-priority patient whose resources are available."""
+        # Create a new sorted list of patients waiting in self.dispatch_queue.
+        # It gets the priority and arrival order for each patient then sorts.
+        requests = sorted(
+            self.dispatch_queue,
+            key=lambda request: (
+                request["patient"].priority,
+                request["order"],
+            ),
+        )
+
+        # Looks through the sorted requests...
+        for request in requests:
+            patient = request["patient"]
+            # If the patient is C1 or if restricted send is not enabled, then
+            # everyone can be sent as soon as an ambulance is available
+            if patient.category == "C1" or self.permit is None:
+                return request
+            # If at least one permit is free, return this C2-C4 patient to
+            # be dispatched
+            if self.permit.items:
+                return request
+        return None
+
+    def use_ambulance(self, patient, ambulance, permit):
         """Request and use an ambulance for a patient.
 
         Parameters
         ----------
         patient : Patient
             Patient requesting ambulance transport.
+        ambulance : TODO
+            TODO
+        permit : TODO
+            TODO
 
         """
-        with self.ambulance.request(
-            priority=patient.priority,
+        # Record when patient was assigned an ambulance. This is their
+        # allocation time - time from call receipt to resource allocation.
+        patient.allocation_time = self.env.now - patient.call_timestamp
+
+        # Sample mobilisation time
+        mobilisation_time = self.dists["mobilisation_time"][
+            patient.category
+        ].sample()
+        yield self.env.timeout(mobilisation_time)
+
+        # Sample travel to scene
+        time_to_scene = self.dists["time_to_scene"][patient.category].sample()
+        yield self.env.timeout(time_to_scene)
+
+        # Record response time
+        patient.response_time = self.env.now - patient.call_timestamp
+
+        # On-scene time
+        on_scene_time = self.dists["on_scene_time"][patient.category][
+            patient.outcome
+        ].sample()
+        yield self.env.timeout(on_scene_time)
+
+        if patient.outcome == "see_and_convey":
+            # Sample travel to hospital
+            time_to_hospital = self.dists["time_to_hospital"][
+                patient.category
+            ].sample()
+            yield self.env.timeout(time_to_hospital)
+
+            # Handover time
+            handover_time = self.dists["handover_time"][
+                patient.category
+            ].sample()
+            yield self.env.timeout(handover_time)
+
+        # Wrap up time
+        wrap_up_time = self.dists["wrap_up_time"][patient.category].sample()
+        yield self.env.timeout(wrap_up_time)
+
+        # Return the ambulance
+        self.ambulance.put(
+            ambulance,
             entity_id=patient.patient_id,
-            start_event="ambulance_assigned",
-            end_event="ambulance_available",
-        ) as req:
-            yield req
+            event="ambulance_available",
+        )
 
-            # Record when patient was assigned an ambulance. This is their
-            # allocation time - time from call receipt to resource allocation.
-            patient.allocation_time = self.env.now - patient.call_timestamp
+        # Return the permit, if one was required
+        if permit is not None:
+            self.permit.put(permit, auto_log=False)
 
-            # Sample mobilisation time
-            mobilisation_time = self.dists["mobilisation_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(mobilisation_time)
-
-            # Sample travel to scene
-            time_to_scene = self.dists["time_to_scene"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(time_to_scene)
-
-            # Record response time
-            patient.response_time = self.env.now - patient.call_timestamp
-
-            # On-scene time
-            on_scene_time = self.dists["on_scene_time"][patient.category][
-                patient.outcome
-            ].sample()
-            yield self.env.timeout(on_scene_time)
-
-            if patient.outcome == "see_and_convey":
-                # Sample travel to hospital
-                time_to_hospital = self.dists["time_to_hospital"][
-                    patient.category
-                ].sample()
-                yield self.env.timeout(time_to_hospital)
-
-                # Handover time
-                handover_time = self.dists["handover_time"][
-                    patient.category
-                ].sample()
-                yield self.env.timeout(handover_time)
-
-            # Wrap up time
-            wrap_up_time = self.dists["wrap_up_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(wrap_up_time)
+        self.wake_dispatcher()
 
         self.logger.log_departure(entity_id=patient.patient_id)
 
@@ -451,6 +541,8 @@ class Model:
             removed_units=removed_units,
         )
 
+        self.wake_dispatcher()
+
     def assert_resource_invariants(
         self, resource, max_capacity, removed_units
     ):
@@ -486,6 +578,7 @@ class Model:
         """
         # Schedule arrival generator and warm-up
         self.env.process(self.generate_patients())
+        self.env.process(self.dispatch_patients())
         self.env.process(self.warm_up())
 
         # Schedule changing capacity if set
