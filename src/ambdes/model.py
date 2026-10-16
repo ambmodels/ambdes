@@ -10,11 +10,12 @@ from sim_tools.distributions import DistributionRegistry
 from vidigi.logging import EventLogger
 from vidigi.resources import VidigiPriorityStore
 
+from .capacity import CapacitySchedule
 from .patient import Patient
 
 
 class Model:
-    """Discrete-event simulation model for generating patient calls.
+    """Discrete-event simulation model for ambulance responses.
 
     The model generates patient calls, allocates ambulance resources and
     records patients during a single simulation run.
@@ -40,6 +41,27 @@ class Model:
         # Set up logger
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
+        # Initialise distributions, with random seed based on run number
+        self.dists = DistributionRegistry.create_batch(
+            self.config.dist_config,
+            main_seed=self.run_number,
+            sort=True,
+            preserve_structure=True,
+        )
+
+        # Set up attribute to store results
+        # Patient ID counter is independent of self.patients to ensure
+        # patients in warm-up and data collection period each have unique ID
+        self.patients = []
+        self.patient_id_counter = 0
+
+        # Patients waiting for resources
+        self.dispatch_queue = []
+        self.dispatch_counter = 0
+
+        # Messages telling the dispatcher to check the queue.
+        self.dispatch_notifications = simpy.Store(self.env)
+
         # Calculate maximum possible number of ambulances
         if self.config.ambulance_schedule is None:
             self.max_n_ambulances = self.config.n_ambulances
@@ -56,18 +78,32 @@ class Model:
             logger=self.logger,
         )
 
-        # These will support varying resource capacity
-        self.removed_units = []
-        self.capacity_log = [
-            {
-                "time": 0.0,
-                "action": "initial",
-                "resource_id": None,
-                "remove_target": 0,
-                "removed": 0,
-                "capacity": self.max_n_ambulances,
-            }
-        ]
+        # Manage varying ambulance availability when a schedule is supplied
+        if self.config.ambulance_schedule is not None:
+            self.ambulance_availability = CapacitySchedule(
+                env=self.env,
+                resource=self.ambulance,
+                schedule=self.config.ambulance_schedule,
+                period=self.config.ambulance_schedule_period,
+                record_changes=True,
+                on_units_returned=self.notify_dispatcher,
+            )
+            self.capacity_log = self.ambulance_availability.capacity_log
+        # If no variation in availability, set ambulance_availability to None
+        # and create one simple entry for capacity log, used to allow
+        # consistent approach in calculations in results code
+        else:
+            self.ambulance_availability = None
+            self.capacity_log = [
+                {
+                    "time": 0.0,
+                    "action": "initial",
+                    "resource_id": None,
+                    "remove_target": 0,
+                    "removed": 0,
+                    "capacity": self.max_n_ambulances,
+                }
+            ]
 
         # Set-up the permit pool (indicating vehicles permitted to attend
         # C2-C4 incidents - i.e., excluding those in restricted send) in a
@@ -82,32 +118,24 @@ class Model:
                 num_resources=self.max_n_permits,
                 label="c2_to_c4_permit",
             )
-            self.removed_permits = []
         else:
             self.max_n_permits = None
             self.permit = None
-            self.removed_permits = None
 
-        # Set up attribute to store results
-        # Patient ID counter is independent of self.patients to ensure
-        # patients in warm-up and data collection period each have unique ID
-        self.patients = []
-        self.patient_id_counter = 0
-
-        # Patients waiting for resources
-        self.dispatch_queue = []
-        self.dispatch_counter = 0
-
-        # Messages telling the dispatcher to check the queue.
-        self.dispatch_notifications = simpy.Store(self.env)
-
-        # Initialise distributions, with random seed based on run number
-        self.dists = DistributionRegistry.create_batch(
-            self.config.dist_config,
-            main_seed=self.run_number,
-            sort=True,
-            preserve_structure=True,
-        )
+        # Manage varying restriction of ambulances to C1 calls only, with a
+        # "permit" schedule showing the number of ambulances available for
+        # all call types at any given time (and excluding the ambulances
+        # who are restricted to C1 only)
+        if self.config.permit_schedule is not None:
+            self.permit_availability = CapacitySchedule(
+                env=self.env,
+                resource=self.permit,
+                schedule=self.config.permit_schedule,
+                period=self.config.ambulance_schedule_period,
+                on_units_returned=self.notify_dispatcher,
+            )
+        else:
+            self.permit_availability = None
 
     def generate_patients(self):
         """Generate patients."""
@@ -341,243 +369,6 @@ class Model:
             yield self.env.timeout(self.config.warm_up_period)
             self.patients = []
 
-    def log_capacity_change(
-        self,
-        resource,
-        removed_units,
-        capacity_log,
-        action,
-        unit,
-        remove_target,
-    ):
-        """Record a capacity change.
-
-        Parameters
-        ----------
-        resource : VidigiPriorityStore
-            Resource pool.
-        removed_units : list
-            List of resources currently removed from the resource pool.
-        capacity_log : list[dict]
-            List of dictionaries recording each change in capacity.
-        action : str
-            Description of the capacity change ("removed" or "returned").
-        unit : VidigiResource
-            The individual ambulance resource object whose availability
-            changed.
-        remove_target : int
-            Target number of units removed from the maximum resource pool.
-
-        """
-        if capacity_log is None:
-            return
-
-        capacity_log.append(
-            {
-                "time": self.env.now,
-                "action": action,
-                "resource_id": unit.unique_id_attribute,
-                "remove_target": remove_target,
-                "removed": len(removed_units),
-                "capacity": resource.num_resources,
-            }
-        )
-
-    def update_capacity(
-        self,
-        resource,
-        schedule,
-        max_capacity,
-        removed_units,
-        capacity_log=None,
-    ):
-        """Apply a resource capacity schedule repeatedly.
-
-        Parameters
-        ----------
-        resource : VidigiPriorityStore
-            Resource pool.
-        schedule : dict
-            Schedule for capacity changes (keys are times, values are capacity
-            of resource).
-        max_capacity : int
-            Maximum size of the resource pool.
-        removed_units : list
-            List of resources currently removed from the resource pool.
-        capacity_log : list[dict]
-            List of dictionaries recording each change in capacity.
-
-        """
-        schedule = sorted(schedule.items())
-        cycle_start = self.env.now
-
-        while True:
-            for index, (time, capacity) in enumerate(schedule):
-                # Wait until the next schedule entry starts
-                start = cycle_start + time
-
-                if self.env.now < start:
-                    yield self.env.timeout(start - self.env.now)
-
-                # Get the next time in schedule - or if at end of schedule,
-                # use the ambulance_schedule_period
-                if index + 1 < len(schedule):
-                    next_time = schedule[index + 1][0]
-                else:
-                    next_time = self.config.ambulance_schedule_period
-
-                deadline = cycle_start + next_time
-                remove_target = max_capacity - capacity
-
-                yield from self.apply_capacity_update(
-                    resource=resource,
-                    max_capacity=max_capacity,
-                    removed_units=removed_units,
-                    remove_target=remove_target,
-                    deadline=deadline,
-                    capacity_log=capacity_log,
-                )
-
-                # If the target was reached early, wait for the remainder
-                # of the interval
-                remaining_time = deadline - self.env.now
-                if remaining_time > 0:
-                    yield self.env.timeout(remaining_time)
-
-            cycle_start += self.config.ambulance_schedule_period
-
-    def apply_capacity_update(
-        self,
-        resource,
-        max_capacity,
-        removed_units,
-        remove_target,
-        deadline,
-        capacity_log=None,
-    ):
-        """Try to reach capacity target until the specified deadline.
-
-        Parameters
-        ----------
-        resource : VidigiPriorityStore
-            Resource pool.
-        max_capacity : int
-            Maximum size of the resource pool.
-        removed_units : list
-            List of resources currently removed from the resource pool.
-        remove_target : int
-            Target total number of resources removed from the maximum
-            resource pool.
-        deadline : float
-            Simulation time (in minutes) at which to stop attempting to reach
-            the removal target. If the required resources are busy, the
-            method waits for them to become available only until this time.
-        capacity_log : list[dict]
-            List of dictionaries recording each change in capacity.
-
-        """
-        if not 0 <= remove_target <= max_capacity:
-            raise ValueError(
-                f"remove_target must be between 0 and "
-                f"{max_capacity}; received {remove_target}"
-            )
-
-        # Return units if the new target is lower than the
-        # number currently removed
-        units_returned = False
-        while len(removed_units) > remove_target:
-            # Remove final unit from list
-            unit = removed_units.pop()
-            # Increment the expected number of objects in the store
-            # We alter _n_pool_units as num_resources is not changeable
-            resource._n_pool_units += 1
-            # Add the unit to the store
-            resource.put(unit, auto_log=False)
-            self.log_capacity_change(
-                resource=resource,
-                removed_units=removed_units,
-                capacity_log=capacity_log,
-                action="returned",
-                unit=unit,
-                remove_target=remove_target,
-            )
-            units_returned = True
-
-        # Notify dispatcher as new resources may allow a patient to be
-        # dispatched
-        if units_returned:
-            self.notify_dispatcher()
-
-        # Create a deadline event that can be shared by all removal attempts
-        # made during this target period
-        remaining_time = max(0, deadline - self.env.now)
-        deadline_event = self.env.timeout(remaining_time)
-
-        # Attempt to remove additional units
-        while len(removed_units) < remove_target:
-            # Do not start another request once the deadline has passed
-            if self.env.now >= deadline:
-                break
-
-            # Wait for either:
-            # 1. An ambulance to become available to remove from store, or-
-            # 2. The target interval to end.
-            get_event = resource.get_direct(auto_log=False)
-            result = yield get_event | deadline_event
-
-            if get_event in result:
-                unit = result[get_event]
-                # Add the object to the list of removed units
-                removed_units.append(unit)
-                # Reduce the expected number of objects in the store
-                # We alter _n_pool_units as num_resources is not changeable
-                resource._n_pool_units -= 1
-                self.log_capacity_change(
-                    resource=resource,
-                    removed_units=removed_units,
-                    capacity_log=capacity_log,
-                    action="removed",
-                    unit=unit,
-                    remove_target=remove_target,
-                )
-            else:
-                # The deadline occurred first. Cancel the outstanding request
-                # so it can't remove an ambulance later
-                resource.cancel_get(get_event)
-                break
-
-        self.assert_resource_invariants(
-            resource=resource,
-            max_capacity=max_capacity,
-            removed_units=removed_units,
-        )
-
-    def assert_resource_invariants(
-        self, resource, max_capacity, removed_units
-    ):
-        """Check that resource counting is consistent.
-
-        Parameters
-        ----------
-        resource : VidigiPriorityStore
-            Resource pool.
-        max_capacity : int
-            Maximum size of the resource pool.
-        removed_units : list
-            List of resources currently removed from the resource pool.
-
-        """
-        operational = resource.num_resources
-        removed = len(removed_units)
-        busy = resource.count
-        available = len(resource.items)
-
-        assert max_capacity == operational + removed
-        assert operational == busy + available
-        assert 0 <= busy <= operational
-        assert 0 <= available <= operational
-        assert 0 <= removed <= max_capacity
-
     def run(self):
         """Run the simulation model.
 
@@ -590,29 +381,14 @@ class Model:
         self.env.process(self.dispatch_patients())
         self.env.process(self.warm_up())
 
-        # Schedule changing capacity if set
-        if self.config.ambulance_schedule is not None:
-            self.env.process(
-                self.update_capacity(
-                    resource=self.ambulance,
-                    schedule=self.config.ambulance_schedule,
-                    max_capacity=self.max_n_ambulances,
-                    removed_units=self.removed_units,
-                    capacity_log=self.capacity_log,
-                )
-            )
+        # Schedule changing number of ambulances if set
+        if self.ambulance_availability is not None:
+            self.env.process(self.ambulance_availability.run())
 
         # Varying schedule of number of vehicles permitted for C2-C4 (used to
         # model restricted send)
-        if self.config.permit_schedule is not None:
-            self.env.process(
-                self.update_capacity(
-                    resource=self.permit,
-                    schedule=self.config.permit_schedule,
-                    max_capacity=self.max_n_permits,
-                    removed_units=self.removed_permits,
-                )
-            )
+        if self.permit_availability is not None:
+            self.env.process(self.permit_availability.run())
 
         # Run simulation
         self.env.run(
