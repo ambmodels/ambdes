@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from ambdes import Model, Patient
+from ambdes import DispatchRequest, Model, Patient
 
 # ---------------------------------------------------------------------------
 # Helper functions
@@ -34,7 +34,7 @@ def model(monkeypatch):
     model = Model(run_number=0, config=config)
 
     # Start the central dispatcher
-    model.env.process(model.dispatch_patients())
+    model.env.process(model.dispatcher.run())
 
     return model
 
@@ -63,19 +63,19 @@ def add_to_dispatch_queue(model, category, order):
         outcome="see_and_treat",
         call_timestamp=model.env.now,
     )
-    # Create the dictionary that the dispatcher expects to find in
-    # model.dispatch_queue. It contains all the information the dispatcher
+    # Create the dictionary that the dispatcher expects to find in the
+    # dispatch queue. It contains all the information the dispatcher
     # needs. The blank SimPy event will be triggered later once allocated all
     # requirements
-    dispatch_request = {
-        "patient": patient,
-        "order": order,
-        "allocated": model.env.event(),
-    }
+    dispatch_request = DispatchRequest(
+        patient=patient,
+        order=order,
+        allocated=model.env.event(),
+    )
 
     # Add the request to the model's waiting list. This is the same queue that
     # request_ambulance() would normally add patients to
-    model.dispatch_queue.append(dispatch_request)
+    model.dispatcher.queue.append(dispatch_request)
 
     return dispatch_request
 
@@ -96,17 +96,17 @@ def test_c1_does_not_need_permit(model):
         order=1,
     )
 
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C1 was allocated an ambulance and not a permit
-    assert request["allocated"].triggered
-    ambulance, permit = request["allocated"].value
+    assert request.allocated.triggered
+    ambulance, permit = request.allocated.value
     assert ambulance is not None
     assert permit is None
 
     # The patient is no longer in the queue
-    assert request not in model.dispatch_queue
+    assert request not in model.dispatcher.queue
 
     # There are no ambulances available
     assert len(model.ambulance.items) == 0
@@ -124,14 +124,14 @@ def test_nonc1_waits_without_permit(model, category):
         order=1,
     )
 
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C2 was not allocated an ambulance or permit
-    assert not request["allocated"].triggered
+    assert not request.allocated.triggered
 
     # Patient remains in queue
-    assert request in model.dispatch_queue
+    assert request in model.dispatcher.queue
 
     # There is still an ambulance available
     assert len(model.ambulance.items) == 1
@@ -142,17 +142,17 @@ def test_nonc1_receives_both(model, category):
     """C2, C3 or C4 should receive an ambulance and a permit."""
     request = add_to_dispatch_queue(model=model, category=category, order=1)
 
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C2 was allocated an ambulance and permit
-    assert request["allocated"].triggered
-    ambulance, permit = request["allocated"].value
+    assert request.allocated.triggered
+    ambulance, permit = request.allocated.value
     assert ambulance is not None
     assert permit is not None
 
     # Patient is no longer in queue
-    assert request not in model.dispatch_queue
+    assert request not in model.dispatcher.queue
 
     # There are no ambulances or permits available
     assert len(model.ambulance.items) == 0
@@ -164,18 +164,18 @@ def test_higher_priority_goes_first(model):
     c4_request = add_to_dispatch_queue(model=model, category="C4", order=1)
     c2_request = add_to_dispatch_queue(model=model, category="C2", order=2)
 
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C2 was allocated an ambulance and permit and is no longer in the queue
-    assert c2_request["allocated"].triggered
-    c2_ambulance, c2_permit = c2_request["allocated"].value
+    assert c2_request.allocated.triggered
+    c2_ambulance, c2_permit = c2_request.allocated.value
     assert c2_ambulance is not None
     assert c2_permit is not None
 
     # C4 was not allocated anything and is still in the queue
-    assert not c4_request["allocated"].triggered
-    assert c4_request in model.dispatch_queue
+    assert not c4_request.allocated.triggered
+    assert c4_request in model.dispatcher.queue
 
     # There are no ambulances or permits available
     assert len(model.ambulance.items) == 0
@@ -189,29 +189,29 @@ def test_patient_does_not_hold_permit_while_waiting(model):
 
     c4_request = add_to_dispatch_queue(model=model, category="C4", order=1)
 
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C4 cannot be dispatched without an ambulance and has not taken permit
-    assert not c4_request["allocated"].triggered
+    assert not c4_request.allocated.triggered
     assert len(model.permit.items) == 1
 
     c2_request = add_to_dispatch_queue(model=model, category="C2", order=2)
 
     # Add the ambulance again
     model.ambulance.put(ambulance, auto_log=False)
-    model.notify_dispatcher()
+    model.dispatcher.notify()
     model.env.run()
 
     # C2 receives the ambulance and permit
-    assert c2_request["allocated"].triggered
-    c2_ambulance, c2_permit = c2_request["allocated"].value
+    assert c2_request.allocated.triggered
+    c2_ambulance, c2_permit = c2_request.allocated.value
     assert c2_ambulance is not None
     assert c2_permit is not None
 
     # C4 was not allocated anything and is still in the queue
-    assert not c4_request["allocated"].triggered
-    assert c4_request in model.dispatch_queue
+    assert not c4_request.allocated.triggered
+    assert c4_request in model.dispatcher.queue
 
     # There are no ambulances or permits available
     assert len(model.ambulance.items) == 0
