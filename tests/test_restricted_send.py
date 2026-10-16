@@ -6,10 +6,10 @@ import pytest
 
 from ambdes import Model, Patient
 
-
 # ---------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def model(monkeypatch):
@@ -79,9 +79,11 @@ def add_to_dispatch_queue(model, category, order):
 
     return dispatch_request
 
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
+
 
 def test_c1_does_not_need_permit(model):
     """C1 should receive an ambulance when no permit is available."""
@@ -138,11 +140,7 @@ def test_nonc1_waits_without_permit(model, category):
 @pytest.mark.parametrize("category", ["C2", "C3", "C4"])
 def test_nonc1_receives_both(model, category):
     """C2, C3 or C4 should receive an ambulance and a permit."""
-    request = add_to_dispatch_queue(
-        model=model,
-        category=category,
-        order=1
-    )
+    request = add_to_dispatch_queue(model=model, category=category, order=1)
 
     model.notify_dispatcher()
     model.env.run()
@@ -163,16 +161,8 @@ def test_nonc1_receives_both(model, category):
 
 def test_higher_priority_goes_first(model):
     """A later C2 should be dispatched before an earlier C4."""
-    c4_request = add_to_dispatch_queue(
-        model=model,
-        category="C4",
-        order=1
-    )
-    c2_request = add_to_dispatch_queue(
-        model=model,
-        category="C2",
-        order=2
-    )
+    c4_request = add_to_dispatch_queue(model=model, category="C4", order=1)
+    c2_request = add_to_dispatch_queue(model=model, category="C2", order=2)
 
     model.notify_dispatcher()
     model.env.run()
@@ -195,15 +185,9 @@ def test_higher_priority_goes_first(model):
 def test_patient_does_not_hold_permit_while_waiting(model):
     """Patient should not take a permit while no ambulance is available."""
     # Remove the only ambulance
-    ambulance = model.env.run(
-        until=model.ambulance.get_direct(auto_log=False)
-    )
+    ambulance = model.env.run(until=model.ambulance.get_direct(auto_log=False))
 
-    c4_request = add_to_dispatch_queue(
-        model=model,
-        category="C4",
-        order=1
-    )
+    c4_request = add_to_dispatch_queue(model=model, category="C4", order=1)
 
     model.notify_dispatcher()
     model.env.run()
@@ -212,11 +196,7 @@ def test_patient_does_not_hold_permit_while_waiting(model):
     assert not c4_request["allocated"].triggered
     assert len(model.permit.items) == 1
 
-    c2_request = add_to_dispatch_queue(
-        model=model,
-        category="C2",
-        order=2
-    )
+    c2_request = add_to_dispatch_queue(model=model, category="C2", order=2)
 
     # Add the ambulance again
     model.ambulance.put(ambulance, auto_log=False)
