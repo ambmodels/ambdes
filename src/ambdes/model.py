@@ -10,15 +10,21 @@ from sim_tools.distributions import DistributionRegistry
 from vidigi.logging import EventLogger
 from vidigi.resources import VidigiPriorityStore
 
+from .capacity import CapacitySchedule
+from .dispatcher import Dispatcher
 from .patient import Patient
 
 
 class Model:
-    """Discrete-event simulation model for generating patient calls.
+    """Discrete-event simulation model for ambulance responses.
 
-    The model creates one call-generation process per patient category and
-    records generated patients during a single simulation run.
+    The model generates patient calls, allocates ambulance resources and
+    records patients during a single simulation run.
     """
+
+    # ------------------------------------------------------------------------
+    # Model set up
+    # ------------------------------------------------------------------------
 
     def __init__(self, run_number, config):
         """Initialise the simulation model.
@@ -34,12 +40,40 @@ class Model:
         self.run_number = run_number
         self.config = config
 
-        # Create SimPy environment
-        self.env = simpy.Environment()
+        self._setup_environment()
+        self._setup_distributions()
+        self._setup_patient_tracking()
+        self._setup_resources()
+        self._setup_dispatcher()
+        self._setup_capacity_schedule()
 
-        # Set up logger
+    def _setup_environment(self):
+        """Create the SimPy environment and event logger."""
+        self.env = simpy.Environment()
         self.logger = EventLogger(env=self.env, run_number=self.run_number)
 
+    def _setup_distributions(self):
+        """Initialise distributions with seed based on run number."""
+        self.dists = DistributionRegistry.create_batch(
+            self.config.dist_config,
+            main_seed=self.run_number,
+            sort=True,
+            preserve_structure=True,
+        )
+
+    def _setup_patient_tracking(self):
+        """Create attributes to store patient results and create IDs.
+
+        We create a separate `patient_id_counter` instead of relying on the
+        length of `patients` to create IDs as this ensures they are
+        independent, and so that patients in warm-up and data collection
+        period each have unique ID.
+        """
+        self.patients = []
+        self.patient_id_counter = 0
+
+    def _setup_resources(self):
+        """Create ambulance and optional restricted send permit pools."""
         # Calculate maximum possible number of ambulances
         if self.config.ambulance_schedule is None:
             self.max_n_ambulances = self.config.n_ambulances
@@ -56,32 +90,74 @@ class Model:
             logger=self.logger,
         )
 
-        # These will support varying resource capacity
-        self.removed_units = []
-        self.capacity_log = [
-            {
-                "time": 0.0,
-                "action": "initial",
-                "resource_id": None,
-                "remove_target": 0,
-                "removed": 0,
-                "capacity": self.max_n_ambulances,
-            }
-        ]
+        # Set-up permit pool. No logging as are just a modelling
+        # constraint and dont't represent actual ambulance use
+        if self.config.permit_schedule is not None:
+            self.max_n_permits = max(self.config.permit_schedule.values())
+            self.permit = VidigiPriorityStore(
+                self.env,
+                num_resources=self.max_n_permits,
+                label="c2_to_c4_permit",
+            )
+        else:
+            self.max_n_permits = None
+            self.permit = None
 
-        # Set up attribute to store results
-        # Patient ID counter is independent of self.patients to ensure
-        # patients in warm-up and data collection period each have unique ID
-        self.patients = []
-        self.patient_id_counter = 0
-
-        # Initialise distributions, with random seed based on run number
-        self.dists = DistributionRegistry.create_batch(
-            self.config.dist_config,
-            main_seed=self.run_number,
-            sort=True,
-            preserve_structure=True,
+    def _setup_dispatcher(self):
+        """Create the central dispatcher for ambulance allocation."""
+        self.dispatcher = Dispatcher(
+            env=self.env,
+            ambulance=self.ambulance,
+            permit=self.permit,
         )
+
+    def _setup_capacity_schedule(self):
+        """Create schedules for resources with varying availability."""
+        # Manage varying ambulance availability when a schedule is supplied
+        if self.config.ambulance_schedule is not None:
+            self.ambulance_availability = CapacitySchedule(
+                env=self.env,
+                resource=self.ambulance,
+                schedule=self.config.ambulance_schedule,
+                period=self.config.ambulance_schedule_period,
+                record_changes=True,
+                on_units_returned=self.dispatcher.notify,
+            )
+            self.capacity_log = self.ambulance_availability.capacity_log
+        # If no variation in availability, set ambulance_availability to None
+        # and create one simple entry for capacity log, used to allow
+        # consistent approach in calculations in results code
+        else:
+            self.ambulance_availability = None
+            self.capacity_log = [
+                {
+                    "time": 0.0,
+                    "action": "initial",
+                    "resource_id": None,
+                    "remove_target": 0,
+                    "removed": 0,
+                    "capacity": self.max_n_ambulances,
+                }
+            ]
+
+        # Manage varying restriction of ambulances to C1 calls only, with a
+        # "permit" schedule showing the number of ambulances available for
+        # all call types at any given time (and excluding the ambulances
+        # who are restricted to C1 only)
+        if self.config.permit_schedule is not None:
+            self.permit_availability = CapacitySchedule(
+                env=self.env,
+                resource=self.permit,
+                schedule=self.config.permit_schedule,
+                period=self.config.ambulance_schedule_period,
+                on_units_returned=self.dispatcher.notify,
+            )
+        else:
+            self.permit_availability = None
+
+    # ------------------------------------------------------------------------
+    # Model logic
+    # ------------------------------------------------------------------------
 
     def generate_patients(self):
         """Generate patients."""
@@ -115,12 +191,20 @@ class Model:
             self.env.process(self.request_ambulance(patient))
 
     def request_ambulance(self, patient):
-        """Simulate ambulance response.
+        """Join the dispatch queue and wait for the required resources.
+
+        First samples the time from call receipt to joining the dispatch queue.
+
+        Without restricted send, all patients wait only for an ambulance.
+
+        With restricted send:
+        - C1 patients wait only for an ambulance.
+        - C2-C4 patients wait for a permit and then an ambulance.
 
         Parameters
         ----------
         patient : Patient
-            Patient requesting ambulance transport.
+            Patient requiring an ambulance response.
 
         """
         # Sample time from call connection to decision for call to be
@@ -128,63 +212,82 @@ class Model:
         connect_to_queue_time = self.dists["connect_to_queue_time"][
             patient.category
         ].sample()
+
         yield self.env.timeout(connect_to_queue_time)
 
-        # Request an ambulance (will queue if none available)
+        # Log start time of wait for allocation
         self.logger.log_queue(
             entity_id=patient.patient_id, event="ambulance_wait_begins"
         )
-        with self.ambulance.request(
-            priority=patient.priority,
-            entity_id=patient.patient_id,
-            start_event="ambulance_assigned",
-            end_event="ambulance_available",
-        ) as req:
-            yield req
 
-            # Record when patient was assigned an ambulance. This is their
-            # allocation time - time from call receipt to resource allocation.
-            patient.allocation_time = self.env.now - patient.call_timestamp
+        # Join the dispatch queue and wait for all required resources
+        allocation = self.dispatcher.request_resources(patient)
+        ambulance, permit = yield allocation
 
-            # Sample mobilisation time
-            mobilisation_time = self.dists["mobilisation_time"][
+        yield from self.use_ambulance(
+            patient=patient,
+            ambulance=ambulance,
+            permit=permit,
+        )
+
+    def use_ambulance(self, patient, ambulance, permit):
+        """Simulate an ambulance response for a patient.
+
+        Parameters
+        ----------
+        patient : Patient
+            Patient receiving an ambulance response.
+        ambulance : VidigiResource
+            Ambulance allocated by the dispatcher.
+        permit : VidigiResoure or None
+            Permit allocated by the dispatcher for C2-C4 patient under
+            restricted send conditions, or None if no permit was required.
+
+        """
+        # Record when patient was assigned an ambulance. This is their
+        # allocation time - time from call receipt to resource allocation.
+        patient.allocation_time = self.env.now - patient.call_timestamp
+
+        # Sample mobilisation time
+        mobilisation_time = self.dists["mobilisation_time"][
+            patient.category
+        ].sample()
+        yield self.env.timeout(mobilisation_time)
+
+        # Sample travel to scene
+        time_to_scene = self.dists["time_to_scene"][patient.category].sample()
+        yield self.env.timeout(time_to_scene)
+
+        # Record response time
+        patient.response_time = self.env.now - patient.call_timestamp
+
+        # On-scene time
+        on_scene_time = self.dists["on_scene_time"][patient.category][
+            patient.outcome
+        ].sample()
+        yield self.env.timeout(on_scene_time)
+
+        if patient.outcome == "see_and_convey":
+            # Sample travel to hospital
+            time_to_hospital = self.dists["time_to_hospital"][
                 patient.category
             ].sample()
-            yield self.env.timeout(mobilisation_time)
+            yield self.env.timeout(time_to_hospital)
 
-            # Sample travel to scene
-            time_to_scene = self.dists["time_to_scene"][
+            # Handover time
+            handover_time = self.dists["handover_time"][
                 patient.category
             ].sample()
-            yield self.env.timeout(time_to_scene)
+            yield self.env.timeout(handover_time)
 
-            # Record response time
-            patient.response_time = self.env.now - patient.call_timestamp
+        # Wrap up time
+        wrap_up_time = self.dists["wrap_up_time"][patient.category].sample()
+        yield self.env.timeout(wrap_up_time)
 
-            # On-scene time
-            on_scene_time = self.dists["on_scene_time"][patient.category][
-                patient.outcome
-            ].sample()
-            yield self.env.timeout(on_scene_time)
-
-            if patient.outcome == "see_and_convey":
-                # Sample travel to hospital
-                time_to_hospital = self.dists["time_to_hospital"][
-                    patient.category
-                ].sample()
-                yield self.env.timeout(time_to_hospital)
-
-                # Handover time
-                handover_time = self.dists["handover_time"][
-                    patient.category
-                ].sample()
-                yield self.env.timeout(handover_time)
-
-            # Wrap up time
-            wrap_up_time = self.dists["wrap_up_time"][
-                patient.category
-            ].sample()
-            yield self.env.timeout(wrap_up_time)
+        # Return the allocated resources (and trigger another dispatch check)
+        self.dispatcher.return_resources(
+            ambulance=ambulance, permit=permit, patient_id=patient.patient_id
+        )
 
         self.logger.log_departure(entity_id=patient.patient_id)
 
@@ -194,170 +297,26 @@ class Model:
             yield self.env.timeout(self.config.warm_up_period)
             self.patients = []
 
-    def log_capacity_change(self, action, unit, remove_target):
-        """Record a change in operational ambulance capacity.
-
-        Parameters
-        ----------
-        action : str
-            Description of the capacity change ("removed" or "returned").
-        unit : VidigiResource
-            The individual ambulance resource object whose availability
-            changed.
-        remove_target : int
-            Target total number of ambulances removed from the maximum
-            resource pool, rather than the number of additional ambulances to
-            remove. The target operational capacity is
-            `maximum_capacity - remove_target`. For example, with a maximum
-            capacity of 20 and `remove_target=5`, the target operational
-            capacity is 15. Current capacity of 10 results in five ambulances
-            being returned; current capacity of 18 results in three ambulances
-            being removed.
-
-        """
-        self.capacity_log.append(
-            {
-                "time": self.env.now,
-                "action": action,
-                "resource_id": unit.unique_id_attribute,
-                "remove_target": remove_target,
-                "removed": len(self.removed_units),
-                "capacity": self.ambulance.num_resources,
-            }
-        )
-
-    def update_operational_capacity(self):
-        """Apply the ambulance capacity schedule repeatedly."""
-        schedule = sorted(self.config.ambulance_schedule.items())
-        cycle_start = self.env.now
-
-        while True:
-            for index, (time, n_amb) in enumerate(schedule):
-                # Wait until the next schedule entry starts
-                start = cycle_start + time
-                if self.env.now < start:
-                    yield self.env.timeout(start - self.env.now)
-
-                # Get the next time in schedule - or if at end of schedule,
-                # use the ambulance_schedule_period
-                if index + 1 < len(schedule):
-                    next_time = schedule[index + 1][0]
-                else:
-                    next_time = self.config.ambulance_schedule_period
-
-                deadline = cycle_start + next_time
-                remove_target = self.max_n_ambulances - n_amb
-
-                yield from self.apply_capacity_update(
-                    remove_target=remove_target, deadline=deadline
-                )
-
-                # If the target was reached early, wait for the remainder
-                # of the interval
-                remaining_time = deadline - self.env.now
-                if remaining_time > 0:
-                    yield self.env.timeout(remaining_time)
-
-            cycle_start += self.config.ambulance_schedule_period
-
-    def apply_capacity_update(self, remove_target, deadline):
-        """Try to reach capacity target until the specified deadline.
-
-        Parameters
-        ----------
-        remove_target : int
-            Target total number of ambulances removed from the maximum
-            resource pool.
-        deadline : float
-            Simulation time (in minutes) at which to stop attempting to reach
-            the removal target. If the required ambulances are busy, the
-            method waits for them to become available only until this time.
-
-        """
-        if not 0 <= remove_target <= self.max_n_ambulances:
-            raise ValueError(
-                f"remove_target must be between 0 and "
-                f"{self.max_n_ambulances}; received {remove_target}"
-            )
-
-        # Return ambulances if the new target is lower than the
-        # number currently remove.
-        while len(self.removed_units) > remove_target:
-            # Remove final unit from list
-            unit = self.removed_units.pop()
-            # Increment the expected number of objects in the store
-            # We alter _n_pool_units as num_resources is not changeable
-            self.ambulance._n_pool_units += 1
-            # Add the unit to the store
-            self.ambulance.put(unit, auto_log=False)
-            self.log_capacity_change(
-                action="returned", unit=unit, remove_target=remove_target
-            )
-
-        # Create a deadline event that can be shared by all removal attempts
-        # made during this target period
-        remaining_time = max(0, deadline - self.env.now)
-        deadline_event = self.env.timeout(remaining_time)
-
-        # Attempt to remove additional units
-        while len(self.removed_units) < remove_target:
-            # Do not start another request once the deadline has passed
-            if self.env.now >= deadline:
-                break
-
-            # Wait for either:
-            # 1. An ambulance to become available to remove from store, or-
-            # 2. The target interval to end.
-            get_event = self.ambulance.get_direct(auto_log=False)
-            result = yield get_event | deadline_event
-
-            if get_event in result:
-                unit = result[get_event]
-                # Add the object to the list of removed units
-                self.removed_units.append(unit)
-                # Reduce the expected number of objects in the store
-                # We alter _n_pool_units as num_resources is not changeable
-                self.ambulance._n_pool_units -= 1
-                self.log_capacity_change(
-                    action="removed",
-                    unit=unit,
-                    remove_target=remove_target,
-                )
-            else:
-                # The deadline occurred first. Cancel the outstanding request
-                # so it can't remove an ambulance later
-                self.ambulance.cancel_get(get_event)
-                break
-
-        self.assert_resource_invariants()
-
-    def assert_resource_invariants(self):
-        """Check that ambulance resource counting is consistent."""
-        original = self.max_n_ambulances
-        operational = self.ambulance.num_resources
-        removed = len(self.removed_units)
-        busy = self.ambulance.count
-        available = len(self.ambulance.items)
-        assert original == operational + removed
-        assert operational == busy + available
-        assert 0 <= busy <= operational
-        assert 0 <= available <= operational
-        assert 0 <= removed <= original
-
     def run(self):
         """Run the simulation model.
 
-        Starts one patient-generation process for each category and runs the
-        simulation until the configured run length.
+        Starts patient generation and resource capacity processes, then runs
+        the simulation for the configured duration.
 
         """
         # Schedule arrival generator and warm-up
         self.env.process(self.generate_patients())
+        self.env.process(self.dispatcher.run())
         self.env.process(self.warm_up())
 
-        # Schedule changing capacity if set
-        if self.config.ambulance_schedule is not None:
-            self.env.process(self.update_operational_capacity())
+        # Schedule changing number of ambulances if set
+        if self.ambulance_availability is not None:
+            self.env.process(self.ambulance_availability.run())
+
+        # Varying schedule of number of vehicles permitted for C2-C4 (used to
+        # model restricted send)
+        if self.permit_availability is not None:
+            self.env.process(self.permit_availability.run())
 
         # Run simulation
         self.env.run(

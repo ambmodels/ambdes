@@ -44,26 +44,35 @@ def model(
         warm_up_period=0,
         data_collection_period=100,
         dist_config={},
+        permit_schedule=None,
     )
     # Return initialised model
     return Model(run_number=0, config=config)
 
 
 # ---------------------------------------------------------------------------
-# Simple resource addition / removal tests for apply_capacity_update()
+# Simple resource addition / removal tests for apply_target()
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [({0: 3}, 1000)],
+    indirect=True,
+)
 def test_remove_idle_ambulances(model):
     """Check idle ambulances are removed immediately."""
-    # Run apply_capacity_update
+    # Run apply_target
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.ambulance_availability.apply_target(
+            remove_target=2,
+            deadline=10,
+        )
     )
     model.env.run()
 
     # Removed resources
-    assert len(model.removed_units) == 2
+    assert len(model.ambulance_availability.removed_units) == 2
     # Capacity (busy + available ambulances)
     assert model.ambulance.num_resources == 1
     # Available resources
@@ -101,18 +110,23 @@ def test_remove_idle_ambulances(model):
     assert model.capacity_log == expected_log
 
 
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [({0: 3}, 1000)],
+    indirect=True,
+)
 def test_remove_and_return_idle_ambulances(model):
     """Check idle ambulances are removed and returned as expected."""
 
     def scenario():
-        yield from model.apply_capacity_update(
+        yield from model.ambulance_availability.apply_target(
             remove_target=2,
             deadline=10,
         )
 
         yield model.env.timeout(5)
 
-        yield from model.apply_capacity_update(
+        yield from model.ambulance_availability.apply_target(
             remove_target=0,
             deadline=15,
         )
@@ -124,7 +138,7 @@ def test_remove_and_return_idle_ambulances(model):
 
     assert model.env.now == 25
     # Removed resources
-    assert len(model.removed_units) == 0
+    assert len(model.ambulance_availability.removed_units) == 0
     # Capacity (busy + available ambulances)
     assert model.ambulance.num_resources == 3
     # Available resources
@@ -179,11 +193,15 @@ def test_remove_and_return_idle_ambulances(model):
 
 
 # ---------------------------------------------------------------------------
-# Busy resource removal test for apply_capacity_update()
+# Busy resource removal test for apply_target()
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [({0: 2}, 1000)],
+    indirect=True,
+)
 def test_wait_before_remove_busy_ambulance(model):
     """Busy ambulance should only be removed once finished with patient."""
 
@@ -200,13 +218,16 @@ def test_wait_before_remove_busy_ambulance(model):
     model.env.process(occupy_ambulance())
 
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.ambulance_availability.apply_target(
+            remove_target=2,
+            deadline=10,
+        ),
     )
 
     model.env.run()
 
     # Removed resources
-    assert len(model.removed_units) == 2
+    assert len(model.ambulance_availability.removed_units) == 2
     # Capacity (busy + available ambulances)
     assert model.ambulance.num_resources == 0
     # Available resources
@@ -245,11 +266,15 @@ def test_wait_before_remove_busy_ambulance(model):
 
 
 # ---------------------------------------------------------------------------
-# Deadline test for apply_capacity_update()
+# Deadline test for apply_target()
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("n_ambulances", [2], indirect=True)
+@pytest.mark.parametrize(
+    "ambulance_schedule, ambulance_schedule_period",
+    [({0: 2}, 1000)],
+    indirect=True,
+)
 def test_not_remove_after_deadline(model):
     """If ambulance still busy after deadline, don't remove later."""
 
@@ -266,13 +291,16 @@ def test_not_remove_after_deadline(model):
     model.env.process(occupy_ambulance())
 
     model.env.process(
-        model.apply_capacity_update(remove_target=2, deadline=10),
+        model.ambulance_availability.apply_target(
+            remove_target=2,
+            deadline=10,
+        ),
     )
 
     model.env.run(until=25)
 
     # Removed resources
-    assert len(model.removed_units) == 1
+    assert len(model.ambulance_availability.removed_units) == 1
     # Capacity (busy + available ambulances)
     assert model.ambulance.num_resources == 1
     # Available ambulances
@@ -303,7 +331,7 @@ def test_not_remove_after_deadline(model):
 
 
 # ---------------------------------------------------------------------------
-# Test of update_operational_capacity (which calls apply_capacity_update)
+# Test of CapacitySchedule.run() (which calls apply_target)
 # ---------------------------------------------------------------------------
 
 
@@ -315,9 +343,9 @@ def test_not_remove_after_deadline(model):
     indirect=True,
 )
 def test_capacity_changes_between_intervals(model):
-    """Test capacity changes using interval and update_operational_capacity."""
+    """Test capacity changes using interval and run."""
     # With 1-hour capacity interval, first remove two ambulances, then return
-    model.env.process(model.update_operational_capacity())
+    model.env.process(model.ambulance_availability.run())
     model.env.run(until=61)
 
     expected_log = [
@@ -374,7 +402,7 @@ def test_capacity_changes_between_intervals(model):
 )
 def test_capacity_schedule_repeats(model):
     """Check the ambulance schedule repeats after its period."""
-    model.env.process(model.update_operational_capacity())
+    model.env.process(model.ambulance_availability.run())
     model.env.run(until=121)
 
     changes_at_120 = [
@@ -385,3 +413,18 @@ def test_capacity_schedule_repeats(model):
     assert changes_at_120[-1]["remove_target"] == 2
     assert changes_at_120[-1]["removed"] == 2
     assert changes_at_120[-1]["capacity"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Other tests
+# ---------------------------------------------------------------------------
+
+
+def test_fixed_capacity_model_has_dispatcher(model):
+    """A fixed-capacity model should still use the dispatcher."""
+    assert model.ambulance.num_resources == 3
+    assert model.ambulance_availability is None
+
+    assert model.dispatcher.ambulance is model.ambulance
+    assert model.dispatcher.permit is None
+    assert model.dispatcher.queue == []
