@@ -3,9 +3,9 @@ title: Literature
 bibliography: ../../assets/references.bib
 ---
 
-<br>
+This page is an informal review of published ambulances DES models. It aims to identify established modelling approaches, and provide context for the development of our model.
 
-This page summarises how **published ambulance DES** represent key elements of the ambulance system. It builds on the excellent review by @aboueljinane_review_2013, whose clear structure and introduction to ambulance DES have shaped how I organise the sections here. I include the DES from that review, and I have also read and added more recent ambulance DES models.
+It builds on  @aboueljinane_review_2013, focusing just on ambulance DES and extending with more recent models.
 
 <br>
 

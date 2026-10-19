@@ -1,0 +1,39 @@
+---
+title: Context
+---
+
+`ambdes` was developed as an open prototype for ambulances DES as a transparent, reproducible, reusable research project.
+
+## Why DES?
+
+DES represents a system as a sequence of events affecting individual entities and shared resources. DES is useful when the pathway and competition for resources matter.
+
+In this model, patients arrive, wait for an eligible ambulance, pass through response activities and release the resource. This makes it possible to represent queues, priorities, stochastic durations and changing resource availability directly.
+
+## Relationship to regression
+
+The DES should broadly agree with estimates from the existing regression models, while offering richer outputs. Regression is simpler, faster and easier to validate. However benefits of DES are:
+
+* Multiple outcomes from a single run, whereas regression produces one outcome per model.
+* A more intuitive representation of the system, showing how resourcing assumptions translate into waits and utilisation.
+* More scope for extension.
+
+The current regression model changes three inputs:
+
+* Vehicle hours
+* Number of incidents per day
+* Handover delays
+
+## Development approach
+
+The model is being developed iteratively, with a focus on keeping the model as simple as possible, and focused on what questions can be asked with a simple model.
+
+## What questions?
+
+The main uses are **resourcing and demand scenarios**. For example, "if overall resource level changes by X hours, what happens to mean Category 2 response time?"
+
+Less commonly, scenarios involving:
+
+* **Handover delays** - these are difficult to predict, so can instead test scenarios like "What would happen if mean handover time was 60 minutes per patient."
+
+* **On-scene time** - for example, "What would be the effect of reducing on-scene time by one minute?"

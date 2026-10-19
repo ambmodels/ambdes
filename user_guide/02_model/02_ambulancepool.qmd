@@ -1,5 +1,5 @@
 ---
-title: Estimating the ambulance pool
+title: Explaining calculations for estimating the ambulance pool size
 ---
 
 ## Estimating the pool size from total weekly ambulance hours
@@ -22,22 +22,19 @@ The model therefore uses an ambulance pool of 300 ambulances.
 
 This does not mean there are 300 different ambulances on each day. It means that, across a week, the service provides the same total capacity as 300 ambulances each being available continuously for the whole week.
 
-## Reducing the pool for sickness abstraction
+## Reducing the pool for unavailability
 
-Absence due to sickness reduces the ambulance capacity from the planned capacity.
+Unavailability reduces the ambulance capacity from the planned capacity.
 
-The sickness data contains the total absence-hours for individual staff members per day. As the majority of resources require two staff members, these hours are divided by two to estimate the equivalent ambulance-hours unavailable.
+If unavailability data is provided as hours per staff member, this can be used to approximate vehicle hours unavailable by dividing by two, as the majority of resources require two staff members.
 
-For example, suppose the mean daily abstraction due to sickness was 240 hours. One ambulance available continuously for a day provides 24 ambulance hours, so:
+For example, suppose the mean daily unavailability was 240 hours. One ambulance available continuously for a day provides 24 ambulance hours, so:
 
 $$
 \frac{240 \text{ ambulance-hours unavailable per day}}{24 \text{ hours per day}} = 10 \text{ ambulances}
 $$
 
-This is equivalent to 10 ambulances being continuously unavailable. This value is either:
-
-* Calculated once, as a mean, and subtracted once from the fixed ambulance pool size, or-
-* Sampled per day from a distribution of unavailability, and the ambulance pool size is then changed each day to match.
+This is equivalent to 10 ambulances being continuously unavailable.
 
 ## Reducing the pool for multi-resource incidents.
 
@@ -73,17 +70,17 @@ So those extra Category 1 responses consume the same amount of capacity as 0.694
 
 ## When to update the reductions
 
-The sickness reduction should be updated if the scenario changes the assumed level of sickness absence.
+The unavailability reduction should be updated if the scenario changes the assumed level of unavailability
 
 The multi-resource reduction should be updated only when the scenario changes the amount of work done by second and subsequent ambulances.
 
-| Scenario change | Update sickness reduction? | Update multi-resource reduction? |
+| Scenario change | Update unavailability reduction? | Update multi-resource reduction? |
 | - | - | - |
 | Increase or decrease overall ambulance pool size | No | No |
-| Change in average levels of sickness | Yes | No |
+| Change in average levels of unavailability | Yes | No |
 | Increase incident demand by 5% | No | Yes, increase by 5% |
 | Change incident demand by response category | No | Yes, recalculate by category |
 | Change ambulance job durations | No | Yes |
 | Change the number of ambulances attending incidents | No | Yes |
 
-Just changing the pool size will not itself create more sickness or multi-resource incidents, so the reduction remains unchanged. However, if other factors also change (e.g., if you assumed sickness should be a proportion related to pool size, or if incident demand also changed with pool size), then amendments are required.
+Just changing the pool size will not itself create more unavailability or multi-resource incidents, so the reduction remains unchanged. However, if other factors also change (e.g., if you assumed unavailability should be a proportion related to pool size, or if incident demand also changed with pool size), then amendments are required.

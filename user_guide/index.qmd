@@ -2,13 +2,18 @@
 title: Introduction
 ---
 
-The `ambdes` model has been developed as a pilot/prototype/test of creating a open-source DES model to support modelling demand etc., 
+`ambdes` is an open-source discrete-event simulation (DES) ambulance demand and resources. It can explore how changes in demand, ambulance capacity and operational delays may affect response performance. It is being developed as a prototype with South Western Ambulance Service NHS Foundation Trust (SWASFT).
 
-some context... The model of the ambulance system represents incidents across four response categories:
+The model represents incidents in four response capacities:
 
-* C1 - life-threatening incidents
-* C2 - emergency incidents
-* C3 - urgent incidents
-* C4 - less urgent incidents
+* **C1** - life-threatening incidents
+* **C2** - emergency incidents
+* **C3** - urgent incidents
+* **C4** - less urgent incidents
 
-The primary output is category 2 mean response time, and resource utilisation is a secondary output.
+It is limited to calls that receive an in-person responses (and so includes hear-and-treat, which are cases managed over the phone). These incidents are either:
+
+* **See-and-treat** - ambulance attends and treats on scene.
+* **See-and-convey** - ambulance attends, treats on scene, and then conveys to a destination (e.g., to hospital).
+
+It's main performance measure is **mean response time**, with results available by response category and response outcome (i.e., conveyed or not). It also reports resource utilisation.
