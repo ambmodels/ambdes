@@ -147,14 +147,6 @@ class SimConfig:
             stood down - NEITHER or which impact on overall pool size.
 
         """
-        # Reduce the number of ambulances if specified
-        if n_ambulances:
-            n_ambulances -= reduce_ambulances
-        if ambulance_schedule:
-            ambulance_schedule = {
-                k: v - reduce_ambulances for k, v in ambulance_schedule.items()
-            }
-
         # Load dictionaries from JSON paths, unless have directly provided
         # a dictionary - in which case, leave unchanged
         arrivals_config = resolve_dict(arrivals_config)
@@ -171,6 +163,15 @@ class SimConfig:
             self.restricted_send_schedule = convert_keys_to_int(
                 self.restricted_send_schedule
             )
+
+        # Reduce the number of ambulances if specified
+        if n_ambulances:
+            n_ambulances -= reduce_ambulances
+        if self.ambulance_schedule:
+            self.ambulance_schedule = {
+                k: v - reduce_ambulances
+                for k, v in self.ambulance_schedule.items()
+            }
 
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
         # (as sim-tools requires a dataframe, but had to use lists for JSON)
