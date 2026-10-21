@@ -104,18 +104,22 @@ def test_patients_matches_log():
         patient_df["amb_release_timestamp"] < model.env.now
     ].copy()
 
-    # Convert wide-to-long dataframe of key event timestamps
-    patient_events = patient_df[
-        ["call_timestamp", "allocation_timestamp", "amb_release_timestamp"]
-    ].copy()
-    patient_events = patient_events.melt(
-        var_name="patient_event", value_name="time"
-    ).sort_values("time")
+    # Get the event log and change ID name to match patients
+    amb_events = model.logger.to_dataframe().rename(
+        columns={"entity_id": "patient_id"}
+    )
 
-    # Get the event log
-    amb_events = model.logger.to_dataframe()
-    amb_events = amb_events[["time", "event"]].rename(
-        columns={"event": "amb_event"}
+    # Reshape from long to wide
+    amb_events = amb_events.pivot(
+        columns="event", index="patient_id", values="time"
+    ).reset_index()
+
+    # Match the completed patients to their logged events
+    comparison = patient_df.merge(
+        amb_events,
+        on="patient_id",
+        how="left",
+        validate="one_to_one",
     )
 
     event_pairs = [
@@ -126,28 +130,19 @@ def test_patients_matches_log():
     ]
 
     for patient_event, amb_event in event_pairs:
-
-        # Get all the times for that event pair
-        patient_times = patient_events.loc[
-            patient_events["patient_event"] == patient_event, "time"
-        ]
-        amb_times = amb_events.loc[
-            amb_events["amb_event"] == amb_event, "time"
-        ].to_numpy()
-
-        # Check each patient time has a matching ambulance-event time
-        matched = patient_times.apply(
-            lambda time, amb_times=amb_times: np.isclose(
-                amb_times,
-                time,
-                rtol=0,
-                atol=1e-9,
-            ).any()
+        matched = np.isclose(
+            comparison[patient_event],
+            comparison[amb_event],
+            rtol=0,
+            atol=1e-9,
+            equal_nan=False,
         )
 
-        missing = patient_times[~matched]
+        mismatches = comparison.loc[
+            ~matched,
+            ["patient_id", patient_event, amb_event],
+        ]
 
-        assert missing.empty, (
-            f"{patient_event} has no matching {amb_event} "
-            f"at these times:\n{missing}"
+        assert mismatches.empty, (
+            f"{patient_event} does not match {amb_event}:\n{mismatches}"
         )
