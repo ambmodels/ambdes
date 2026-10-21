@@ -605,9 +605,7 @@ def build_arrival_config(arrivals, hourly=False):
     Returns
     -------
     dict
-        Dictionary containing the configuration dictionary, as well as other
-        tables and outputs from processing, that can be used to help check
-        assumptions in the arrival modelling.
+        Configuration dictionary.
 
     """
     if hourly:
@@ -632,22 +630,8 @@ def build_arrival_config(arrivals, hourly=False):
         .fillna(0)
     )
 
-    # Convert from counts to proportions of each category for each interval
-    proportion_df = arrival_df.div(arrival_df.sum(axis=1), axis=0)
-
-    # Summarise the variations in proportions across intervals
-    variation_df = pd.DataFrame(
-        {
-            "mean": proportion_df.mean(axis=0),
-            "min": proportion_df.min(axis=0),
-            "max": proportion_df.max(axis=0),
-            "range": proportion_df.max(axis=0) - proportion_df.min(axis=0),
-            "sd": proportion_df.std(axis=0),
-        }
-    )
-
-    # Get overall mean proportion by response category
-    category_proportions = proportion_df.mean(axis=0)
+    category_counts = arrival_df.sum(axis=0)
+    category_proportions = category_counts / category_counts.sum()
 
     # Get count of total arrivals per interval
     arrivals_per_interval = arrival_df.sum(axis=1)
@@ -701,9 +685,5 @@ def build_arrival_config(arrivals, hourly=False):
         },
     }
 
-    # Return the config dictionary, plus some tables used for assumption checks
-    return {
-        "proportion_df": proportion_df,
-        "variation_df": variation_df,
-        "dist_config": dist_config,
-    }
+    # Return the config dictionary
+    return dist_config
