@@ -1,0 +1,96 @@
+{
+    "call_arrival": {
+        "class_name": "NSPPThinning",
+        "params": {
+            "t": [
+                0,
+                1440,
+                2880,
+                4320,
+                5760,
+                7200,
+                8640
+            ],
+            "mean_iat": [
+                120.0,
+                144.0,
+                180.0,
+                Infinity,
+                Infinity,
+                Infinity,
+                180.0
+            ]
+        }
+    },
+    "call_category": {
+        "class_name": "DiscreteEmpirical",
+        "params": {
+            "values": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+            ],
+            "freq": [
+                0.34210526315789475,
+                0.2894736842105263,
+                0.21052631578947367,
+                0.15789473684210525
+            ]
+        }
+    },
+    "call_outcome": {
+        "C1": {
+            "class_name": "DiscreteEmpirical",
+            "params": {
+                "values": [
+                    "see_and_convey",
+                    "see_and_treat"
+                ],
+                "freq": [
+                    0.3076923076923077,
+                    0.6923076923076923
+                ]
+            }
+        },
+        "C2": {
+            "class_name": "DiscreteEmpirical",
+            "params": {
+                "values": [
+                    "see_and_convey",
+                    "see_and_treat"
+                ],
+                "freq": [
+                    0.6363636363636364,
+                    0.36363636363636365
+                ]
+            }
+        },
+        "C3": {
+            "class_name": "DiscreteEmpirical",
+            "params": {
+                "values": [
+                    "see_and_convey",
+                    "see_and_treat"
+                ],
+                "freq": [
+                    0.125,
+                    0.875
+                ]
+            }
+        },
+        "C4": {
+            "class_name": "DiscreteEmpirical",
+            "params": {
+                "values": [
+                    "see_and_convey",
+                    "see_and_treat"
+                ],
+                "freq": [
+                    0.16666666666666666,
+                    0.8333333333333334
+                ]
+            }
+        }
+    }
+}

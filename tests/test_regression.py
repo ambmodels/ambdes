@@ -1,5 +1,6 @@
 """Regression tests - results are consistent over time."""
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -9,12 +10,14 @@ from ambdes import (
     Results,
     Runner,
     SimConfig,
+    build_arrival_config,
     run_warm_up_audit,
 )
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 OUTPUT = Path(__file__).parent.joinpath("regression_results")
 
+PATIENT_ARRIVALS = INPUT / "patient_arrivals.csv"
 ARRIVALS = INPUT / "param_arrivals.json"
 TIMES = INPUT / "param_times.json"
 
@@ -24,6 +27,8 @@ N_REPS = 5
 CORES = 1
 N_AMBULANCES = 12
 
+DAILY_ARRIVALS = OUTPUT / "daily_arrivals_config.json"
+HOURLY_ARRIVALS = OUTPUT / "hourly_arrivals_config.json"
 MODEL_UTIL = OUTPUT / "model_utilisation_df.csv"
 MODEL_SUMMARY = OUTPUT / "model_summary_df.csv"
 RUNNER_RUN = OUTPUT / "runner_run.csv"
@@ -42,6 +47,24 @@ def make_config():
         cores=CORES,
         n_ambulances=N_AMBULANCES,
     )
+
+
+def test_build_daily_arrivals():
+    """build_arrival_config() with hourly=False is consistent."""
+    arrivals = pd.read_csv(PATIENT_ARRIVALS)
+    daily_arrivals = build_arrival_config(arrivals=arrivals, hourly=False)
+    with open(DAILY_ARRIVALS) as f:
+        exp_daily_arrivals = json.load(f)
+    assert daily_arrivals == exp_daily_arrivals
+
+
+def test_build_hourly_arrivals():
+    """build_arrival_config() with hourly=True is consistent."""
+    arrivals = pd.read_csv(PATIENT_ARRIVALS)
+    hourly_arrivals = build_arrival_config(arrivals=arrivals, hourly=True)
+    with open(HOURLY_ARRIVALS) as f:
+        exp_hourly_arrivals = json.load(f)
+    assert hourly_arrivals == exp_hourly_arrivals
 
 
 def test_model_consistent():
