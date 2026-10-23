@@ -1,6 +1,6 @@
 """ambdes."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 # This section allows us to import using e.g. `from ambdes import Model`,
 # rather than `from ambdes.model import Model`.
