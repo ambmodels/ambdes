@@ -597,8 +597,8 @@ def build_arrival_config(arrivals, hourly=False):
     Parameters
     ----------
     arrivals : pd.DataFrame
-        Count of arrivals by weekday, response category and outcome. Must also
-        contain incident hour when hourly=True.
+        Mean count of arrivals by weekday, response category and outcome. Must
+        also contain incident hour when hourly=True.
     hourly : bool
         Use weekday-hour intervals instead of just weekday intervals.
 

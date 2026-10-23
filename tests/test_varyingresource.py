@@ -434,6 +434,7 @@ def test_fixed_capacity_model_has_dispatcher(model):
 # Invalid and edge case inputs
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.parametrize(
     "schedule, period, error",
     [
@@ -442,8 +443,8 @@ def test_fixed_capacity_model_has_dispatcher(model):
         ({0: 1}, None, "period.*provided"),
         ({0: 1, 10: 2}, 10, "greater than the last time"),
         ({0: 1, 10: 2}, 9, "greater than the last time"),
-        ({0: -1}, 10, "must not be negative")
-    ]
+        ({0: -1}, 10, "must not be negative"),
+    ],
 )
 def test_invalid_capacity_schedule(model, schedule, period, error):
     """Invalid schedules should be rejected."""
@@ -493,6 +494,7 @@ def test_unsorted_schedule_is_applied_in_time_order(model):
 # Other tests
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.parametrize(
     "ambulance_schedule, ambulance_schedule_period",
     [({0: 3}, 1000)],
@@ -534,9 +536,7 @@ def test_partial_return_calls_callback_once(model):
     # The callback should only be triggered when capacity increases
     # So we check there is a single callback state, and it is when we went
     # from remove_target=2 to remove_target=1 (so from 1 to 2 capacity).
-    assert callback_states == [
-        {"removed": 1, "capacity": 2, "available": 2}
-    ]
+    assert callback_states == [{"removed": 1, "capacity": 2, "available": 2}]
     # There should just be one "returned" entry in the log
     assert [entry["action"] for entry in model.capacity_log].count(
         "returned"

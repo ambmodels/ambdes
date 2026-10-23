@@ -19,8 +19,14 @@ def test_arrival_config_with_unequal_arrivals():
     for day in range(7):
         counts = (90, 10) if day == 0 else (1, 9)
         for category, count in zip(("C1", "C2"), counts, strict=True):
-            rows.append(dict(weekday=day, category=category,
-                             outcome="see_and_treat", count=count))
+            rows.append(
+                dict(
+                    weekday=day,
+                    category=category,
+                    outcome="see_and_treat",
+                    count=count,
+                )
+            )
 
     settings = build_arrival_config(pd.DataFrame(rows))
     params = settings["call_category"]["params"]
