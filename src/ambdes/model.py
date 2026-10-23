@@ -209,11 +209,11 @@ class Model:
         """
         # Sample time from call connection to decision for call to be
         # added to stack for response (i.e., joining queue for resource)
-        connect_to_queue_time = self.dists["connect_to_queue_time"][
+        patient.connect_to_queue_time = self.dists["connect_to_queue_time"][
             patient.category
         ].sample()
 
-        yield self.env.timeout(connect_to_queue_time)
+        yield self.env.timeout(patient.connect_to_queue_time)
 
         # Log start time of wait for allocation
         self.logger.log_queue(
@@ -249,40 +249,44 @@ class Model:
         patient.allocation_time = self.env.now - patient.call_timestamp
 
         # Sample mobilisation time
-        mobilisation_time = self.dists["mobilisation_time"][
+        patient.mobilisation_time = self.dists["mobilisation_time"][
             patient.category
         ].sample()
-        yield self.env.timeout(mobilisation_time)
+        yield self.env.timeout(patient.mobilisation_time)
 
         # Sample travel to scene
-        time_to_scene = self.dists["time_to_scene"][patient.category].sample()
-        yield self.env.timeout(time_to_scene)
+        patient.time_to_scene = self.dists["time_to_scene"][
+            patient.category
+        ].sample()
+        yield self.env.timeout(patient.time_to_scene)
 
         # Record response time
         patient.response_time = self.env.now - patient.call_timestamp
 
         # On-scene time
-        on_scene_time = self.dists["on_scene_time"][patient.category][
+        patient.on_scene_time = self.dists["on_scene_time"][patient.category][
             patient.outcome
         ].sample()
-        yield self.env.timeout(on_scene_time)
+        yield self.env.timeout(patient.on_scene_time)
 
         if patient.outcome == "see_and_convey":
             # Sample travel to hospital
-            time_to_hospital = self.dists["time_to_hospital"][
+            patient.time_to_hospital = self.dists["time_to_hospital"][
                 patient.category
             ].sample()
-            yield self.env.timeout(time_to_hospital)
+            yield self.env.timeout(patient.time_to_hospital)
 
             # Handover time
-            handover_time = self.dists["handover_time"][
+            patient.handover_time = self.dists["handover_time"][
                 patient.category
             ].sample()
-            yield self.env.timeout(handover_time)
+            yield self.env.timeout(patient.handover_time)
 
         # Wrap up time
-        wrap_up_time = self.dists["wrap_up_time"][patient.category].sample()
-        yield self.env.timeout(wrap_up_time)
+        patient.wrap_up_time = self.dists["wrap_up_time"][
+            patient.category
+        ].sample()
+        yield self.env.timeout(patient.wrap_up_time)
 
         # Return the allocated resources (and trigger another dispatch check)
         self.dispatcher.return_resources(

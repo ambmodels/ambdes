@@ -224,31 +224,56 @@ class CapacitySchedule:
 
         # Attempt to remove additional units
         while len(self.removed_units) < remove_target:
-            # Do not start another request once the deadline has passed
+            # Do not start another request once the deadline has passed.
+            # Removals are only allowed stricly before the deadline
             if self.env.now >= deadline:
                 break
+
+            # Ask the store for one unit. This request may be satisfied
+            # immediately if an idle unit is available, or it may remain queued
+            # while we wait for a busy unit to be returned.
+            get_event = self.resource.get_direct(auto_log=False)
 
             # Wait for either:
             # 1. An ambulance to become available to remove from store, or-
             # 2. The target interval to end.
-            get_event = self.resource.get_direct(auto_log=False)
             result = yield get_event | deadline_event
 
-            if get_event in result:
-                unit = result[get_event]
+            # If we resume at or after the deadline, the removal window is
+            # over. In SimPy, get_event may already be triggered and the store
+            # already handed us the unit - in which case, we put this back
+            # explicitly (instead of just cancelling the request, otherwise
+            # the unit can disappear from the store)
+            if self.env.now >= deadline:
+                if get_event.triggered:
+                    self.resource.put(get_event.value, auto_log=False)
+                else:
+                    self.resource.cancel_get(get_event)
+                break
+
+            # If we get here, then we are before the deadline, so a triggered
+            # even should count as a genuine removal
+            if get_event.triggered:
+                unit = get_event.value
+
                 # Add the object to the list of removed units
                 self.removed_units.append(unit)
+
                 # Reduce the expected number of objects in the store
                 # We alter _n_pool_units as num_resources is not changeable
                 self.resource._n_pool_units -= 1
+
                 self.record_change(
                     action="removed",
                     unit=unit,
                     remove_target=remove_target,
                 )
+                if deadline_event in result and self.env.now >= deadline:
+                    break
+
             else:
-                # The deadline occurred first. Cancel the outstanding request
-                # so it can't remove an ambulance later
+                # The get did not trigger, so the deadline must have ended
+                # this waiting period before any unit became available.
                 self.resource.cancel_get(get_event)
                 break
 

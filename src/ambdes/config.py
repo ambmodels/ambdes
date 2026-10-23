@@ -74,6 +74,16 @@ class SimConfig:
     ambulance_schedule_period : int
         Required if ambulance_schedule is provided. Defines the end time
         for the schedule, at which point it should run again, on loop.
+    reduce_ambulances : int
+        Number of ambulances to reduce pool by. This is a fixed reduction,
+        and will be applied to n_ambulances and ambulance_schedule (by
+        just subtracting the resource number at everytimepoint in the
+        provided schedule by `reduce_ambulances`). This is NOT being
+        applied to the restricted send schedule as it is assumed that the
+        ambulance schedule already accounts for unavailability, and this
+        reduction is for accounting for (a) multiple resources attending
+        a single incident, and (b) ambulances being sent to a job then
+        stood down - NEITHER or which impact on overall pool size.
 
     """
 
@@ -89,6 +99,7 @@ class SimConfig:
         ambulance_schedule=None,
         restricted_send_schedule=None,
         ambulance_schedule_period=None,
+        reduce_ambulances=0,
     ):
         """Initialise simulation configuration.
 
@@ -124,6 +135,16 @@ class SimConfig:
         ambulance_schedule_period : int | None
             Required if ambulance_schedule is provided. Defines the end time
             for the schedule, at which point it should run again, on loop.
+        reduce_ambulances : int
+            Number of ambulances to reduce pool by. This is a fixed reduction,
+            and will be applied to n_ambulances and ambulance_schedule (by
+            just subtracting the resource number at everytimepoint in the
+            provided schedule by `reduce_ambulances`). This is NOT being
+            applied to the restricted send schedule as it is assumed that the
+            ambulance schedule already accounts for unavailability, and this
+            reduction is for accounting for (a) multiple resources attending
+            a single incident, and (b) ambulances being sent to a job then
+            stood down - NEITHER or which impact on overall pool size.
 
         """
         # Load dictionaries from JSON paths, unless have directly provided
@@ -142,6 +163,15 @@ class SimConfig:
             self.restricted_send_schedule = convert_keys_to_int(
                 self.restricted_send_schedule
             )
+
+        # Reduce the number of ambulances if specified
+        if n_ambulances:
+            n_ambulances -= reduce_ambulances
+        if self.ambulance_schedule:
+            self.ambulance_schedule = {
+                k: v - reduce_ambulances
+                for k, v in self.ambulance_schedule.items()
+            }
 
         # Convert the call_arrival NSPPThinning parameters into a DataFrame
         # (as sim-tools requires a dataframe, but had to use lists for JSON)

@@ -14,10 +14,24 @@ class Patient:
         Call outcome ("see_and_convey" or "see_and_treat").
     call_timestamp : float
         Time at which patient called 999.
+    connect_to_queue_time : float
+        Time from call to joining the dispatch queue.
     allocation_time : float
-        Time between the call and an ambulance being assigned.
+        Time from call to ambulance allocation.
+    mobilisation_time : float
+        Time from ambulance allocation to departure.
+    time_to_scene : float
+        Travel time to scene.
     response_time : float
-        Time between the call and ambulance arrival on scene.
+        Time from the call to ambulance arrival on scene.
+    on_scene_time : float
+        TIme spent at the scene.
+    time_to_hospital : float
+        Travel time from the scene to the destination.
+    handover_time : float
+        Time spent handing over the patient at the destination.
+    wrap_up_time : float
+        Time spent preparing the crew and ambulance for the next call.
 
     """
 
@@ -42,8 +56,15 @@ class Patient:
         self.category = category
         self.outcome = outcome
         self.call_timestamp = call_timestamp
+        self.connect_to_queue_time = None
         self.allocation_time = None
+        self.mobilisation_time = None
+        self.time_to_scene = None
         self.response_time = None
+        self.on_scene_time = None
+        self.time_to_hospital = None
+        self.handover_time = None
+        self.wrap_up_time = None
 
     @property
     def priority(self):
