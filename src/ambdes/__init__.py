@@ -24,17 +24,33 @@ from .input_modelling import (
     plot_metric_kde,
     plot_observed_fitted,
 )
+from .inputs_shifts import(
+    AREAS,
+    create_availability_schedule,
+    create_schedules,
+    create_weekly_schedule,
+    load_resources,
+    load_shifts,
+    plot_schedule,
+    plot_and_save_schedules,
+    save_schedule,
+    subtract_unavailability,
+)
 from .model import Model
 from .patient import Patient
 from .results import Results, UtilisationCalculator, plot_capacity_vs_util
 from .runner import Runner
 
 __all__ = [
+    "AREAS",
     "build_arrival_config",
     "build_empirical_config",
     "CapacitySchedule",
     "convert_keys_to_int",
     "convert_resource_hours_to_ambulances",
+    "create_weekly_schedule",
+    "create_availability_schedule",
+    "create_schedules",
     "Dispatcher",
     "DispatchRequest",
     "DISTRIBUTIONS",
@@ -42,16 +58,22 @@ __all__ = [
     "fit_config",
     "FitDist",
     "get_dist_params",
+    "load_resources",
+    "load_shifts",
     "Model",
     "Patient",
     "plot_capacity_vs_util",
     "plot_metric_kde",
     "plot_observed_fitted",
+    "plot_and_save_schedules",
+    "plot_schedule",
     "plot_warm_up",
     "resolve_dict",
     "Results",
     "run_warm_up_audit",
     "Runner",
+    "save_schedule",
+    "subtract_unavailability",
     "SimConfig",
     "WarmUpAuditor",
     "UtilisationCalculator",
