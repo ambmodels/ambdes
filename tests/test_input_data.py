@@ -23,8 +23,7 @@ def test_prepare_time_data_unexpected_icb(tmp_path):
 
     # Check that prepare_time_data raises an error
     with pytest.raises(
-        ValueError,
-        match="Missing or unexpected ICB labels:"
+        ValueError, match="Missing or unexpected ICB labels:"
     ) as exc:
         prepare_time_data(path, year=2025)
 

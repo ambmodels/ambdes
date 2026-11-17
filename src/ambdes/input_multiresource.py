@@ -63,7 +63,11 @@ def estimate_extra_amb_time(resources, amb_times):
 
     """
     # Count the frequency of requiring X resources for an incident per category
-    df = resources.groupby("category")["ResourcesAtScene"].value_counts().reset_index()
+    df = (
+        resources.groupby("category")["ResourcesAtScene"]
+        .value_counts()
+        .reset_index()
+    )
 
     # Add the mean time on a job per response category
     df = df.merge(amb_times, on="category", validate="many_to_one")
@@ -72,9 +76,9 @@ def estimate_extra_amb_time(resources, amb_times):
     # the second, third, fourth, etc. ambulances
     df["extra_amb"] = df["ResourcesAtScene"] - 1
 
-    # From the whole year of data, estimate the time spent by extra ambulances on
-    # scene for multi-resource incidents. Assumes additional ambulances remain
-    # occupied for the full job duration (inc. conveyance)
+    # From the whole year of data, estimate the time spent by extra ambulances
+    # on scene for multi-resource incidents. Assumes additional ambulances
+    # remain occupied for the full job duration (inc. conveyance)
     df["extra_amb_time"] = df["extra_amb"] * df["count"] * df["mean_amb_time"]
 
     return df
@@ -99,7 +103,8 @@ def estimate_multiresource_reduction(extra_time, resources_days=365):
     # Get total time by response category
     extra_amb_time = extra_time.groupby("category")["extra_amb_time"].sum()
 
-    # Get the extra time per day by dividing by the number of days in the dataset
+    # Get the extra time per day by dividing by the number
+    # of days in the dataset
     extra_amb_time_per_day = extra_amb_time / resources_days
 
     # Convert additional ambulance-minutes per day into the average
