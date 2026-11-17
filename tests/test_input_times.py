@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from ambdes.input_times import prepare_time_data
+from ambdes.input_data import prepare_time_data
 
 
 def test_prepare_time_data_unexpected_icb(tmp_path):

@@ -23,8 +23,6 @@ from sim_tools.distributions import (
 )
 from statsmodels.graphics.gofplots import qqplot_2samples
 
-from ambdes.constants import AREA_NAME_MAP
-
 # ----------------------------------------------------------------------------
 # Constants
 # ----------------------------------------------------------------------------
@@ -71,89 +69,6 @@ DIST_CLASSES = {
     "pearsonvi": PearsonVI,
 }
 
-YEAR = 2025
-
-
-# ----------------------------------------------------------------------------
-# Importing time data
-# ----------------------------------------------------------------------------
-
-
-def prepare_time_data(path, year=YEAR):
-    """Import and clean time data.
-
-    Parameters
-    ----------
-    path : str | Path
-        Path to time data CSV file.
-    year : int
-        Year the provided data is from.
-
-    Returns
-    -------
-    time_data : pd.DataFrame
-        Processed time data.
-
-    """
-    # Import raw time data
-    time_data = pd.read_csv(path)
-
-    # Group "See & Convey non ED" and "See & Convey ED" into a single column
-    time_data["outcome"] = np.where(
-        time_data["C0660_CallOutcomeDetail"] == "See & Treat",
-        "see_and_treat",
-        np.where(
-            time_data["C0660_CallOutcomeDetail"].isin(
-                ["See & Convey ED", "See & Convey non ED"]
-            ),
-            "see_and_convey",
-            time_data["C0660_CallOutcomeDetail"],
-        ),
-    )
-
-    # Convert categories from e.g., "Category 1" to "C1"
-    time_data["category"] = time_data[
-        "ResponseCategoryGroupLevel2"
-    ].str.replace("Category ", "C")
-
-    # Add weekday column (0=Monday, 6=Sunday)
-    time_data["weekday"] = pd.to_datetime(
-        dict(
-            year=year,
-            month=time_data["IncidentMonth"],
-            day=time_data["IncidentDay"],
-        )
-    ).dt.weekday
-
-    # Add simplified ICB names
-    source_icb = time_data["C0722_ICBforCommisisonersReports"]
-    time_data["icb"] = source_icb.map(AREA_NAME_MAP)
-
-    # -----------------------------------------------------------------------
-    # Defensive programming: check the ICB mapping
-    # -----------------------------------------------------------------------
-
-    # Count how many were missing or unknown in original data, or unmapped
-    unknown = source_icb.isna() | source_icb.eq("Unknown ICB")
-    unmapped = time_data["icb"].isna() & ~unknown
-
-    # Raise an error if any ICB labels were otherwise not mapped
-    if unmapped.any():
-        raise ValueError(
-            f"Unexpected ICB labels:\n{source_icb[unmapped].value_counts()}"
-        )
-
-    # Print a success message
-    print(f"ICB mapped successfully: {time_data['icb'].notna().sum()} rows")
-
-    # Print a record of the number of records with unknown ICB in original data
-    if unknown.any():
-        print(
-            f"Warning: {unknown.sum()} rows have an unknown or missing "
-            + "ICB in the provided raw data."
-        )
-
-    return time_data
 
 
 # ----------------------------------------------------------------------------
