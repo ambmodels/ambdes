@@ -42,6 +42,16 @@ WEEKDAYS = {
     "Sunday": 6,
 }
 
+TIME_COLUMNS = [
+    "AddedToStack_Duration",
+    "C0001_Mobilisation_Duration",
+    "C0004_MobilisationToScene_Duration",
+    "C0007_OnScene_Duration",
+    "C0172_SceneToDestination_Duration",
+    "C0012_Handover_Duration",
+    "C0171_WrapUp_Duration",
+]
+
 # ----------------------------------------------------------------------------
 # Helper functions
 # ----------------------------------------------------------------------------
@@ -93,13 +103,18 @@ def map_labels(
             f"{original_series[invalid].value_counts(dropna=False)}"
         )
 
-    print(f"{name} mapped successfully: {mapped.notna().sum()} rows")
+    print("--------------------------------------------------------------")
+    print(f"Mapping {name}")
+    print(f"Successfully mapped {mapped.notna().sum()} rows")
 
     if permitted.any():
         print(
             f"Warning: {permitted.sum()} rows have permitted missing "
-            f"or unknown {name} labels in the raw data."
+            f"or unknown {name} labels in the raw data. These were:\n"
+            f"{original_series[permitted].value_counts(dropna=False).to_string()}"
         )
+
+    print("--------------------------------------------------------------")
 
     return mapped
 
@@ -201,6 +216,28 @@ def prepare_time_data(path, year=YEAR):
     time_data["category"] = map_categories(
         time_data["ResponseCategoryGroupLevel2"]
     )
+
+    # Convert times from seconds to minutes
+    time_data[TIME_COLUMNS] = time_data[TIME_COLUMNS] / 60
+
+    print("--------------------------------------------------------------")
+    print("Time columns converted from seconds to minutes.")
+
+    # Report numeric columns that were not converted
+    unconverted = [
+        col
+        for col in time_data.select_dtypes(include="number").columns
+        if col not in TIME_COLUMNS
+    ]
+    if unconverted:
+        print(
+            "Numeric columns not converted: "
+            f"{', '.join(unconverted)}\n"
+            "If any of these contain times in seconds, you must add them to "
+            "TIME_COLUMNS in prepare_time_data."
+        )
+
+    print("--------------------------------------------------------------")
 
     return time_data
 
