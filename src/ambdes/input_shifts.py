@@ -5,6 +5,8 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from ambdes.constants import AREA_NAME_MAP
+
 # ----------------------------------------------------------------------------
 # Constants
 # ----------------------------------------------------------------------------
@@ -17,17 +19,6 @@ WEEKDAYS = {
     "Friday": 4,
     "Saturday": 5,
     "Sunday": 6,
-}
-
-AREAS = {
-    "BNSSG": "bnssg",
-    "Devon": "devon",
-    "BSW": "bsw",
-    "Dorset": "dorset",
-    "Cornwall": "cornwall",
-    "Cornwall/IOS": "cornwall",
-    "Somerset": "somerset",
-    "Gloucestershire": "gloucestershire",
 }
 
 EVENT_TYPES = {
@@ -65,7 +56,7 @@ def load_shifts(path):
     shifts = pd.read_csv(path)
 
     # Add standardised ICB names
-    shifts["icb"] = shifts["County"].map(AREAS)
+    shifts["icb"] = shifts["County"].map(AREA_NAME_MAP)
 
     # Convert weekday from string to numeric
     shifts["weekday_num"] = shifts["Weekday"].map(WEEKDAYS)
@@ -111,7 +102,7 @@ def load_resources(path):
     resources = pd.read_csv(path)
 
     # Add standardised/simplified ICB and event type names
-    resources["icb"] = resources["CountyCommander"].map(AREAS)
+    resources["icb"] = resources["CountyCommander"].map(AREA_NAME_MAP)
     resources["EventTypeGrouped"] = resources["EventTypeGrouped"].map(
         EVENT_TYPES
     )
