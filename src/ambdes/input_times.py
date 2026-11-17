@@ -23,6 +23,12 @@ from sim_tools.distributions import (
 )
 from statsmodels.graphics.gofplots import qqplot_2samples
 
+from ambdes.constants import AREA_NAME_MAP
+
+# ----------------------------------------------------------------------------
+# Constants
+# ----------------------------------------------------------------------------
+
 # No hyperexponential as don't know how to fit
 # Excluded uniform (won't ever be good fit) and triangular (designed for when
 # you only know e.g., mean, mode, instead of when you have full sample)
@@ -65,6 +71,68 @@ DIST_CLASSES = {
     "pearsonvi": PearsonVI,
 }
 
+YEAR = 2025
+
+
+# ----------------------------------------------------------------------------
+# Importing time data
+# ----------------------------------------------------------------------------
+
+def prepare_time_data(path, year=YEAR):
+    """Import and clean time data.
+
+    Parameters
+    ----------
+    path : str | Path
+        Path to time data CSV file.
+    year : int
+        Year the provided data is from.
+
+    Returns
+    -------
+    time_data : pd.DataFrame
+        Processed time data.
+
+    """
+    # Import raw time data
+    time_data = pd.read_csv(path)
+
+    # Group "See & Convey non ED" and "See & Convey ED" into a single column
+    time_data["outcome"] = np.where(
+        time_data["C0660_CallOutcomeDetail"] == "See & Treat",
+        "see_and_treat",
+        np.where(
+            time_data["C0660_CallOutcomeDetail"].isin(
+                ["See & Convey ED", "See & Convey non ED"]
+            ),
+            "see_and_convey",
+            time_data["C0660_CallOutcomeDetail"],
+        ),
+    )
+
+    # Convert categories from e.g., "Category 1" to "C1"
+    time_data["category"] = time_data["ResponseCategoryGroupLevel2"].str.replace(
+        "Category ", "C"
+    )
+
+    # Add weekday column (0=Monday, 6=Sunday)
+    time_data["weekday"] = pd.to_datetime(
+        dict(
+            year=year,
+            month=time_data["IncidentMonth"],
+            day=time_data["IncidentDay"],
+        )
+    ).dt.weekday
+
+    # Add simplified ICB names
+    time_data["icb"] = time_data["C0722_ICBforCommisisonersReports"].map(AREA_NAME_MAP)
+
+    return time_data
+
+
+# ----------------------------------------------------------------------------
+# Getting distribution parameters
+# ----------------------------------------------------------------------------
 
 def get_dist_params(dist, data):
     """Compute sim-tools parameter dict for a given distribution.
