@@ -1,4 +1,8 @@
-"""Shared constants (used in 2+ modules)."""
+"""Shared constants (used in two or more modules and/or multiple notebooks)."""
+
+DAY_MINUTES = 24 * 60
+
+WEEK_MINUTES = 7 * DAY_MINUTES
 
 # Map from labels used in original data to standard simple area identifiers
 AREA_NAME_MAP = {
