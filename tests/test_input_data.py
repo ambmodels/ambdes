@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from ambdes.input_data import prepare_time_data
+from ambdes.input_data import TIME_COLUMNS, prepare_time_data
 
 
 def test_prepare_time_data_unexpected_icb(tmp_path):
@@ -19,6 +19,7 @@ def test_prepare_time_data_unexpected_icb(tmp_path):
         }
     )
     path = tmp_path / "time_data.csv"
+    data[TIME_COLUMNS] = 15
     data.to_csv(path, index=False)
 
     # Check that prepare_time_data raises an error
@@ -43,6 +44,7 @@ def test_prepare_time_data_unknown_icb(tmp_path, capsys, icb):
         }
     )
     path = tmp_path / "time_data.csv"
+    data[TIME_COLUMNS] = 15
     data.to_csv(path, index=False)
 
     result = prepare_time_data(path, year=2025)
