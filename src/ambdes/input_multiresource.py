@@ -29,14 +29,13 @@ def mean_job_time(time_data):
     # min_count=1 prevents completely empty rows from becoming zero
     time_data["amb_time"] = time_data[amb_time_cols].sum(axis=1, min_count=1)
 
-    # Find mean time by response category, converted to minutes
+    # Find mean time by response category
     amb_times = (
         time_data.groupby("category")["amb_time"]
         .mean()
         .reset_index()
         .rename(columns={"amb_time": "mean_amb_time"})
     )
-    amb_times["mean_amb_time"] = amb_times["mean_amb_time"] / 60
 
     return amb_times
 
