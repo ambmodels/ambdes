@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from ambdes.input_modelling import build_arrival_config
+from ambdes.input_arrivals import build_arrival_config
 
 
 def test_arrival_config_with_unequal_arrivals():

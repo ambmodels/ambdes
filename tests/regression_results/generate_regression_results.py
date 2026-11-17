@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from ambdes.choose_warm_up import run_warm_up_audit
+from ambdes.warm_up import run_warm_up_audit
 from ambdes.config import SimConfig
-from ambdes.input_modelling import build_arrival_config
+from ambdes.input_arrivals import build_arrival_config
 from ambdes.model import Model
 from ambdes.results import Results
 from ambdes.runner import Runner

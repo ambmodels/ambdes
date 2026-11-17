@@ -1,4 +1,4 @@
-"""Code for prepare shift inputs for model."""
+"""Input modelling: shifts and resource availability."""
 
 import json
 
