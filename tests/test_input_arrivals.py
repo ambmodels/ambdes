@@ -79,35 +79,39 @@ def test_arrival_config_with_zeroes():
     # Create dataframe with 7 weekdays with mean arrival count for each
     # Category 1 see and convey or see and treat
     # Category 2 just see and treat
-    arrivals = pd.DataFrame([
-        {
-            "weekday": day,
-            "category": category,
-            "outcome": outcome,
-            "count": count,
-        }
-        for day in range(7)
-        for category, outcome, count in [
-            ("C1", "see_and_convey", 9 if day == 0 else 1),
-            ("C1", "see_and_treat", 1),
-            ("C2", "see_and_treat", 2),
+    arrivals = pd.DataFrame(
+        [
+            {
+                "weekday": day,
+                "category": category,
+                "outcome": outcome,
+                "count": count,
+            }
+            for day in range(7)
+            for category, outcome, count in [
+                ("C1", "see_and_convey", 9 if day == 0 else 1),
+                ("C1", "see_and_treat", 1),
+                ("C2", "see_and_treat", 2),
+            ]
         ]
-    ])
+    )
 
     config = build_arrival_config(arrivals)
 
     def probabilities(category):
         """Get probabilities from config as a dict."""
         params = config["call_outcome"][category]["params"]
-        return dict(zip(
-            params["values"], params["freq"], strict=True
-        ))
+        return dict(zip(params["values"], params["freq"], strict=True))
 
-    assert probabilities("C1") == pytest.approx({
-        "see_and_convey": 15 / 22,
-        "see_and_treat": 7 / 22,
-    })
-    assert probabilities("C2") == pytest.approx({
-        "see_and_convey": 0.0,
-        "see_and_treat": 1.0,
-    })
+    assert probabilities("C1") == pytest.approx(
+        {
+            "see_and_convey": 15 / 22,
+            "see_and_treat": 7 / 22,
+        }
+    )
+    assert probabilities("C2") == pytest.approx(
+        {
+            "see_and_convey": 0.0,
+            "see_and_treat": 1.0,
+        }
+    )

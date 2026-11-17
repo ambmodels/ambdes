@@ -149,8 +149,8 @@ def prepare_time_data(path, year=YEAR):
     # Print a record of the number of records with unknown ICB in original data
     if unknown.any():
         print(
-            f"Warning: {unknown.sum()} rows have an unknown or missing " +
-            "ICB in the provided raw data."
+            f"Warning: {unknown.sum()} rows have an unknown or missing "
+            + "ICB in the provided raw data."
         )
 
     return time_data

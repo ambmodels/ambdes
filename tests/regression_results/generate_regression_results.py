@@ -8,12 +8,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from ambdes.warm_up import run_warm_up_audit
 from ambdes.config import SimConfig
 from ambdes.input_arrivals import build_arrival_config
 from ambdes.model import Model
 from ambdes.results import Results
 from ambdes.runner import Runner
+from ambdes.warm_up import run_warm_up_audit
 
 # Paths
 INPUT = Path(__file__).parent.parent / "input_data"
