@@ -4,7 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from ambdes import CapacitySchedule, Model
+from ambdes.capacity import CapacitySchedule
+from ambdes.model import Model
 
 
 @pytest.fixture

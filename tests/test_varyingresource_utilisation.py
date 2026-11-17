@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from ambdes import UtilisationCalculator
+from ambdes.results import UtilisationCalculator
 
 
 def usage_log(*intervals):
