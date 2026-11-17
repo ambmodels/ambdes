@@ -78,6 +78,7 @@ YEAR = 2025
 # Importing time data
 # ----------------------------------------------------------------------------
 
+
 def prepare_time_data(path, year=YEAR):
     """Import and clean time data.
 
@@ -111,9 +112,9 @@ def prepare_time_data(path, year=YEAR):
     )
 
     # Convert categories from e.g., "Category 1" to "C1"
-    time_data["category"] = time_data["ResponseCategoryGroupLevel2"].str.replace(
-        "Category ", "C"
-    )
+    time_data["category"] = time_data[
+        "ResponseCategoryGroupLevel2"
+    ].str.replace("Category ", "C")
 
     # Add weekday column (0=Monday, 6=Sunday)
     time_data["weekday"] = pd.to_datetime(
@@ -125,7 +126,32 @@ def prepare_time_data(path, year=YEAR):
     ).dt.weekday
 
     # Add simplified ICB names
-    time_data["icb"] = time_data["C0722_ICBforCommisisonersReports"].map(AREA_NAME_MAP)
+    source_icb = time_data["C0722_ICBforCommisisonersReports"]
+    time_data["icb"] = source_icb.map(AREA_NAME_MAP)
+
+    # -----------------------------------------------------------------------
+    # Defensive programming: check the ICB mapping
+    # -----------------------------------------------------------------------
+
+    # Count how many were missing or unknown in original data, or unmapped
+    unknown = source_icb.isna() | source_icb.eq("Unknown ICB")
+    unmapped = time_data["icb"].isna() & ~unknown
+
+    # Raise an error if any ICB labels were otherwise not mapped
+    if unmapped.any():
+        raise ValueError(
+            f"Unexpected ICB labels:\n{source_icb[unmapped].value_counts()}"
+        )
+
+    # Print a success message
+    print(f"ICB mapped successfully: {time_data['icb'].notna().sum()} rows")
+
+    # Print a record of the number of records with unknown ICB in original data
+    if unknown.any():
+        print(
+            f"Warning: {unknown.sum()} rows have an unknown or missing " +
+            "ICB in the provided raw data."
+        )
 
     return time_data
 
@@ -133,6 +159,7 @@ def prepare_time_data(path, year=YEAR):
 # ----------------------------------------------------------------------------
 # Getting distribution parameters
 # ----------------------------------------------------------------------------
+
 
 def get_dist_params(dist, data):
     """Compute sim-tools parameter dict for a given distribution.
