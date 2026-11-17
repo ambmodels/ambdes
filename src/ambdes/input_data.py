@@ -47,77 +47,105 @@ WEEKDAYS = {
 # ----------------------------------------------------------------------------
 
 
-def map_icb(source_icb):
-    """Map ICB names to simple standardised version.
-
-    Includes defensive programming to check the ICB mapping. Missing values
-    and "Unknown ICB" in the raw data are permitted and reported. Unrecognised
-    values in the raw data raise an error.
-
-    Parameters
-    ----------
-    source_icb : pd.Series
-        Raw column of ICB names
-
-    Returns
-    -------
-    mapped_icb : pd.Series
-        Standardised simplified column of icb names.
-
-    """
-    mapped_icb = source_icb.map(AREA_NAME_MAP)
-
-    # Count how many were missing or unknown in original data, or unmapped
-    unknown = source_icb.isna() | source_icb.eq("Unknown ICB")
-    unmapped = mapped_icb.isna() & ~unknown
-
-    # Raise an error if any ICB labels were otherwise not mapped
-    if unmapped.any():
-        raise ValueError(
-            f"Unexpected ICB labels:\n{source_icb[unmapped].value_counts()}"
-        )
-
-    # Print a success message
-    print(f"ICB mapped successfully: {mapped_icb.notna().sum()} rows")
-
-    # Print a record of the number of records with unknown ICB in original data
-    if unknown.any():
-        print(
-            f"Warning: {unknown.sum()} rows have an unknown or missing "
-            + "ICB in the provided raw data."
-        )
-
-    return mapped_icb
-
-
-def map_category(source_cat):
-    """Map category names to simple standardised version.
+def map_labels(
+    original_series,
+    mapping_dict,
+    name,
+    allow_missing=False,
+    allow_unmapped=(),
+):
+    """Map labels, rejecting missing and unexpected values by default.
 
     Parameters
     ----------
-    source_cat : pd.Series
-        Raw column of category names.
+    original_series : pd.Series
+        Raw column.
+    mapping_dict : dict
+        Mapping from raw labels to the standardised simplified values.
+    name : str
+        Label used in success, warning and error messages.
+    allow_missing : bool
+        Whether missing values are permitted in `original_series`.
+    allow_unmapped : tuple
+        Additional labels permitted in `original_series` without a mapped
+        value in `mapping_dict`.
 
     Returns
     -------
-    mapped_cat : pd.Series
-        Standardised simplified column of categories.
+    pd.Series
+        Mapped values.
 
     """
-    mapped_cat = source_cat.map(CATEGORIES)
+    mapped = original_series.map(mapping_dict)
 
-    # Reject any missing or unmapped categories.
-    invalid = mapped_cat.isna()
+    # Identify exceptions from `allow_unmapped`
+    # Also allow missing values if set to True
+    permitted = original_series.isin(allow_unmapped)
+    if allow_missing:
+        permitted = permitted | original_series.isna()
+
+    # Reject any other missing or unmapped values
+    invalid = mapped.isna() & ~permitted
 
     if invalid.any():
         raise ValueError(
-            "Missing or unexpected category labels:\n"
-            f"{source_cat[invalid].value_counts(dropna=False)}"
+            f"Missing or unexpected {name} labels:\n"
+            f"{original_series[invalid].value_counts(dropna=False)}"
         )
 
-    print(f"Categories mapped successfully: {mapped_cat.notna().sum()} rows")
+    print(f"{name} mapped successfully: {mapped.notna().sum()} rows")
 
-    return mapped_cat
+    if permitted.any():
+        print(
+            f"Warning: {permitted.sum()} rows have permitted missing "
+            f"or unknown {name} labels in the raw data."
+        )
+
+    return mapped
+
+
+def map_icb(original_series):
+    """Map ICB names.
+
+    Parameters
+    ----------
+    original_series : pd.Series
+        Raw column.
+
+    Returns
+    -------
+    pd.Series
+        Mapped values.
+
+    """
+    return map_labels(
+        original_series=original_series,
+        mapping_dict=AREA_NAME_MAP,
+        name="ICB",
+        allow_missing=True,
+        allow_unmapped=("Unknown ICB",),
+    )
+
+
+def map_categories(original_series):
+    """Map response categories.
+
+    Parameters
+    ----------
+    original_series : pd.Series
+        Raw column.
+
+    Returns
+    -------
+    pd.Series
+        Mapped values.
+
+    """
+    return map_labels(
+        original_series=original_series,
+        mapping_dict=CATEGORIES,
+        name="category",
+    )
 
 
 # ----------------------------------------------------------------------------
@@ -170,7 +198,7 @@ def prepare_time_data(path, year=YEAR):
     time_data["icb"] = map_icb(time_data["C0722_ICBforCommisisonersReports"])
 
     # Add simplified category names
-    time_data["category"] = map_category(
+    time_data["category"] = map_categories(
         time_data["ResponseCategoryGroupLevel2"]
     )
 
@@ -198,7 +226,7 @@ def prepare_resources_per_incident(path):
     resources["icb"] = map_icb(resources["C0722_ICBforCommisisonersReports"])
 
     # Add simplified category names
-    resources["category"] = map_category(
+    resources["category"] = map_categories(
         resources["ResponseCategoryGroupLevel2"]
     )
 
@@ -236,7 +264,11 @@ def prepare_shifts(path):
     shifts["icb"] = map_icb(shifts["County"])
 
     # Convert weekday from string to numeric
-    shifts["weekday_num"] = shifts["Weekday"].map(WEEKDAYS)
+    shifts["weekday_num"] = map_labels(
+        original_series=shifts["Weekday"],
+        mapping_dict=WEEKDAYS,
+        name="weekday",
+    )
 
     # Convert shift start time to minutes within a day (0-1440)
     shifts["day_start_min"] = (
@@ -280,8 +312,10 @@ def prepare_resources(path):
 
     # Add standardised/simplified ICB and event type names
     resources["icb"] = map_icb(resources["CountyCommander"])
-    resources["EventTypeGrouped"] = resources["EventTypeGrouped"].map(
-        EVENT_TYPES
+    resources["EventTypeGrouped"] = map_labels(
+        original_series=resources["EventTypeGrouped"],
+        mapping_dict=EVENT_TYPES,
+        name="event type",
     )
 
     # Set datetime columns

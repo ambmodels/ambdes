@@ -1,4 +1,4 @@
-"""Tests for input_times.py."""
+"""Tests for input_data.py."""
 
 import pandas as pd
 import pytest
@@ -22,7 +22,10 @@ def test_prepare_time_data_unexpected_icb(tmp_path):
     data.to_csv(path, index=False)
 
     # Check that prepare_time_data raises an error
-    with pytest.raises(ValueError, match="Unexpected ICB labels:.*") as exc:
+    with pytest.raises(
+        ValueError,
+        match="Missing or unexpected ICB labels:"
+    ) as exc:
         prepare_time_data(path, year=2025)
 
     assert "CornwallRegion" in str(exc.value)
@@ -47,6 +50,6 @@ def test_prepare_time_data_unknown_icb(tmp_path, capsys, icb):
 
     assert pd.isna(result.loc[0, "icb"])
     assert (
-        "Warning: 1 rows have an unknown or missing ICB "
-        "in the provided raw data."
+        "Warning: 1 rows have permitted missing "
+        "or unknown ICB labels in the raw data."
     ) in capsys.readouterr().out
