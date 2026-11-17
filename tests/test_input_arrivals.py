@@ -1,4 +1,4 @@
-"""Tests for input modelling."""
+"""Tests for input_arrivals.py."""
 
 import pandas as pd
 import pytest
