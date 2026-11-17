@@ -9,7 +9,7 @@ import seaborn as sns
 from sim_tools.distributions import DistributionRegistry
 
 
-def get_mean_arrivals(time_df, hourly=False):
+def get_mean_arrivals(time_df, hourly=False, by_category_outcome=True):
     """Mean counts by weekday, category, outcome, and optionally by hour.
 
     Parameters
@@ -19,6 +19,8 @@ def get_mean_arrivals(time_df, hourly=False):
         to a particular area).
     hourly : bool
         Whether to get mean arrivals by hour of day too, or just day of week.
+    by_category_outcome : bool
+        Whether to group arrivals by category and outcome.
 
     Returns
     -------
@@ -27,7 +29,7 @@ def get_mean_arrivals(time_df, hourly=False):
 
     """
     dates = ["IncidentMonth", "IncidentDay", "weekday"]
-    groups = ["category", "outcome"]
+    groups = ["category", "outcome"] if by_category_outcome else []
     if hourly:
         groups = ["IncidentHour"] + groups
 
