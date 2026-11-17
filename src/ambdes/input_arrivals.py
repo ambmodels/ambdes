@@ -1,6 +1,46 @@
 """Input modelling: patient arrivals."""
 
+import json
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
+from sim_tools.distributions import DistributionRegistry
+
+
+def get_mean_arrivals(time_df, hourly=False):
+    """Mean counts by weekday, category, outcome, and optionally by hour.
+
+    Parameters
+    ----------
+    time_df : pd.DataFrame
+        Dataframe with one row per patient. May be a subset (e.g., filtered
+        to a particular area).
+    hourly : bool
+        Whether to get mean arrivals by hour of day too, or just day of week.
+
+    Returns
+    -------
+    pd.DataFrame
+        Mean arrivals by weekday, category, outcome, and optionally by hour.
+
+    """
+    # Groups are weekday, category, outcome, and optionally hour
+    groups = ["weekday", "category", "outcome"]
+    if hourly:
+        groups = ["IncidentHour"] + groups
+
+    # Group by the month and day (to keep each date separate), then also
+    # by the other specified groups, and count the number of patients
+    counts = (
+        time_df.groupby(["IncidentMonth", "IncidentDay"] + groups)
+        .size()
+        .reset_index(name="count")
+    )
+
+    # Average counts across dates by the same weekday/category/outcome/hour
+    return counts.groupby(groups)["count"].mean().reset_index()
 
 
 def build_arrival_config(arrivals, hourly=False):
@@ -99,3 +139,91 @@ def build_arrival_config(arrivals, hourly=False):
 
     # Return the config dictionary
     return dist_config
+
+
+def plot_simulated_arrivals(
+    arrivals_json, hourly=False, n_reps=50, title=None
+):
+    """Simulate repeated weeks and plot arrival counts by weekday (+ hour).
+
+    Parameters
+    ----------
+    arrivals_json : str | Path
+        Path to the arrivals configuration JSON.
+    hourly : bool
+        Whether to plot arrival counts by weekday and hour of day, or just
+        weekday.
+    n_reps : int
+        Number of simulated weeks. Plot the mean and 10th-90th percentiles
+        of arrival counts across replications.
+    title : str
+        Title for the plot.
+
+    """
+    # Load arrivals configuration
+    with open(arrivals_json, encoding="utf-8") as f:
+        config = json.load(f)
+
+    # Convert the NSPP parameter into required format for sim-tools
+    config["call_arrival"]["params"] = {
+        "data": pd.DataFrame(
+            {
+                "t": config["call_arrival"]["params"]["t"],
+                "mean_iat": config["call_arrival"]["params"]["mean_iat"],
+            }
+        )
+    }
+
+    # Create distribution registry
+    registry = DistributionRegistry.create_batch(
+        config, main_seed=42, preserve_structure=True
+    )
+
+    # Sample replications for a week, repeat that n_reps times
+    # Capture results either per day or per hour
+    bin_minutes = 60 if hourly else 1440
+    n_bins = 168 if hourly else 7
+    counts = np.zeros((n_reps, n_bins), dtype=int)
+    for rep in range(n_reps):
+        time = 0
+        while True:
+            time += registry["call_arrival"].sample(simulation_time=time)
+            if time >= (7 * 1440):
+                break
+            counts[rep, int(time // bin_minutes)] += 1
+    x = np.arange(n_bins)
+
+    fig, ax = plt.subplots(figsize=(14, 5) if hourly else (8, 5))
+
+    ax.plot(x, counts.mean(axis=0), marker = "o", label="Sample mean")
+    ax.fill_between(
+        x,
+        np.percentile(counts, 10, axis=0),
+        np.percentile(counts, 90, axis=0),
+        alpha=0.2,
+        label="10th-90th percentiles",
+    )
+
+    ax.set_title(title)
+    ax.set_ylabel("Arrivals")
+    ax.legend()
+
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    if hourly:
+        ticks = np.arange(0, 168, 6)
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(
+            [f"{days[h // 24]} {h % 24:02d}:00" for h in ticks],
+            rotation=90,
+        )
+        ax.set_xlabel("Weekday and hour")
+        ax.set_ylabel("Arrivals per hour")
+    else:
+        ax.set_xticks(x)
+        ax.set_xticklabels(days)
+        ax.set_xlabel("Weekday")
+        ax.set_ylabel("Arrivals per day")
+
+    sns.despine()
+    fig.tight_layout()
+    plt.show()
