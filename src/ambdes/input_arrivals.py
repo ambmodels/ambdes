@@ -26,21 +26,31 @@ def get_mean_arrivals(time_df, hourly=False):
         Mean arrivals by weekday, category, outcome, and optionally by hour.
 
     """
-    # Groups are weekday, category, outcome, and optionally hour
-    groups = ["weekday", "category", "outcome"]
+    dates = ["IncidentMonth", "IncidentDay", "weekday"]
+    groups = ["category", "outcome"]
     if hourly:
         groups = ["IncidentHour"] + groups
 
+    # Create a dataframe with every possible data x category x outcome
+    # combination (x hour too if relevant)
+    # Start with one row per observed month/day/weekday
+    complete = time_df[dates].drop_duplicates()
+    for col in groups:
+        # For IncidentHour, do rows for each hour - else, do for each
+        # distinct category for that column
+        values = range(24) if col == "IncidentHour" else time_df[col].unique()
+        complete = complete.merge(pd.DataFrame({col: values}), how="cross")
+
     # Group by the month and day (to keep each date separate), then also
     # by the other specified groups, and count the number of patients
-    counts = (
-        time_df.groupby(["IncidentMonth", "IncidentDay"] + groups)
-        .size()
-        .reset_index(name="count")
-    )
+    counts = time_df.groupby(dates + groups).size().reset_index(name="count")
+
+    # Add counts to the template dataframe, and fill NA with 0
+    complete = complete.merge(counts, on=dates + groups, how="left")
+    complete["count"] = complete["count"].fillna(0)
 
     # Average counts across dates by the same weekday/category/outcome/hour
-    return counts.groupby(groups)["count"].mean().reset_index()
+    return complete.groupby(["weekday"] + groups)["count"].mean().reset_index()
 
 
 def build_arrival_config(arrivals, hourly=False):
@@ -103,7 +113,7 @@ def build_arrival_config(arrivals, hourly=False):
     outcome_by_category = (
         arrivals.groupby(["category", "outcome"])["count"]
         .sum()
-        .unstack("outcome")
+        .unstack("outcome", fill_value=0)
     )
     outcome_proportions = outcome_by_category.div(
         outcome_by_category.sum(axis=1), axis=0
@@ -195,7 +205,7 @@ def plot_simulated_arrivals(
 
     fig, ax = plt.subplots(figsize=(14, 5) if hourly else (8, 5))
 
-    ax.plot(x, counts.mean(axis=0), marker = "o", label="Sample mean")
+    ax.plot(x, counts.mean(axis=0), marker="o", label="Sample mean")
     ax.fill_between(
         x,
         np.percentile(counts, 10, axis=0),
