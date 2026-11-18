@@ -5,6 +5,28 @@ All notable changes to this project are documented.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Dates formatted as YYYY-MM-DD as per [ISO standard](https://www.iso.org/iso-8601-date-and-time-format.html).
 
+## v0.3.0 - 2026-11-18
+
+Refactored input modelling (and moved here from `ambdes-private`), added shared constants and new tests, and fixed arrival-rate overestimation by including zero-patient combinations in averages
+
+### Added
+
+* **Input modelling:**
+    * Add `input_shifts.py` (moved and refactored code from `ambdes-private`).
+    * Add `input_data.py` (to reduce repetitive cleaning of the same data in notebooks! Also introduce new defensive programming which checks mapping when replace labels, conversion froms seconds to minutes once, and bug fixes noted below).
+* **Constants:** Add `constants.py` (for any used in 2+ modules and/or multiple notebooks).
+* **Tests:** Added new tests.
+
+### Changed
+
+* **__init__.py:** Removed `__all__`, instead now specify the module to import from.
+* **Input modelling:** Separated into more distinct modules.
+
+### Fixed
+
+* **Input data:** Big bug! Was excluding 0 counts when did means. This meant the group mean was the average arrivals on dates when this category / outcome / hour combination had at least one patient, whereas now it is the average arrivals across all possible combinations, including combinations with zero patients. Original calculations were overestimating arrival numbers.
+* **Arrival config:** `build_arrival_config` saves as NA instead of 0 for outcome probabilities.
+
 ## v0.2.0 - 2026-10-23
 
 Model now has arrivals varying by hour of day, resources varying according to shift patterns, which are adjusted for unavailability, meal break and restricted send per hour.
