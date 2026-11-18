@@ -44,7 +44,7 @@ def build_empirical_config(time_data, run_number):
         results[stage] = {}
         for i in range(1, 5):
             # Get the time data for that metric and category
-            mask = time_data["ResponseCategoryGroupLevel2"] == f"Category {i}"
+            mask = time_data["category"] == f"C{i}"
             values = time_data.loc[mask, column].dropna().values
 
             # Construct distribution and save into results dictionary
@@ -62,9 +62,7 @@ def build_empirical_config(time_data, run_number):
 
     for i in range(1, 5):
         # Create mask for that response category
-        category_mask = (
-            time_data["ResponseCategoryGroupLevel2"] == f"Category {i}"
-        )
+        category_mask = time_data["category"] == f"C{i}"
 
         # Set up new nested dict to store results per outcome
         results["on_scene_time"][f"C{i}"] = {}
