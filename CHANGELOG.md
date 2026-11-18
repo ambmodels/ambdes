@@ -5,6 +5,18 @@ All notable changes to this project are documented.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Dates formatted as YYYY-MM-DD as per [ISO standard](https://www.iso.org/iso-8601-date-and-time-format.html).
 
+## v0.3.1 - 2026-11-18
+
+Minor bug fixes. Only one which caused any change in results at present was the availability schedule fix.
+
+### Fixed
+
+* **Empirical:** Not currently using these, but retaining for now in case want to. Made some bug fixes:
+    * Expect data to already be provided in minutes from `prepare_time_data()`.
+    * Use new tidy `category` column from `prepare_time_data()`.
+* **Input times:** Corrected `fit_config()` to use tidy `category` column from `prepare_time_data()` (although no impact presently, as the data that had the different `ResponseCategoryGroupLevel2` categories was the data on resources per incident, not the time data).
+* **Input shifts:** `create_availability schedule()` was excluding occurences of 0 - fixing this caused a few minor changes in a few schedules of one or two resources here or there.
+
 ## v0.3.0 - 2026-11-18
 
 Refactored input modelling (and moved here from `ambdes-private`), added shared constants and new tests, and fixed arrival-rate overestimation by including zero-patient combinations in averages
