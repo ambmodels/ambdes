@@ -2,7 +2,9 @@
 
 from pathlib import Path
 
-from ambdes import Model, Runner, SimConfig
+from ambdes.config import SimConfig
+from ambdes.model import Model
+from ambdes.runner import Runner
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 

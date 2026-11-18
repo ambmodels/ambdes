@@ -1,6 +1,6 @@
 """Test model configuration."""
 
-from ambdes import SimConfig
+from ambdes.config import SimConfig
 
 # ---------------------------------------------------------------------------
 # Helper functions

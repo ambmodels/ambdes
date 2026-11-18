@@ -11,7 +11,7 @@ import simpy
 from vidigi.logging import EventLogger
 from vidigi.resources import VidigiStore
 
-from ambdes import Results
+from ambdes.results import Results
 
 # ---------------------------------------------------------------------------
 # MonitoredResource (copied from pythonhealthdatascience/pydesrap_mms)

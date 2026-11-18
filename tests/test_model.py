@@ -5,7 +5,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ambdes import Model, Results, SimConfig
+from ambdes.config import SimConfig
+from ambdes.model import Model
+from ambdes.results import Results
 
 INPUT = Path(__file__).parent.joinpath("input_data")
 

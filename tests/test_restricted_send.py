@@ -4,7 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from ambdes import DispatchRequest, Model, Patient
+from ambdes.dispatcher import DispatchRequest
+from ambdes.model import Model
+from ambdes.patient import Patient
 
 # ---------------------------------------------------------------------------
 # Helper functions
