@@ -1,3 +1,5 @@
+"""Tests for input_shifts.py."""
+
 import pandas as pd
 
 from ambdes.input_shifts import create_availability_schedule
