@@ -3,7 +3,12 @@
 import numpy as np
 import pandas as pd
 
-from ambdes.constants import AREA_NAME_MAP, DAY_MINUTES, WEEK_MINUTES
+from ambdes.constants import (
+    AREA_NAME_MAP,
+    DAY_MINUTES,
+    EVENT_TYPES_MAP,
+    WEEK_MINUTES,
+)
 
 # ----------------------------------------------------------------------------
 # Constants
@@ -22,14 +27,6 @@ CATEGORIES = {
     "Other": "C3",
     "Category 4": "C4",
     "Category 4 999": "C4",
-}
-
-EVENT_TYPES = {
-    "Allocated": "allocated",
-    "Available": "available",
-    "Rest Break": "rest_break",
-    "Restricted Send": "restricted_send",
-    "Unavailable": "unavailable",
 }
 
 WEEKDAYS = {
@@ -351,7 +348,7 @@ def prepare_resources(path):
     resources["icb"] = map_icb(resources["CountyCommander"])
     resources["EventTypeGrouped"] = map_labels(
         original_series=resources["EventTypeGrouped"],
-        mapping_dict=EVENT_TYPES,
+        mapping_dict=EVENT_TYPES_MAP,
         name="event type",
     )
 
