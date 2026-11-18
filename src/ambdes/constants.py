@@ -16,7 +16,7 @@ AREA_NAME_MAP = {
     "Somerset": "somerset",
 }
 
-# Unique area identifiers
-AREAS = tuple(AREA_NAME_MAP.values())
+# Unique area identifiers, with fromkeys removing duplicat cornwall
+AREAS = tuple(dict.fromkeys(AREA_NAME_MAP.values()))
 
 AREAS_WITH_TRUST = ("trust",) + AREAS
