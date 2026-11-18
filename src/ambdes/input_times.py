@@ -516,9 +516,8 @@ def fit_config(time_data, time_data_unit, metric_config):
         split = "see_and_convey" in info and "see_and_treat" in info
 
         for cat_number in [1, 2, 3, 4]:
-            cat = f"Category {cat_number}"
             key = f"C{cat_number}"
-            cat_mask = time_data["ResponseCategoryGroupLevel2"] == cat
+            cat_mask = time_data["category"] == key
 
             # Distributions are fit separately by conveyance status
             if split:

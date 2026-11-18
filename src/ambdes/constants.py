@@ -20,3 +20,13 @@ AREA_NAME_MAP = {
 AREAS = tuple(dict.fromkeys(AREA_NAME_MAP.values()))
 
 AREAS_WITH_TRUST = ("trust",) + AREAS
+
+EVENT_TYPES_MAP = {
+    "Allocated": "allocated",
+    "Available": "available",
+    "Rest Break": "rest_break",
+    "Restricted Send": "restricted_send",
+    "Unavailable": "unavailable",
+}
+
+EVENT_TYPES = tuple(dict.fromkeys(EVENT_TYPES_MAP.values()))

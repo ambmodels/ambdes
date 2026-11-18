@@ -14,7 +14,8 @@ def build_empirical_config(time_data, run_number):
     Parameters
     ----------
     time_data : pd.DataFrame
-        The raw ambulance data containing times per patient.
+        Ambulance data containing times per patient. Expects duration columns
+        to be in minutes, as returned by prepare_time_data().
     run_number : int
         Run number, used to initialise SeedSequence.
 
@@ -43,10 +44,9 @@ def build_empirical_config(time_data, run_number):
         results[stage] = {}
         for i in range(1, 5):
             # Get the time data for that metric and category
-            mask = time_data["ResponseCategoryGroupLevel2"] == f"Category {i}"
+            mask = time_data["category"] == f"C{i}"
             values = time_data.loc[mask, column].dropna().values
-            # Convert to minutes
-            values = values / 60
+
             # Construct distribution and save into results dictionary
             results[stage][f"C{i}"] = RawContinuousEmpirical(
                 data=values, random_seed=next(child_seeds)
@@ -57,19 +57,22 @@ def build_empirical_config(time_data, run_number):
         "see_and_convey": ["See & Convey ED", "See & Convey non ED"],
         "see_and_treat": ["See & Treat"],
     }
+
     results["on_scene_time"] = {}
+
     for i in range(1, 5):
         # Create mask for that response category
-        category_mask = (
-            time_data["ResponseCategoryGroupLevel2"] == f"Category {i}"
-        )
+        category_mask = time_data["category"] == f"C{i}"
+
         # Set up new nested dict to store results per outcome
         results["on_scene_time"][f"C{i}"] = {}
+
         for outcome, outcome_values in outcomes.items():
             # Create mask for that response outcome
             outcome_mask = time_data["C0660_CallOutcomeDetail"].isin(
                 outcome_values
             )
+
             # Filter to data for that metric, category and outcome
             values = (
                 time_data.loc[
@@ -78,8 +81,7 @@ def build_empirical_config(time_data, run_number):
                 .dropna()
                 .values
             )
-            # Convert to minutes
-            values = values / 60
+
             # Construct distribution and save into results dictionary
             results["on_scene_time"][f"C{i}"][outcome] = (
                 RawContinuousEmpirical(
@@ -122,12 +124,15 @@ class EmpiricalRunner(Runner):
 
         """
         model = Model(run_number, config=self.config)
+
         empirical_dists = build_empirical_config(
             time_data=self.time_data, run_number=run_number
         )
         model.dists.update(empirical_dists)
+
         model.run()
         results = Results(model=model)
+
         return {
             "patients": results.patient_df(),
             "run": results.summary_df(),

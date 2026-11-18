@@ -1,6 +1,7 @@
 """Model configuration."""
 
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import pandas as pd
@@ -149,10 +150,12 @@ class SimConfig:
         """
         # Load dictionaries from JSON paths, unless have directly provided
         # a dictionary - in which case, leave unchanged
-        arrivals_config = resolve_dict(arrivals_config)
-        times_config = resolve_dict(times_config)
-        self.ambulance_schedule = resolve_dict(ambulance_schedule)
-        self.restricted_send_schedule = resolve_dict(restricted_send_schedule)
+        arrivals_config = deepcopy(resolve_dict(arrivals_config))
+        times_config = deepcopy(resolve_dict(times_config))
+        self.ambulance_schedule = deepcopy(resolve_dict(ambulance_schedule))
+        self.restricted_send_schedule = deepcopy(
+            resolve_dict(restricted_send_schedule)
+        )
 
         # Ensure times are int (as might e.g., read in as strings)
         if self.ambulance_schedule is not None:

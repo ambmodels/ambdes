@@ -5,7 +5,7 @@ import json
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from ambdes.constants import WEEK_MINUTES
+from ambdes.constants import EVENT_TYPES, WEEK_MINUTES
 
 # ----------------------------------------------------------------------------
 # Creating individual schedules
@@ -77,6 +77,10 @@ def create_weekly_schedule(shifts):
 def create_availability_schedule(resources):
     """Calculate mean vehicle counts by minute of week and event type.
 
+    An hour is included if at least one event type has a record. Other missing
+    event types within that hour are treated as zero before averaging across
+    occurrences of that hour of the week.
+
     Parameters
     ----------
     resources : pd.DataFrame
@@ -95,26 +99,23 @@ def create_availability_schedule(resources):
     # For trust input this combines areas; for area input it stays within area.
     hourly_totals = resources.groupby(
         ["start_hour", "time", "EventTypeGrouped"],
-        as_index=False,
+        observed=True,
     )["vehicles"].sum()
+
+    # One row per observed actual hour, with absent event types set to
+    # zero before calculating any averages across weeks.
+    hourly_by_event = (
+        hourly_totals.unstack("EventTypeGrouped")
+        .reindex(columns=EVENT_TYPES)
+        .fillna(0)
+    )
 
     # Average actual hourly totals across weeks
     availability = (
-        hourly_totals.groupby(
-            ["time", "EventTypeGrouped"],
-            as_index=False,
-        )["vehicles"]
-        .mean()
-        .pivot(
-            index="time",
-            columns="EventTypeGrouped",
-            values="vehicles",
-        )
-        .reset_index()
+        hourly_by_event.groupby(level="time").mean().sort_index().reset_index()
     )
 
-    # Some NA where rest break didn't have two times from elsewhere - set to 0
-    availability["rest_break"] = availability["rest_break"].fillna(0)
+    availability.columns.name = None
 
     return availability
 
