@@ -12,6 +12,8 @@ from sim_tools.distributions import DistributionRegistry
 def get_mean_arrivals(time_df, hourly=False, by_category_outcome=True):
     """Mean counts by weekday, category, outcome, and optionally by hour.
 
+    This code assumes there is just a single year of data.
+
     Parameters
     ----------
     time_df : pd.DataFrame
